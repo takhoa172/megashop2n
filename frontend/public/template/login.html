@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Đăng nhập &amp; Đăng ký | VIETSHOP</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#dbe1ff",
+                        "tertiary-fixed": "#ffddb8",
+                        "tertiary": "#784b00",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#996100",
+                        "on-secondary-container": "#5c647a",
+                        "on-background": "#0b1c30",
+                        "primary-container": "#2563eb",
+                        "inverse-primary": "#b4c5ff",
+                        "secondary-fixed-dim": "#bec6e0",
+                        "secondary-fixed": "#dae2fd",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "primary": "#004ac6",
+                        "on-surface": "#0b1c30",
+                        "background": "#f8f9ff",
+                        "outline": "#737686",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c3c6d7",
+                        "on-tertiary-fixed": "#2a1700",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-container-low": "#eff4ff",
+                        "surface-container": "#e5eeff",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#eeefff",
+                        "on-surface-variant": "#434655",
+                        "inverse-surface": "#213145",
+                        "on-secondary-fixed": "#131b2e",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#f8f9ff",
+                        "surface-container-high": "#dce9ff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface-bright": "#f8f9ff",
+                        "secondary": "#565e74",
+                        "on-primary-fixed": "#00174b",
+                        "on-tertiary-container": "#ffeedd",
+                        "on-secondary-fixed-variant": "#3f465c",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#d3e4fe",
+                        "surface-dim": "#cbdbf5",
+                        "surface-tint": "#0053db",
+                        "on-error-container": "#93000a",
+                        "secondary-container": "#dae2fd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "2xl": "48px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "3xl": "64px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "margin-desktop": "32px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .form-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-on-background docked full-width top-0 shadow-md z-50">
+<nav class="flex justify-between items-center w-full px-margin-desktop max-w-[1440px] mx-auto h-20">
+<div class="text-headline-md font-headline-md font-bold text-surface-container-lowest cursor-pointer active:scale-95 duration-200">
+                VIETSHOP
+            </div>
+<div class="hidden md:flex items-center gap-xl">
+<a class="font-title-lg text-title-lg text-surface-variant hover:text-surface-container-lowest transition-colors" href="#">Trang chủ</a>
+<a class="font-title-lg text-title-lg text-surface-variant hover:text-surface-container-lowest transition-colors" href="#">Sản phẩm</a>
+<a class="font-title-lg text-title-lg text-surface-variant hover:text-surface-container-lowest transition-colors" href="#">Khuyến mãi</a>
+<a class="font-title-lg text-title-lg text-surface-variant hover:text-surface-container-lowest transition-colors" href="#">Tin tức</a>
+<a class="font-title-lg text-title-lg text-surface-variant hover:text-surface-container-lowest transition-colors" href="#">Liên hệ</a>
+</div>
+<div class="flex items-center gap-md">
+<button class="bg-primary-container text-on-primary-container px-lg py-sm rounded-lg font-title-lg text-title-lg hover:opacity-80 transition-opacity active:scale-95 duration-200">
+                    Đăng nhập
+                </button>
+</div>
+</nav>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow flex items-center justify-center py-3xl px-margin-mobile md:px-margin-desktop bg-background">
+<div class="w-full max-w-[480px] bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden relative">
+<!-- Auth Container -->
+<div class="p-xl md:p-2xl" id="auth-container">
+<!-- Login Form Section -->
+<section class="form-transition opacity-100 translate-x-0" id="login-section">
+<div class="mb-xl text-center">
+<h1 class="font-headline-lg text-headline-lg text-on-background mb-sm">Đăng nhập</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Chào mừng bạn quay lại với VIETSHOP</p>
+</div>
+<form class="space-y-lg" onsubmit="event.preventDefault();">
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Email</label>
+<input class="w-full px-md py-sm border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/10 transition-all font-body-md text-body-md" placeholder="email@vi-du.com" type="email"/>
+</div>
+<div>
+<div class="flex justify-between mb-xs">
+<label class="block font-label-md text-label-md text-on-surface-variant">Mật khẩu</label>
+<a class="font-label-md text-label-md text-primary hover:underline" href="#">Quên mật khẩu?</a>
+</div>
+<input class="w-full px-md py-sm border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/10 transition-all font-body-md text-body-md" placeholder="••••••••" type="password"/>
+</div>
+<button class="w-full bg-primary-container text-on-primary-container py-md rounded-lg font-title-lg text-title-lg hover:opacity-90 active:scale-[0.98] transition-all shadow-md" type="submit">
+                            Đăng nhập
+                        </button>
+</form>
+<div class="relative my-xl">
+<div class="absolute inset-0 flex items-center"><div class="w-full border-t border-outline-variant"></div></div>
+<div class="relative flex justify-center text-body-sm font-body-sm"><span class="bg-surface-container-lowest px-md text-on-surface-variant uppercase tracking-wider">Hoặc đăng nhập bằng</span></div>
+</div>
+<div class="grid grid-cols-2 gap-md mb-xl">
+<button class="flex items-center justify-center gap-sm border border-outline-variant py-sm rounded-lg hover:bg-surface-container-low transition-colors font-label-md text-label-md">
+<img alt="Google" class="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDq-hjLQrZ8GPWwpTs95h9mipWjPqah2EsftWh0xc7WfDTluVZJBThWlwAuB2mTHlkvGwh6x2254TgrJYfkpaZMqzgovc8cJSo5hqTw3oA16neUAiTrR6yUWkXiwLoln6wU5bZT8utjlAcl0nZdM2gbmyHlzHHo-QePYhw7jBp1SrQQez6mPrb24LjZe-elmKKTHyIIxaBJ51WXFOi6NagkVsp0OI8-HOC1JjIa9gAcwvG_rftyH_d8zxbihxR2NQe7Xh34Idbxne1T"/>
+                            Google
+                        </button>
+<button class="flex items-center justify-center gap-sm border border-outline-variant py-sm rounded-lg hover:bg-surface-container-low transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined text-[20px]" style="color: #EA4335;">mail</span>
+                            Gmail
+                        </button>
+</div>
+<div class="text-center">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                            Chưa có tài khoản? 
+                            <button class="text-primary font-title-lg hover:underline transition-all" onclick="toggleAuth('register')">Đăng ký ngay</button>
+</p>
+</div>
+</section>
+<!-- Register Form Section (Hidden by default) -->
+<section class="form-transition hidden opacity-0 translate-x-12" id="register-section">
+<div class="mb-xl text-center">
+<h1 class="font-headline-lg text-headline-lg text-on-background mb-sm">Đăng ký</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Bắt đầu mua sắm cùng VIETSHOP hôm nay</p>
+</div>
+<form class="space-y-md" onsubmit="event.preventDefault();">
+<div class="grid grid-cols-1 gap-md">
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Họ tên</label>
+<input class="w-full px-md py-sm border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/10 transition-all font-body-md text-body-md" placeholder="Nguyễn Văn A" type="text"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Email</label>
+<input class="w-full px-md py-sm border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/10 transition-all font-body-md text-body-md" placeholder="email@vi-du.com" type="email"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Số điện thoại</label>
+<input class="w-full px-md py-sm border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/10 transition-all font-body-md text-body-md" placeholder="0901234567" type="tel"/>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Mật khẩu</label>
+<input class="w-full px-md py-sm border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/10 transition-all font-body-md text-body-md" placeholder="••••••••" type="password"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Nhập lại</label>
+<input class="w-full px-md py-sm border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/10 transition-all font-body-md text-body-md" placeholder="••••••••" type="password"/>
+</div>
+</div>
+</div>
+<button class="w-full bg-primary-container text-on-primary-container py-md rounded-lg font-title-lg text-title-lg hover:opacity-90 active:scale-[0.98] transition-all shadow-md mt-lg" type="submit">
+                            Đăng ký
+                        </button>
+</form>
+<div class="text-center mt-xl">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                            Đã có tài khoản? 
+                            <button class="text-primary font-title-lg hover:underline transition-all" onclick="toggleAuth('login')">Đăng nhập ngay</button>
+</p>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-on-background docked full-width bottom-0 border-t border-outline-variant mt-auto">
+<div class="w-full py-xl px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-lg max-w-[1440px] mx-auto">
+<div class="flex flex-col gap-sm">
+<div class="text-title-lg font-title-lg text-surface-container-lowest">VIETSHOP</div>
+<div class="font-body-sm text-body-sm text-outline-variant">© 2024 VIETSHOP. All rights reserved.</div>
+</div>
+<div class="flex flex-wrap justify-center gap-lg">
+<a class="font-body-sm text-body-sm text-outline-variant hover:text-surface-container-lowest hover:underline transition-all duration-200" href="#">Chính sách bảo mật</a>
+<a class="font-body-sm text-body-sm text-outline-variant hover:text-surface-container-lowest hover:underline transition-all duration-200" href="#">Điều khoản sử dụng</a>
+<a class="font-body-sm text-body-sm text-outline-variant hover:text-surface-container-lowest hover:underline transition-all duration-200" href="#">Trung tâm trợ giúp</a>
+<a class="font-body-sm text-body-sm text-outline-variant hover:text-surface-container-lowest hover:underline transition-all duration-200" href="#">Hợp tác người bán</a>
+</div>
+</div>
+</footer>
+<script>
+        function toggleAuth(type) {
+            const loginSection = document.getElementById('login-section');
+            const registerSection = document.getElementById('register-section');
+            
+            if (type === 'register') {
+                loginSection.classList.add('hidden', 'opacity-0', '-translate-x-12');
+                loginSection.classList.remove('opacity-100', 'translate-x-0');
+                
+                setTimeout(() => {
+                    registerSection.classList.remove('hidden');
+                    setTimeout(() => {
+                        registerSection.classList.add('opacity-100', 'translate-x-0');
+                        registerSection.classList.remove('opacity-0', 'translate-x-12');
+                    }, 50);
+                }, 300);
+            } else {
+                registerSection.classList.add('opacity-0', 'translate-x-12');
+                registerSection.classList.remove('opacity-100', 'translate-x-0');
+                
+                setTimeout(() => {
+                    registerSection.classList.add('hidden');
+                    loginSection.classList.remove('hidden');
+                    setTimeout(() => {
+                        loginSection.classList.add('opacity-100', 'translate-x-0');
+                        loginSection.classList.remove('opacity-0', '-translate-x-12');
+                    }, 50);
+                }, 300);
+            }
+        }
+    </script>
+</body></html>

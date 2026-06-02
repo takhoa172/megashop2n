@@ -1,0 +1,384 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "tertiary": "#784b00",
+                        "surface-bright": "#f8f9ff",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-container": "#e5eeff",
+                        "surface": "#f8f9ff",
+                        "tertiary-container": "#996100",
+                        "inverse-on-surface": "#eaf1ff",
+                        "primary": "#004ac6",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "primary-container": "#2563eb",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface-variant": "#d3e4fe",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface-container-high": "#dce9ff",
+                        "secondary-fixed": "#dae2fd",
+                        "secondary-fixed-dim": "#bec6e0",
+                        "inverse-surface": "#213145",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-dim": "#cbdbf5",
+                        "secondary-container": "#dae2fd",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "inverse-primary": "#b4c5ff",
+                        "on-surface": "#0b1c30",
+                        "on-secondary-fixed": "#131b2e",
+                        "on-primary-fixed": "#00174b",
+                        "outline": "#737686",
+                        "on-primary-container": "#eeefff",
+                        "surface-container-low": "#eff4ff",
+                        "outline-variant": "#c3c6d7",
+                        "on-tertiary-container": "#ffeedd",
+                        "tertiary-fixed": "#ffddb8",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#0053db",
+                        "on-surface-variant": "#434655",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#3f465c",
+                        "on-secondary-container": "#5c647a",
+                        "secondary": "#565e74",
+                        "on-background": "#0b1c30",
+                        "primary-fixed": "#dbe1ff",
+                        "background": "#f8f9ff",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "md": "16px",
+                        "gutter": "24px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "sm": "8px",
+                        "margin-desktop": "32px",
+                        "3xl": "64px",
+                        "2xl": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg-mobile": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-lg-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-inverse-surface sticky top-0 z-50 shadow-md">
+<div class="flex justify-between items-center w-full px-margin-desktop max-w-[1440px] mx-auto h-20">
+<div class="text-title-lg font-title-lg font-black text-surface-bright tracking-tight">VIETSHOP</div>
+<nav class="hidden md:flex items-center space-x-lg">
+<a class="text-surface-variant dark:text-outline-variant hover:text-surface-bright transition-colors font-body-md text-body-md" href="#">Trang chủ</a>
+<a class="text-surface-variant dark:text-outline-variant hover:text-surface-bright transition-colors font-body-md text-body-md" href="#">Sản phẩm</a>
+<a class="text-surface-variant dark:text-outline-variant hover:text-surface-bright transition-colors font-body-md text-body-md" href="#">Danh mục</a>
+<a class="text-primary-fixed font-bold border-b-2 border-primary-fixed pb-1 font-body-md text-body-md" href="#">Blog</a>
+<a class="text-surface-variant dark:text-outline-variant hover:text-surface-bright transition-colors font-body-md text-body-md" href="#">Giới thiệu</a>
+</nav>
+<div class="flex items-center space-x-md text-primary-fixed">
+<button class="material-symbols-outlined hover:bg-on-surface-variant/10 p-2 rounded-full transition-all duration-200 active:scale-95" data-icon="shopping_cart">shopping_cart</button>
+<button class="material-symbols-outlined hover:bg-on-surface-variant/10 p-2 rounded-full transition-all duration-200 active:scale-95" data-icon="account_circle">account_circle</button>
+<button class="md:hidden material-symbols-outlined" data-icon="menu">menu</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-[1440px] mx-auto px-margin-mobile md:px-margin-desktop py-2xl">
+<!-- Page Header -->
+<div class="mb-2xl">
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-xs">Blog &amp; Tin tức</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Khám phá những xu hướng mới nhất và bí quyết mua sắm thông minh tại VIETSHOP.</p>
+</div>
+<!-- Featured Article Highlight (Asymmetric Layout) -->
+<section class="mb-3xl">
+<div class="group relative bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300">
+<div class="grid grid-cols-1 md:grid-cols-12">
+<div class="md:col-span-7 h-[300px] md:h-[500px] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A professional high-resolution photo of a modern lifestyle setting featuring minimalist tech gadgets and sleek office decor. The scene is bathed in natural daylight from a large window, creating a clean corporate-modern aesthetic with soft shadows. The color palette is dominated by neutral whites and grays with a sharp accent of primary blue from a digital tablet screen. The atmosphere is sophisticated, professional, and forward-thinking." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOKDWGnfN_n_llLBSY3kDAXV_hLtr7_5i56vDSVdvW1-C5kSY663L_7Zykg8BEdYp3p3mzRPV8VggtzQUf0twS6QtrYeWQfx7NjNtn4RJAS2jwE5GUFpDBVYQS0TI6o5LHJE-Vv44pIumcM3lcQUp2n4AKwQxM_1nt_xHXoFKiOvH2Z8s4HPmvwFN3-u1xLoksF-LkH3YxZqFwzOps0lnS9ZpdXfYOukIsT8tH5FxX68M40w-bpVxPuor6x4cHbPUKL49jZAIjGzB8">
+</div>
+<div class="md:col-span-5 p-2xl flex flex-col justify-center">
+<span class="inline-block px-md py-1 bg-primary-container text-on-primary-container font-label-md text-label-md rounded-xl w-fit mb-md">Nổi bật</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-md">Xu hướng thương mại điện tử bền vững năm 2024</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-xl line-clamp-3">
+                            Tìm hiểu cách các doanh nghiệp đang thay đổi quy trình đóng gói và vận chuyển để bảo vệ môi trường mà vẫn đảm bảo hiệu quả kinh doanh vượt trội trong kỷ nguyên số.
+                        </p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-sm text-label-sm text-outline">15 Tháng 5, 2024</span>
+</div>
+<a class="flex items-center gap-xs text-primary font-bold hover:gap-md transition-all duration-300" href="#">
+<span class="font-body-md text-body-md">Xem thêm</span>
+<span class="material-symbols-outlined text-xl" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Category Filter Chips -->
+<div class="flex flex-wrap gap-md mb-2xl">
+<button class="px-lg py-sm bg-primary text-on-primary rounded-full font-label-md text-label-md shadow-sm transition-all active:scale-95">Tất cả</button>
+<button class="px-lg py-sm bg-surface-container text-on-surface-variant rounded-full font-label-md text-label-md hover:bg-surface-variant transition-all active:scale-95">Xu hướng</button>
+<button class="px-lg py-sm bg-surface-container text-on-surface-variant rounded-full font-label-md text-label-md hover:bg-surface-variant transition-all active:scale-95">Mẹo hay</button>
+<button class="px-lg py-sm bg-surface-container text-on-surface-variant rounded-full font-label-md text-label-md hover:bg-surface-variant transition-all active:scale-95">Công nghệ</button>
+<button class="px-lg py-sm bg-surface-container text-on-surface-variant rounded-full font-label-md text-label-md hover:bg-surface-variant transition-all active:scale-95">Đời sống</button>
+</div>
+<!-- Grid of Blog Cards -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Blog Card 1 -->
+<article class="flex flex-col bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group">
+<div class="relative h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A bright and airy flat-lay photograph of professional work essentials including a leather-bound notebook, a fountain pen, and a high-end smartphone on a white marble surface. The lighting is crisp and uniform, characteristic of a high-end corporate lifestyle blog. The overall aesthetic is organized and minimalist, using a clean color scheme of light grays and deep blues to convey a sense of professional clarity and focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2XJUNoo6MHSfwhlH0xBMEuE_DysOWI_jWGBkdeJwYuTBlM4ZG2bXIRg92zVTChojCDmuQeUPF6cmI3QkclmiXX8oaFqknPtbs95XF_FMIJgqlatxvModQl3CbPJfSsiWUvnDdgFt3JYjpW2rdTeXcyCjobE--mCF4qmsClEN7XZvE9B2C7Y_ojDXsRGzN5BbBSxXEto4ViVw3_zekd9GP7eJoHFcJ3Hnm0DnXDOHMn7IxdJxm_aV_ey4REBOhaQQ5CNi3M35_smVW">
+<div class="absolute top-md left-md">
+<span class="px-md py-1 bg-surface-bright/90 backdrop-blur-md text-primary font-label-sm text-label-sm rounded-lg border border-primary/20 shadow-sm">Mẹo hay</span>
+</div>
+</div>
+<div class="p-lg flex flex-col flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-sm line-clamp-2">Cách tối ưu hóa trải nghiệm khách hàng trực tuyến</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-lg line-clamp-3">Khám phá 5 bước đơn giản để khiến khách hàng của bạn quay lại mua sắm lần thứ hai với các chiến thuật cá nhân hóa vượt trội.</p>
+<div class="mt-auto pt-md border-t border-outline-variant/30 flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline">Đọc trong 5 phút</span>
+<a class="flex items-center gap-xs text-primary font-bold hover:translate-x-1 transition-transform" href="#">
+<span class="text-body-md font-body-md">Xem thêm</span>
+<span class="material-symbols-outlined text-md" data-icon="chevron_right">chevron_right</span>
+</a>
+</div>
+</div>
+</article>
+<!-- Blog Card 2 -->
+<article class="flex flex-col bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group">
+<div class="relative h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A futuristic digital interface visualization showing clean data charts and glowing network nodes against a dark, corporate-slate background. The visual style is sleek and technical, using bright primary blue accents to highlight key data points. The lighting is moody yet clear, suggesting a high-tech analysis environment where speed and precision are essential. The mood is authoritative, systematic, and highly efficient." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjI_XPVE0B6H6SlS7aEYi43Q8PTPG3cJJJWOA3rXziNANlSs-HN_X5rYu6lckjsuYGVEfJ8FIayJxuv-I-wv19Qcqa7kVVPQR1lZ1ARGgaRC5diylMzRv6yz2vW3TWKArO3nxzB3zwqyIAIiQq6H_DHJMAuNqTXwSd2IwxPYPtshWdoWzAjxxvfJZm-9DJa1oqyqGPLujYnL0M9xkcs62I2P-STmX7dvMN4DQHCdWNMTjvQSiynksKq0xSi_PHtosxX5YO1EY6MltZ">
+<div class="absolute top-md left-md">
+<span class="px-md py-1 bg-surface-bright/90 backdrop-blur-md text-primary font-label-sm text-label-sm rounded-lg border border-primary/20 shadow-sm">Công nghệ</span>
+</div>
+</div>
+<div class="p-lg flex flex-col flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-sm line-clamp-2">Trí tuệ nhân tạo (AI) đang thay đổi Logistics như thế nào?</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-lg line-clamp-3">Phân tích chuyên sâu về vai trò của học máy trong việc dự báo nhu cầu và tự động hóa kho bãi hiện đại tại Việt Nam.</p>
+<div class="mt-auto pt-md border-t border-outline-variant/30 flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline">Đọc trong 8 phút</span>
+<a class="flex items-center gap-xs text-primary font-bold hover:translate-x-1 transition-transform" href="#">
+<span class="text-body-md font-body-md">Xem thêm</span>
+<span class="material-symbols-outlined text-md" data-icon="chevron_right">chevron_right</span>
+</a>
+</div>
+</div>
+</article>
+<!-- Blog Card 3 -->
+<article class="flex flex-col bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group">
+<div class="relative h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A modern office lobby space with high ceilings, glass walls, and a variety of green indoor plants creating a biophilic design element. The lighting is soft and natural, pouring in from large skylights. The atmosphere is professional, serene, and inviting, with a balanced color palette of warm wood tones and cool corporate blues. The visual style is minimal and high-end, reflecting a premium enterprise environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuABy4U6dE1Dc3vCBgSfipG83ulnBlN0-FhS5AYbPeLoWDs9dsMx_F3HunvV1MSD0nsfwOz40pHjl8mlYpYD1BR1aum3HhNlPWHnghkL8-_RgQFuyZa0QKJ-fvnpTwFXdfOlx2h-hn5hPoSpQaC1JyfnuR839DBZXrWOcNFxijrOTfvpGmzMU1jyvpjTOUxbAUDU6fcitS-OPwsg1u58sO1RM6q4C6pW2Y8c_3UetITked-3eKm8Wg6D9CNLwkNERQpNU_KdjsJ4Lo-G">
+<div class="absolute top-md left-md">
+<span class="px-md py-1 bg-surface-bright/90 backdrop-blur-md text-primary font-label-sm text-label-sm rounded-lg border border-primary/20 shadow-sm">Xu hướng</span>
+</div>
+</div>
+<div class="p-lg flex flex-col flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-sm line-clamp-2">Top 10 thiết bị gia dụng thông minh cho năm 2024</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-lg line-clamp-3">Danh sách những sản phẩm không thể thiếu giúp nâng tầm không gian sống của bạn trở nên hiện đại và tiện lợi hơn bao giờ hết.</p>
+<div class="mt-auto pt-md border-t border-outline-variant/30 flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline">Đọc trong 6 phút</span>
+<a class="flex items-center gap-xs text-primary font-bold hover:translate-x-1 transition-transform" href="#">
+<span class="text-body-md font-body-md">Xem thêm</span>
+<span class="material-symbols-outlined text-md" data-icon="chevron_right">chevron_right</span>
+</a>
+</div>
+</div>
+</article>
+<!-- Blog Card 4 -->
+<article class="flex flex-col bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group">
+<div class="relative h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A macro shot of a sleek silver credit card being held over a high-tech POS terminal. The focus is sharp on the card's texture and the blue indicator light of the terminal. The background is softly blurred, showing a modern retail store interior with clean lines and premium lighting. The aesthetic is focused on speed, efficiency, and secure transaction technology, using a professional slate and blue color theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkGNSbMyY2U4PfG6iBtWfieU1ST7gecH3K-cEoKlmV0xyGHggfs27Cj82thIKkAR1T7NNgOFcYSWlQJ6G-9_WPwM8YPnnkY7yPU_JNpk2sZI-6J0E6K-IRva7UXG0v3ucn0xcAVKjltFmnC9IDrYuJspSrEi8eyF6KZGb6N-Pw0Iy811se5uMolqEcgoBNn7XyYaydxsMnQIXftiBubx5d-EWfzYzSJ5dwS1gukDsF-I9kDuSNr1vJqywMZEvBN-PzV_NQjv00AJFy">
+<div class="absolute top-md left-md">
+<span class="px-md py-1 bg-surface-bright/90 backdrop-blur-md text-primary font-label-sm text-label-sm rounded-lg border border-primary/20 shadow-sm">Mẹo hay</span>
+</div>
+</div>
+<div class="p-lg flex flex-col flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-sm line-clamp-2">Bí quyết săn ưu đãi và mã giảm giá tốt nhất tại VIETSHOP</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-lg line-clamp-3">Hướng dẫn chi tiết cách sử dụng hệ thống tích điểm và kết hợp các chương trình khuyến mãi để tối ưu chi phí mua sắm.</p>
+<div class="mt-auto pt-md border-t border-outline-variant/30 flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline">Đọc trong 4 phút</span>
+<a class="flex items-center gap-xs text-primary font-bold hover:translate-x-1 transition-transform" href="#">
+<span class="text-body-md font-body-md">Xem thêm</span>
+<span class="material-symbols-outlined text-md" data-icon="chevron_right">chevron_right</span>
+</a>
+</div>
+</div>
+</article>
+<!-- Blog Card 5 -->
+<article class="flex flex-col bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group">
+<div class="relative h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A wide-angle interior view of a high-tech logistics center with robotic arms sorting packages on an automated conveyor belt system. The lighting is bright and industrial, but polished with a clean corporate look. The scene features various shades of technical grays and vibrant blue glowing sensors. The overall mood is one of power, reliability, and cutting-edge industrial efficiency in a modern world." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCC7tsbK7pKV7IChqY_B5I-TlH2GMAmKsLi8miP6AUDXGB4sVLUYmGXo18KsBIodZu9J8qw490WUdeUry_VGBBuWetlNnBuWEUYQzy_MlisKtN7iQw6brsvjIoun9JjexMijfDxNY6aeQLMOEveWTqxMF5lP7PttgaxARn1BAveeL6Lh1nPOgjDuE03viIFq1yp327-1kTi6MA80TXZThBhXxTkPTSdLHVGNKBOLeJU8btIRxfT-RZ2bV7-vwni7QNVblMJM26Y2Rd4">
+<div class="absolute top-md left-md">
+<span class="px-md py-1 bg-surface-bright/90 backdrop-blur-md text-primary font-label-sm text-label-sm rounded-lg border border-primary/20 shadow-sm">Công nghệ</span>
+</div>
+</div>
+<div class="p-lg flex flex-col flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-sm line-clamp-2">Tương lai của giao hàng chặng cuối bằng Drone</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-lg line-clamp-3">Khám phá các thử nghiệm thực tế và khung pháp lý đang được xây dựng cho việc sử dụng máy bay không người lái trong vận chuyển hàng hóa.</p>
+<div class="mt-auto pt-md border-t border-outline-variant/30 flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline">Đọc trong 10 phút</span>
+<a class="flex items-center gap-xs text-primary font-bold hover:translate-x-1 transition-transform" href="#">
+<span class="text-body-md font-body-md">Xem thêm</span>
+<span class="material-symbols-outlined text-md" data-icon="chevron_right">chevron_right</span>
+</a>
+</div>
+</div>
+</article>
+<!-- Blog Card 6 -->
+<article class="flex flex-col bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group">
+<div class="relative h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A clean, minimalist kitchen counter with a designer blender, a bowl of fresh organic fruits, and a digital recipe tablet on a wooden stand. The scene is illuminated by soft, warm morning light, creating a serene and healthy lifestyle aesthetic. The color palette combines natural wood tones with crisp whites and a subtle hint of primary blue on the tablet's UI. The mood is peaceful, balanced, and high-quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfJHpyPcyamDcz0FiyTzTML7ERX7UcCKFu6YNYfUmeta_OE5z_hU2ZxhQMpmnuIb0vV2p_EiwrJlCW4BNoE_YErm9hN3EgM2Do3drvc12JuXmxOMnhzybgz_cyTZoQnU_8aedw9FstN-uXD3BP-8mzShdan5dK9PSjKqcJi_BLuwUUbI71euQnV-wHvijSPgPhUfR89XiOaORT-m2TFvNRJhNagM0Qt3h51we9US21Xv2cVYpUfTdMWtbLDTT7dtQSEkAHufMTVOpt">
+<div class="absolute top-md left-md">
+<span class="px-md py-1 bg-surface-bright/90 backdrop-blur-md text-primary font-label-sm text-label-sm rounded-lg border border-primary/20 shadow-sm">Đời sống</span>
+</div>
+</div>
+<div class="p-lg flex flex-col flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-sm line-clamp-2">Sống xanh cùng đồ gia dụng tiết kiệm điện năng</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-lg line-clamp-3">Những lợi ích không ngờ tới khi chuyển sang sử dụng các dòng sản phẩm đạt chuẩn Inverter và thân thiện với môi trường.</p>
+<div class="mt-auto pt-md border-t border-outline-variant/30 flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline">Đọc trong 7 phút</span>
+<a class="flex items-center gap-xs text-primary font-bold hover:translate-x-1 transition-transform" href="#">
+<span class="text-body-md font-body-md">Xem thêm</span>
+<span class="material-symbols-outlined text-md" data-icon="chevron_right">chevron_right</span>
+</a>
+</div>
+</div>
+</article>
+</section>
+<!-- Pagination -->
+<div class="mt-3xl flex justify-center items-center gap-sm">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant text-outline hover:bg-surface-container transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="keyboard_arrow_left">keyboard_arrow_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-on-primary font-label-md text-label-md shadow-sm">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface font-label-md text-label-md hover:bg-surface-container transition-colors">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface font-label-md text-label-md hover:bg-surface-container transition-colors">3</button>
+<span class="px-sm text-outline">...</span>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface font-label-md text-label-md hover:bg-surface-container transition-colors">12</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant text-outline hover:bg-surface-container transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="keyboard_arrow_right">keyboard_arrow_right</span>
+</button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-inverse-surface mt-3xl">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter w-full px-margin-desktop py-xl max-w-[1440px] mx-auto">
+<div class="flex flex-col space-y-md">
+<div class="text-headline-md font-headline-md text-surface-bright">VIETSHOP</div>
+<p class="text-surface-variant font-body-sm text-body-sm max-w-xs">
+                    Giải pháp thương mại điện tử chuyên nghiệp hàng đầu tại Việt Nam, mang lại giá trị bền vững cho khách hàng.
+                </p>
+<div class="flex gap-md text-surface-variant">
+<span class="material-symbols-outlined hover:text-primary-fixed cursor-pointer transition-colors" data-icon="public">public</span>
+<span class="material-symbols-outlined hover:text-primary-fixed cursor-pointer transition-colors" data-icon="mail">mail</span>
+<span class="material-symbols-outlined hover:text-primary-fixed cursor-pointer transition-colors" data-icon="phone">phone</span>
+</div>
+</div>
+<div class="flex flex-col space-y-md">
+<h4 class="text-primary-fixed font-title-lg text-title-lg">Liên kết nhanh</h4>
+<nav class="flex flex-col space-y-sm">
+<a class="text-surface-variant hover:text-surface-bright transition-colors font-body-sm text-body-sm" href="#">Về chúng tôi</a>
+<a class="text-primary-fixed underline font-body-sm text-body-sm" href="#">Blog &amp; Tin tức</a>
+<a class="text-surface-variant hover:text-surface-bright transition-colors font-body-sm text-body-sm" href="#">Sản phẩm nổi bật</a>
+<a class="text-surface-variant hover:text-surface-bright transition-colors font-body-sm text-body-sm" href="#">Liên hệ</a>
+</nav>
+</div>
+<div class="flex flex-col space-y-md">
+<h4 class="text-primary-fixed font-title-lg text-title-lg">Hỗ trợ khách hàng</h4>
+<nav class="flex flex-col space-y-sm">
+<a class="text-surface-variant hover:text-surface-bright transition-colors font-body-sm text-body-sm" href="#">Trung tâm hỗ trợ</a>
+<a class="text-surface-variant hover:text-surface-bright transition-colors font-body-sm text-body-sm" href="#">Chính sách bảo mật</a>
+<a class="text-surface-variant hover:text-surface-bright transition-colors font-body-sm text-body-sm" href="#">Điều khoản sử dụng</a>
+<a class="text-surface-variant hover:text-surface-bright transition-colors font-body-sm text-body-sm" href="#">Chính sách hoàn tiền</a>
+</nav>
+</div>
+<div class="flex flex-col space-y-md">
+<h4 class="text-primary-fixed font-title-lg text-title-lg">Bản tin</h4>
+<p class="text-surface-variant font-body-sm text-body-sm">Đăng ký nhận tin để không bỏ lỡ các ưu đãi hấp dẫn nhất.</p>
+<div class="flex gap-xs">
+<input class="bg-surface/10 border border-outline/30 rounded-lg px-md py-sm text-surface-bright w-full focus:ring-1 focus:ring-primary-fixed-dim outline-none font-body-sm text-body-sm" placeholder="Email của bạn" type="email">
+<button class="bg-primary-container text-on-primary-container px-md py-sm rounded-lg hover:bg-primary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</div>
+<div class="border-t border-surface/10 w-full px-margin-desktop py-lg max-w-[1440px] mx-auto text-center">
+<p class="text-surface-variant font-body-sm text-body-sm">
+                © 2024 VIETSHOP. All rights reserved. Professional E-commerce Solutions.
+            </p>
+</div>
+</footer>
+<script>
+        // Micro-interaction for hover effects on cards
+        document.querySelectorAll('article').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                // Potential for adding subtle JS animation triggers if needed
+            });
+        });
+    </script>
+</body></html>

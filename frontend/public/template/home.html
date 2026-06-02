@@ -1,0 +1,477 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#2563EB",
+                    "on-primary": "#ffffff",
+                    "secondary": "#0F172A",
+                    "on-secondary": "#ffffff",
+                    "accent": "#F59E0B",
+                    "on-accent": "#ffffff",
+                    "surface-tint": "#2563EB",
+                    "surface-variant": "#d3e4fe",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed-variant": "#0F172A",
+                    "surface-dim": "#cbdbf5",
+                    "surface-container-low": "#eff4ff",
+                    "tertiary-fixed-dim": "#adc6ff",
+                    "background": "#f8f9ff",
+                    "surface-bright": "#f8f9ff",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "tertiary-container": "#001a42",
+                    "on-surface-variant": "#45464d",
+                    "surface": "#f8f9ff",
+                    "on-secondary-container": "#ffffff",
+                    "secondary-fixed-dim": "#0F172A",
+                    "inverse-primary": "#bec6e0",
+                    "on-surface": "#0F172A",
+                    "on-background": "#0F172A",
+                    "error-container": "#ffdad6",
+                    "outline-variant": "#c6c6cd",
+                    "inverse-on-surface": "#eaf1ff",
+                    "primary-fixed": "#dbe1ff",
+                    "primary-container": "#2563EB",
+                    "secondary-container": "#0F172A",
+                    "surface-container-highest": "#d3e4fe",
+                    "on-tertiary-fixed": "#001a42",
+                    "surface-container-high": "#dce9ff",
+                    "on-primary-fixed": "#00174b",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-secondary-fixed": "#0F172A",
+                    "inverse-surface": "#213145",
+                    "tertiary": "#F59E0B",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-primary-container": "#ffffff",
+                    "on-tertiary-container": "#001a42",
+                    "surface-container": "#e5eeff",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#dae2fd",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "outline": "#76777d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-max": "1280px",
+                    "margin-mobile": "16px",
+                    "base": "8px",
+                    "margin-desktop": "48px",
+                    "gutter": "24px",
+                    "section-gap": "80px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "display-lg-mobile": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "headline-lg": ["30px", {"lineHeight": "38px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md">
+<!-- TopNavBar -->
+<nav class="docked full-width top-0 sticky z-50 bg-secondary text-on-secondary border-b border-outline/20 shadow-sm">
+<div class="flex justify-between items-center w-full px-margin-desktop py-base max-w-container-max mx-auto">
+<div class="flex items-center gap-8">
+<a class="font-display-lg text-display-lg font-bold text-on-primary" href="#">VIETSHOP</a>
+<div class="hidden md:flex items-center gap-6">
+<a class="font-label-lg text-label-lg text-on-primary border-b-2 border-primary pb-1 hover:text-primary transition-colors duration-200" href="#">Trang chủ</a>
+<a class="font-label-lg text-label-lg text-on-secondary/80 hover:text-primary transition-colors duration-200" href="#">Sản phẩm</a>
+<a class="font-label-lg text-label-lg text-on-secondary/80 hover:text-primary transition-colors duration-200" href="#">Danh mục</a>
+<a class="font-label-lg text-label-lg text-on-secondary/80 hover:text-primary transition-colors duration-200" href="#">Blog</a>
+<a class="font-label-lg text-label-lg text-on-secondary/80 hover:text-primary transition-colors duration-200" href="#">Giới thiệu</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden lg:flex items-center bg-white/10 px-4 py-2 rounded-full border border-white/20">
+<span class="material-symbols-outlined text-on-secondary/60">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm w-48 text-on-secondary placeholder-on-secondary/40" placeholder="Tìm kiếm sản phẩm..." type="text">
+</div>
+<div class="flex items-center gap-4">
+<button class="scale-95 active:opacity-80 transition-all text-on-secondary hover:text-primary">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+</button>
+<button class="scale-95 active:opacity-80 transition-all text-on-secondary hover:text-primary">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<main>
+<!-- Hero Section -->
+<section class="relative w-full h-[600px] overflow-hidden">
+<div class="flex transition-transform duration-700 ease-in-out h-full" id="hero-slider">
+<div class="min-w-full h-full relative">
+<img class="w-full h-full object-cover" data-alt="A cinematic luxury fashion boutique" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFLfZ11IMZ15MGmk72PVILiQObfUeASAditIijmmrI9TNxcHm4fMFy30fuIuj69lp9GL7Y0Y23B6XrUZcnqmKePOLZ_8WF6NQJGyJp2uMVgddL-0pY_TL93brV6roOP68cmG44qiCxAJ-yi_XF38GwGsRkXIbB_mBiEUShzsHGXvI5SQz5lu9AQbhVnWOZCSYm88tBLKhBXmiQ30wZvO9T98BndiB9LGfHARNTmdjew5j4n7qi4KLm-ln3SdOrt4lr5zTlENd83qiN">
+<div class="absolute inset-0 bg-gradient-to-r from-secondary/80 to-transparent flex items-center px-margin-desktop">
+<div class="max-w-xl text-on-primary">
+<h1 class="font-display-lg text-display-lg mb-4">Khuyến mãi đặc biệt</h1>
+<p class="font-body-lg text-body-lg mb-8 opacity-90">Khám phá bộ sưu tập mới nhất với ưu đãi lên đến 50% chỉ trong tuần này.</p>
+<button class="bg-primary text-on-primary px-8 py-4 font-label-lg rounded hover:bg-primary/90 transition-all">Mua ngay</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Sản phẩm gợi ý -->
+<section class="max-w-container-max mx-auto px-margin-desktop py-section-gap">
+<div class="flex justify-between items-end mb-12">
+<div>
+<span class="text-primary font-label-lg uppercase tracking-widest">Dành riêng cho bạn</span>
+<h2 class="font-headline-lg text-headline-lg mt-2">Sản phẩm gợi ý</h2>
+</div>
+<a class="text-primary font-label-lg border-b border-primary hover:text-primary/70 hover:border-primary/70 transition-colors" href="#">Xem tất cả</a>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-gutter">
+<!-- Product Card 1 -->
+<div class="group border border-outline-variant hover:shadow-lg transition-all duration-300 p-4 bg-white">
+<div class="relative overflow-hidden mb-4 aspect-[3/4]">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Smartwatch" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCE_2Exp7um3VxrviyRuXkRa1XixuRSi-69hFxA14mJsrSgoGJOacOcNDgPx4aTYhTC5lrKCbWPRyms3cd-DX4iySetktob7Cj4UWVdlGReTvICSl_LjVDvWXdLn9SDvyjWOM06Z6t7fWyTHVO3000RQbr9CYaIzfKPoMpEhqfCUN2qF-TwCSyaFPZ4COE1IMLaU47nR6G5O1TYl7B-sJmgIsk5FWNQLT3TPOJwtqySuuk852Qi-BoDOIpfJuefZ2tBxyxDLnMqcG4X">
+<div class="absolute top-2 left-2 bg-accent text-on-accent px-2 py-1 text-label-sm font-bold">Hot</div>
+</div>
+<p class="text-on-surface-variant font-label-sm mb-1 uppercase">Đồng hồ</p>
+<h3 class="font-headline-md text-headline-md mb-2 truncate">Smartwatch Pro 2024</h3>
+<div class="flex items-center gap-1 mb-3">
+<span class="material-symbols-outlined text-accent text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">4.8 (120)</span>
+</div>
+<p class="font-bold text-primary mb-4">2.500.000 ₫</p>
+<button class="w-full bg-primary text-on-primary py-3 font-label-lg hover:bg-secondary transition-colors active:scale-95">Thêm vào giỏ</button>
+</div>
+<!-- Card 2 -->
+<div class="group border border-outline-variant hover:shadow-lg transition-all duration-300 p-4 bg-white">
+<div class="relative overflow-hidden mb-4 aspect-[3/4]">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Headphones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBM44eLUcvf1-DNdPZUFOdCcz_8OdcCszDMrOPQKFlsKYu6RS0CZRjbgOX2_XKqOAzNkGaLd7Qy1PJlCNrRq7f2CdZguPvwoGIk2TzIYG-kXXgOyioiiEdLUWIp-YB95qZDD5mrqUh2YkTm182gojICjC2ICSFu8aMuxbY5sZfxRzVAN6KPyBGAjqAMw2ojl61rPh2XbQzcC6ZyTHXz8QNz84bxl6xsaAEAUOteQCh6ZTaQG1XynjWS_6TrruIywwQEkHgxsjiJ7SCo">
+</div>
+<p class="text-on-surface-variant font-label-sm mb-1 uppercase">Âm thanh</p>
+<h3 class="font-headline-md text-headline-md mb-2 truncate">Headphone Noise Cancel</h3>
+<div class="flex items-center gap-1 mb-3">
+<span class="material-symbols-outlined text-accent text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">4.9 (85)</span>
+</div>
+<p class="font-bold text-primary mb-4">4.200.000 ₫</p>
+<button class="w-full bg-primary text-on-primary py-3 font-label-lg hover:bg-secondary transition-colors active:scale-95">Thêm vào giỏ</button>
+</div>
+<!-- Card 3 -->
+<div class="group border border-outline-variant hover:shadow-lg transition-all duration-300 p-4 bg-white">
+<div class="relative overflow-hidden mb-4 aspect-[3/4]">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Shoes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRNoH0OzNoq9i3zleKwmFHEQ19DFzNClOKMM02gcRJSSqRpnff94JDsoD5TsXRxTtFokTuUgNWDE0rinGE2dm3I-9xSCCYY0vd4SSw_vnU2IfNBMKxqMwMfQh11vQFnkX8HZag92M_Em9OEBqCsTGtE5J9KJJGZIy3oEwS04fnrBgAPwO8ViL-y2NLqtT_Cc9OSLvU_GBBZcohHZSQeZmZbuyzJjtwHFO05SdhANPZSNWrTUSTMQH7XxZv2GXHPjv1llQax7b9r3ki">
+</div>
+<p class="text-on-surface-variant font-label-sm mb-1 uppercase">Giày dép</p>
+<h3 class="font-headline-md text-headline-md mb-2 truncate">Runner Max Sport</h3>
+<div class="flex items-center gap-1 mb-3">
+<span class="material-symbols-outlined text-accent text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">4.7 (210)</span>
+</div>
+<p class="font-bold text-primary mb-4">1.850.000 ₫</p>
+<button class="w-full bg-primary text-on-primary py-3 font-label-lg hover:bg-secondary transition-colors active:scale-95">Thêm vào giỏ</button>
+</div>
+<!-- Card 4 -->
+<div class="group border border-outline-variant hover:shadow-lg transition-all duration-300 p-4 bg-white">
+<div class="relative overflow-hidden mb-4 aspect-[3/4]">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Camera" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5oV9usf1P_dEXm5jDsZU4VgT_ldbi60qFo-CK0t77484JyRq924TAGVG3vigQA2PXnG1q3JKE5WtghCBOPmOruiLIP35OKSaL9nngnSdWnyBuTlCBnwn6ZTN7EQhQpZgmvFxX0S4Y1xIXE0T2kwJubhlTFOFfB9yc8JTB10VDn98MnlYQpGKUudIsWOcyNu_SYaKQPiL54CfV6j2gy3phsE8MpWLtQjHRc3xO67l2uA2hBSnnigbZXfzi_S6nSjpYa8nB-qvvMagh">
+</div>
+<p class="text-on-surface-variant font-label-sm mb-1 uppercase">Máy ảnh</p>
+<h3 class="font-headline-md text-headline-md mb-2 truncate">Retro Cam Classic</h3>
+<div class="flex items-center gap-1 mb-3">
+<span class="material-symbols-outlined text-accent text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">4.8 (45)</span>
+</div>
+<p class="font-bold text-primary mb-4">8.900.000 ₫</p>
+<button class="w-full bg-primary text-on-primary py-3 font-label-lg hover:bg-secondary transition-colors active:scale-95">Thêm vào giỏ</button>
+</div>
+<!-- Card 5 -->
+<div class="group border border-outline-variant hover:shadow-lg transition-all duration-300 p-4 bg-white">
+<div class="relative overflow-hidden mb-4 aspect-[3/4]">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Sunglasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDx1BXtVbK-NH26ZuYz5qy9ycAHJ44tkSbWr-KwV8G-DLVkm4fcjZgk5KZ-wkluO8jj18Qn7OEooKLieqGSfnNpGGne1wiJjaSiRBfyaLtuI7ntgmnfITeMqjg6_GO4i6PXTHzgicL7X0Uraf6uB1pKODzRFIQttJ1-takl6KYUC93ZcPOspaTgQfbU1oGZAORvD-VJMLTprRtfPheUdPJN_OUQpBo2prxgaZbfl7MJORjsoza91Sj6yHn4KIxgi3ohU8jjEH1dZiYS">
+</div>
+<p class="text-on-surface-variant font-label-sm mb-1 uppercase">Phụ kiện</p>
+<h3 class="font-headline-md text-headline-md mb-2 truncate">Kính râm Aviator Gold</h3>
+<div class="flex items-center gap-1 mb-3">
+<span class="material-symbols-outlined text-accent text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">4.6 (154)</span>
+</div>
+<p class="font-bold text-primary mb-4">1.200.000 ₫</p>
+<button class="w-full bg-primary text-on-primary py-3 font-label-lg hover:bg-secondary transition-colors active:scale-95">Thêm vào giỏ</button>
+</div>
+</div>
+</section>
+<!-- Sản phẩm xem nhiều - Bento Grid Style -->
+<section class="bg-surface-container-low py-section-gap">
+<div class="max-w-container-max mx-auto px-margin-desktop">
+<div class="text-center mb-16">
+<h2 class="font-display-lg text-display-lg">Xu hướng thị trường</h2>
+<p class="text-on-surface-variant mt-4">Những sản phẩm được quan tâm nhất trong 24h qua</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter h-auto md:h-[600px]">
+<div class="md:col-span-2 md:row-span-2 group relative overflow-hidden bg-white border border-outline-variant p-8 flex flex-col justify-between">
+<div>
+<h3 class="font-headline-lg text-headline-lg mb-2">BST Thời trang Đông 2024</h3>
+<p class="text-on-surface-variant">Vừa cập bến 50 mẫu thiết kế mới nhất</p>
+</div>
+<img class="absolute right-0 bottom-0 w-3/4 h-3/4 object-contain group-hover:scale-105 transition-transform duration-500" data-alt="Model photograph" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7A1V6NcafbZH4kjC-IfxMjYijhNHM-p5goZAShujOFPR7tqJYmAsLdQXYvUJDpO1dCyNtfUzHZr4P1SrvaV5zHa8svIpl41Xdr7YpxwjDq_WYkwCqYQpucnkA5grgMuLlwJ5wq354sVhjZuqgRBeNBL4BE4QOxuU8pmsxsFdgLMRAmOx7nWAaSNS6dg3HG5AmaIf_s2Kbp6mASWM8NRFhXp_VjQvD1SAT7097PqJWrcnQJlFU2Ygg9pHtUjDR9HrstjPFM1ZpQGXd">
+<a class="font-label-lg text-primary mt-auto z-10 hover:translate-x-1 transition-transform" href="#">Khám phá ngay →</a>
+</div>
+<div class="group relative overflow-hidden bg-white border border-outline-variant p-6 flex items-center gap-4">
+<img class="w-24 h-24 object-cover group-hover:scale-110 transition-transform" data-alt="Tablet" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyiukmkfA-g8B_i3W16DFUun32B-ZrFjXEsJFONo8LNjpqTnqeP7vN58qeFJB30Dnt0rZcYQ-f4whwNXmsdSxI4lrSh43BkVw3fyOPb-jss0esORvDhFkL7rY58nzzEHrkIGgXNZCD9mczSf3DLN8k2GtCbt7OBNsN6WIgxyAYQ00WX7k7_0n-thw_4oeDTdVZ_sIc80nHUVbAlrujaLhCmIcIYgrUh37y4sWyNkXXGdG3kyLy2v9clb0bgxJjBqd0hgqrnjOlV21n">
+<div>
+<h4 class="font-headline-md text-headline-md text-body-md">Tablet Pro X</h4>
+<p class="text-primary font-bold">12.000.000 ₫</p>
+</div>
+</div>
+<div class="group relative overflow-hidden bg-white border border-outline-variant p-6 flex items-center gap-4">
+<img class="w-24 h-24 object-cover group-hover:scale-110 transition-transform" data-alt="Shoes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUL8heSWmHwYEF0yVoWQVnxbB17pd6VMc2Dk7zsxIJ1ITuK7YujWj8cgybMl4ndcT_6vnTiPkoycnfbPfUYZNFaVlVOnLMksaNJ7I7iBLY8tan_6NnmRelpEESJ4luEaLcSvl0Gio83yLZNiurAOYVL6KiH0bjOKkwV_4eilEqYY8TJRrc4L5ohylE9_3WGEkcWuRino4xv4opxsiaukrF6RfUBh9lc2XEdAxtMRTTUBNt5laLIEswqQuJjlwWiteaR85qHsx-l8rk">
+<div>
+<h4 class="font-headline-md text-headline-md text-body-md">Neo Runner 2.0</h4>
+<p class="text-primary font-bold">2.300.000 ₫</p>
+</div>
+</div>
+<div class="md:col-span-2 group relative overflow-hidden bg-secondary p-8 flex justify-between items-center text-on-secondary">
+<div>
+<h3 class="font-headline-lg text-headline-lg mb-2">Đặc quyền Thành viên</h3>
+<p class="opacity-80">Giảm thêm 10% cho mọi đơn hàng</p>
+<button class="mt-6 bg-primary text-on-primary px-6 py-2 font-label-lg rounded hover:bg-primary/90 transition-all">Đăng ký ngay</button>
+</div>
+<span class="material-symbols-outlined text-[120px] opacity-10 translate-x-12">loyalty</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Hàng thanh lý -->
+<section class="max-w-container-max mx-auto px-margin-desktop py-section-gap">
+<div class="bg-secondary rounded-xl p-12 text-on-secondary relative overflow-hidden">
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-accent">bolt</span>
+<h2 class="font-headline-lg text-headline-lg">Hàng thanh lý - Giá cực sốc</h2>
+</div>
+<p class="font-body-lg text-body-lg mb-10 max-w-lg opacity-80">Cơ hội cuối cùng để sở hữu những sản phẩm yêu thích với mức giá không tưởng. Số lượng có hạn!</p>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-gutter text-on-background">
+<!-- Discount Item -->
+<div class="bg-white p-4 rounded shadow-sm group">
+<div class="relative mb-4">
+<img class="w-full aspect-square object-cover" data-alt="Phone case" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALp3zd4IeJettBcLXravn_8GXuwU0CmpvnViLBRu0HgVy-chHCjkyOc27KHV0wlTARY8VrBtlsUl6mrLU8_-kB7_iKrfw7QrfFBFlMg3y8gt50keIgJy60wSeJ_0qjR1EsFozpF4KZ-C_ZX_PpLbN2hGKJwSmHhh6IS-FS-lwC3_oLz6TLuzmTtOthjlPnxny6AQBaQiArOZom9P110eMlQZrRFMaF1z2Sl2OckcqqUUAuGupImhzRWz-KX73IpQodMMD728gNYQXX">
+<div class="absolute top-0 right-0 bg-accent text-on-accent px-3 py-1 font-bold">-40%</div>
+</div>
+<h4 class="font-label-lg text-secondary mb-1">Phone 13 Mini Case</h4>
+<div class="flex items-baseline gap-2">
+<span class="text-primary font-bold">150.000 ₫</span>
+<span class="text-on-surface-variant line-through text-label-sm">250.000 ₫</span>
+</div>
+</div>
+<div class="bg-white p-4 rounded shadow-sm group">
+<div class="relative mb-4">
+<img class="w-full aspect-square object-cover" data-alt="Earbuds" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzvTUOsTOyLChHNRKX5kfC60mwXuFsupTadcEesLwNSyuVqabEzPa-epzJIe7gveylQnSrJWFafLLuu0UPdhpHFh0mc7aAoGMLgeYjFwPEGjVlQrBq9ldmMrZD2nQi_ZqdUjIhfo_H03XDJtn-gcvMSqBnBawS1AmKAZhgw6xG9DuEmc9a7A5KcyhQS3pmopiyqIHx2XFH8a6lsdSUghi642wzajiQK-W7AdRwvbZovPW2u-sHtDLptSsSSgZg3FxvS3VjOrHKMMme">
+<div class="absolute top-0 right-0 bg-accent text-on-accent px-3 py-1 font-bold">-60%</div>
+</div>
+<h4 class="font-label-lg text-secondary mb-1">Wireless Earbuds V2</h4>
+<div class="flex items-baseline gap-2">
+<span class="text-primary font-bold">600.000 ₫</span>
+<span class="text-on-surface-variant line-through text-label-sm">1.500.000 ₫</span>
+</div>
+</div>
+<div class="bg-white p-4 rounded shadow-sm group">
+<div class="relative mb-4">
+<img class="w-full aspect-square object-cover" data-alt="Sunglasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDX7KHJcf_b3bcgkXtal6EDiT2X2Tx5RyuWiK0DXRDFwFaLaCiDdjyfR6xVepTuRMUaI4BJoGUyTgE8QvpT0gGF9dp_rW_2B4XXEJpg2n0pDdSHfl1o2HnT0xFsHTrg5l47927vzjfdHCtKMwMJ04ztE2e7gTl79qjYi4tlP8UZCkhPy9vWiS-ZbXGqixgY5Xcdok9hZ6l6yNrXOtGQA5pP7tKRzgzs2k5Sqn2b1EIN1sGXJOJzPtTcqQh9l_ubeVHvb-72pdzvrv6E">
+<div class="absolute top-0 right-0 bg-accent text-on-accent px-3 py-1 font-bold">-35%</div>
+</div>
+<h4 class="font-label-lg text-secondary mb-1">Sun Shades Urban</h4>
+<div class="flex items-baseline gap-2">
+<span class="text-primary font-bold">450.000 ₫</span>
+<span class="text-on-surface-variant line-through text-label-sm">700.000 ₫</span>
+</div>
+</div>
+<div class="bg-white p-4 rounded shadow-sm group">
+<div class="relative mb-4">
+<img class="w-full aspect-square object-cover" data-alt="Grooming Kit" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVbqT7gpe6VJm81pGGOEUKeYwxckBq_Ic-2vsvesBs5FbFNdhGyGTRFHrEUdvsIK47hBiBWpDQTbIuAE_Ah5rttIOqmZhNQVzb4sNG7XBVkvqEYNtjL1oDds9k4cF0zi_bKKEY5nnXBqkywLyB8yCnI0a98ctarZD3kCo1AjnT8AyJ1drjG6tVm_1ttHCgDMdD_D6D4iRyCjLJs7bXVxiEvSx3GOd4eI2YVyi9nlJiPtl_gKbWvHMjHlPS_UvT08liQ-Pb7pIIIegJ">
+<div class="absolute top-0 right-0 bg-accent text-on-accent px-3 py-1 font-bold">-50%</div>
+</div>
+<h4 class="font-label-lg text-secondary mb-1">Grooming Kit Pro</h4>
+<div class="flex items-baseline gap-2">
+<span class="text-primary font-bold">300.000 ₫</span>
+<span class="text-on-surface-variant line-through text-label-sm">600.000 ₫</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Background Decorative -->
+<span class="material-symbols-outlined absolute -bottom-10 -right-10 text-[300px] text-white opacity-5 rotate-12">shopping_basket</span>
+</div>
+</section>
+<!-- Hàng giá rẻ -->
+<section class="max-w-container-max mx-auto px-margin-desktop py-section-gap">
+<div class="flex items-center gap-4 mb-10">
+<h2 class="font-headline-lg text-headline-lg">Hàng giá rẻ</h2>
+<div class="h-[1px] flex-grow bg-outline-variant"></div>
+<span class="font-label-lg text-primary">Dưới 500k</span>
+</div>
+<div class="flex gap-gutter overflow-x-auto pb-8 hide-scrollbar">
+<!-- Budget Card loop -->
+<div class="min-w-[280px] group">
+<div class="aspect-square bg-surface-container rounded-lg overflow-hidden mb-4">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="Lamp" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1fb38glImtfwR4Zn9snorxIN8FP4ugAY5uKITukkjzZsJhr3ehyzLp2SK_iATuIgGqIBiRNGAj791HJ6PXYKTGc55kmLn2gXA-WZM0q31FrF_C0JSPzwo0J0fFK_vG9bdtXa6K9pbfglC1lo59v2NNYW1QP2hIf-5Dn3YHopTT81HplRLgnkgK1qY2Q-t0ReUWvMvkNIN3fmRi6RMHetz_Tw4sXS4QD6Ht6wvG791r05l9RyFZYGGhsYDQJFH7psh32ueGnmAsKW1">
+</div>
+<h3 class="font-label-lg text-secondary">Đèn bàn Minimalist</h3>
+<p class="font-bold text-primary">299.000 ₫</p>
+</div>
+<div class="min-w-[280px] group">
+<div class="aspect-square bg-surface-container rounded-lg overflow-hidden mb-4">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="T-shirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeC6h-LdslyyqyJV0eLo2-IlCSX3ZaClumSfx6DOuQ0uSre2rlhAwHNEqU_eIKHInoEDEQd1blgFFQSxKwXWZjO7g1fL4RR3aCa4rHtJcceFFnp-76B1EfDb9EegYYQwbTB5AHs0ZLjTQl_rz7x5mFkMnT9TIlQRSH8EgzIsk6v9Lw28gJp9VIVYB-S3KU_uPwMp9u5qCGzXGEBzAkTSignii0jnZY6hpA7SaxAX4IIlXX75HGlRUqXEkO21ugOrezWB878XjW2LW0">
+</div>
+<h3 class="font-label-lg text-secondary">Combo 2 Áo thun Basic</h3>
+<p class="font-bold text-primary">190.000 ₫</p>
+</div>
+<div class="min-w-[280px] group">
+<div class="aspect-square bg-surface-container rounded-lg overflow-hidden mb-4">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="Towels" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCcr-yjAiE-ZsaWVF6nIVZn27_5oHHxR7xoityOSogprT3JbKGDxz_l4f2RRrI74uQYg-iKlSEp69n8KGBqcDw4pMveF_a4Z-vh6K0nFzztCL0m9N-DoLXXT1AzUK3AcJ6TamW3WIA-8llhFX-YIiqqJah7JKmh6XHBpadI8svBi_43wsoC2a6eBE4mmZj-YsLRGOeMT8J5KpvzxWjn1hBbrYpW7NtQDY64AKbU5m-iRKWdROFbS-jHn2nA6L75QlWcqbv0pWvpK6j">
+</div>
+<h3 class="font-label-lg text-secondary">Bộ khăn tắm cao cấp</h3>
+<p class="font-bold text-primary">350.000 ₫</p>
+</div>
+<div class="min-w-[280px] group">
+<div class="aspect-square bg-surface-container rounded-lg overflow-hidden mb-4">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="Mug" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtU6FBI_-k6fIWyZEHGqK1uFOfLHxrbdl1WovbVv3kHdUjUsgA7d76aLvxS2GdtvPH7fbRpJNmtCmSXi_eAWCqv9BBsoSq8ILoiL70F71tqnBqdx46T5A83bAoVd1O7-e1V1x8SwqrPLTXRE0x1EC1ceUNGtyVoe0g_1gcXWshOhjdYCeUS9brHw8bTuRur5DESp04I1ZDF5x2gA21ssoQ6kwiQeIkdKgqqT7imAas_MFwbgFIoT6vnQJUt2Aj91qwobNBH766WjG9">
+</div>
+<h3 class="font-label-lg text-secondary">Cốc sứ White Zen</h3>
+<p class="font-bold text-primary">85.000 ₫</p>
+</div>
+<div class="min-w-[280px] group">
+<div class="aspect-square bg-surface-container rounded-lg overflow-hidden mb-4">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="Water bottle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAEplGffoz6mUhVVUvc0YMLyVfLod9EeCoBsBt6Aw9lA8mXzPKsDlCc5PjaSNV23kF4AMREpetgqM9wRI3uhri2Uf98sfZP42VVKXtmJjJtbMpcmbzOLV8ifBORFkjnf9x_2TbUVAEqlW4oV5AvgUUIaGBWrrIJdKqOdhDHbawJt-vcSSqyodJWH6U4q2cuy7FsZpOmzV1SNturhHVn01x1XKCk1XqM_hf9NGv_zmj8kFRWSKtsy97jrOHcVxXC9OMmfsEEHkdqdZV">
+</div>
+<h3 class="font-label-lg text-secondary">Bình nước Eco-Travel</h3>
+<p class="font-bold text-primary">120.000 ₫</p>
+</div>
+</div>
+</section>
+<!-- Blog & Tin tức -->
+<section class="max-w-container-max mx-auto px-margin-desktop py-section-gap border-t border-outline-variant">
+<div class="text-center mb-16">
+<h2 class="font-headline-lg text-headline-lg">Blog &amp; Tin tức</h2>
+<p class="text-on-surface-variant mt-2">Cập nhật xu hướng và mẹo vặt hữu ích</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<article class="group">
+<div class="overflow-hidden mb-6 aspect-video">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Fashion blog" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhmemrBK4HFBs19_ZDvwIn8oBrqp7VJvPnnaId3qfQKLqXnzOHoNoc1xr_8nWEyQPfo6mSmdbVSDV-cWyZD5_wfAvhNEKm1_oZKXQ5GXvjKvK3Xj-aGQTCkLvt657225u6LaWRWXTLMrT2EQaMA0WFhG3igxKz_aUdzVnmHRr3FMqPcYpM0isw09k55nagG3ENlgy9D129xwwXjIzo90hHARWBeaoROryjhciYXDCdeJCsocLtQUpUNu7mYO5xv43rwJXaTpCokUod">
+</div>
+<span class="text-primary font-label-sm uppercase font-bold">Xu hướng</span>
+<h3 class="font-headline-md text-headline-md mt-2 group-hover:text-primary transition-colors">Xu hướng thời trang 2024</h3>
+<p class="text-on-surface-variant font-body-sm mt-3 line-clamp-2">Khám phá những phong cách thiết kế sẽ làm mưa làm gió trong làng mốt thế giới năm nay.</p>
+<a class="inline-flex items-center gap-2 mt-4 font-label-lg text-primary hover:translate-x-1 transition-transform" href="#">Xem thêm <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+</article>
+<article class="group">
+<div class="overflow-hidden mb-6 aspect-video">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Tips blog" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAc9KLXpzw6ZtJV52abEiWJVdZ5_Ny-rEZCbWPVqLmMPpyB4jkz7uzG23bLOLsOkBUOwsfA6K80o05XqF0yRVRs6mWrTqf1isjAnERhcZ1BWG7ONR5Xxfuy89PdYo754LGBdmwbvcT9LwzF1BB2C6CIf93ldVyCGl36HC8COtiemdpFsemyqNfMAmU5uwXJyGspHt0Yc7KCWTtMgGautp2dZYOHrcayMnCr9UXaUQlNfFJdqtLhcmbT7S2DW_iMVzgiHxUnBsf6ZweX">
+</div>
+<span class="text-primary font-label-sm uppercase font-bold">Mẹo hay</span>
+<h3 class="font-headline-md text-headline-md mt-2 group-hover:text-primary transition-colors">Mẹo chọn đồ cực chuẩn</h3>
+<p class="text-on-surface-variant font-body-sm mt-3 line-clamp-2">Làm thế nào để chọn được trang phục tôn dáng và phù hợp với cá tính của riêng bạn?</p>
+<a class="inline-flex items-center gap-2 mt-4 font-label-lg text-primary hover:translate-x-1 transition-transform" href="#">Xem thêm <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+</article>
+<article class="group">
+<div class="overflow-hidden mb-6 aspect-video">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Store blog" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYug4zz2sOBWj_Fz5c0B2IUP68JivLhbrrZ4sVFGiXoX-Xrn8MFfaKS1CXj5vTmSzdraCdPDdUr3dU3o5BjNZvrrzfahYTQDZ-TFtiuxE5Tk2KhEvk78CHWcfsfu657uXm2FIS8GNJ-hQyyFlKvPNeOIHDxt18pae2Sbr3Zd2ECDgN-Rz1ein7Qa0aIirtYT5HJYWfdDi8CufRvnlFJMnwShJ1RclWYuiIk5RaCCqMB1HNCpGCAy1i5_KQKTX3eX0TXB43XgxwWoTv">
+</div>
+<span class="text-primary font-label-sm uppercase font-bold">Cửa hàng</span>
+<h3 class="font-headline-md text-headline-md mt-2 group-hover:text-primary transition-colors">Không gian mua sắm mới</h3>
+<p class="text-on-surface-variant font-body-sm mt-3 line-clamp-2">VIETSHOP vừa khai trương chi nhánh thứ 10 với trải nghiệm mua sắm hoàn toàn khác biệt.</p>
+<a class="inline-flex items-center gap-2 mt-4 font-label-lg text-primary hover:translate-x-1 transition-transform" href="#">Xem thêm <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+</article>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="full-width bg-secondary text-on-secondary">
+<div class="w-full px-margin-desktop py-section-gap grid grid-cols-1 md:grid-cols-4 gap-gutter max-w-container-max mx-auto">
+<div class="flex flex-col gap-4">
+<span class="font-headline-lg text-headline-lg font-black text-on-primary">VIETSHOP</span>
+<p class="font-body-sm text-body-sm text-on-secondary/70">Nâng tầm trải nghiệm mua sắm trực tuyến của bạn với những sản phẩm chất lượng và dịch vụ tận tâm nhất.</p>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-label-lg text-label-lg uppercase opacity-70">Liên kết nhanh</h4>
+<div class="flex flex-col gap-2">
+<a class="font-body-sm text-body-sm text-on-secondary/80 hover:text-primary transition-colors" href="#">Về chúng tôi</a>
+<a class="font-body-sm text-body-sm text-on-secondary/80 hover:text-primary transition-colors" href="#">Sản phẩm mới</a>
+<a class="font-body-sm text-body-sm text-on-secondary/80 hover:text-primary transition-colors" href="#">Blog thời trang</a>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-label-lg text-label-lg uppercase opacity-70">Chính sách</h4>
+<div class="flex flex-col gap-2">
+<a class="font-body-sm text-body-sm text-on-secondary/80 hover:text-primary transition-colors" href="#">Chính sách bảo mật</a>
+<a class="font-body-sm text-body-sm text-on-secondary/80 hover:text-primary transition-colors" href="#">Điều khoản dịch vụ</a>
+<a class="font-body-sm text-body-sm text-on-secondary/80 hover:text-primary transition-colors" href="#">Câu hỏi thường gặp</a>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-label-lg text-label-lg uppercase opacity-70">Đăng ký bản tin</h4>
+<p class="font-body-sm text-body-sm text-on-secondary/80">Nhận thông tin khuyến mãi sớm nhất</p>
+<div class="flex mt-2">
+<input class="bg-white/10 border border-white/20 px-4 py-2 flex-grow focus:ring-0 text-on-secondary placeholder-on-secondary/40" placeholder="Email của bạn" type="email">
+<button class="bg-primary text-on-primary px-4 py-2 font-label-lg hover:bg-primary/90">Gửi</button>
+</div>
+</div>
+</div>
+<div class="max-w-container-max mx-auto px-margin-desktop py-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="font-label-sm text-label-sm text-on-secondary/60">© 2024 VIETSHOP. Bảo lưu mọi quyền.</p>
+<div class="flex gap-6">
+<span class="material-symbols-outlined text-on-secondary/60 hover:text-primary cursor-pointer transition-colors">social_leaderboard</span>
+<span class="material-symbols-outlined text-on-secondary/60 hover:text-primary cursor-pointer transition-colors">photo_camera</span>
+<span class="material-symbols-outlined text-on-secondary/60 hover:text-primary cursor-pointer transition-colors">play_circle</span>
+</div>
+</div>
+</footer>
+<script>
+        // Simple micro-interaction for buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.classList.add('scale-95');
+                setTimeout(() => btn.classList.remove('scale-95'), 100);
+            });
+        });
+    </script>
+</body></html>

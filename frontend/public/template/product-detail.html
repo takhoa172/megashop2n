@@ -1,0 +1,432 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Wireless Studio X1 - VIETSHOP</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#2563EB",
+                    "on-primary": "#ffffff",
+                    "secondary": "#0F172A",
+                    "on-secondary": "#ffffff",
+                    "accent": "#F59E0B",
+                    "on-accent": "#ffffff",
+                    "surface-tint": "#2563EB",
+                    "surface-variant": "#d3e4fe",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed-variant": "#0F172A",
+                    "surface-dim": "#cbdbf5",
+                    "surface-container-low": "#eff4ff",
+                    "tertiary-fixed-dim": "#adc6ff",
+                    "background": "#f8f9ff",
+                    "surface-bright": "#f8f9ff",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "tertiary-container": "#001a42",
+                    "on-surface-variant": "#45464d",
+                    "surface": "#f8f9ff",
+                    "on-secondary-container": "#ffffff",
+                    "secondary-fixed-dim": "#0F172A",
+                    "inverse-primary": "#bec6e0",
+                    "on-surface": "#0F172A",
+                    "on-background": "#0F172A",
+                    "error-container": "#ffdad6",
+                    "outline-variant": "#c6c6cd",
+                    "inverse-on-surface": "#eaf1ff",
+                    "primary-fixed": "#dbe1ff",
+                    "primary-container": "#2563EB",
+                    "secondary-container": "#0F172A",
+                    "surface-container-highest": "#d3e4fe",
+                    "on-tertiary-fixed": "#001a42",
+                    "surface-container-high": "#dce9ff",
+                    "on-primary-fixed": "#00174b",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-secondary-fixed": "#0F172A",
+                    "inverse-surface": "#213145",
+                    "tertiary": "#F59E0B",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-primary-container": "#ffffff",
+                    "on-tertiary-container": "#001a42",
+                    "surface-container": "#e5eeff",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#dae2fd",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "outline": "#76777d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-max": "1280px",
+                    "margin-mobile": "16px",
+                    "base": "8px",
+                    "margin-desktop": "48px",
+                    "gutter": "24px",
+                    "section-gap": "80px",
+                    "xl": "32px",
+                    "lg": "24px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "xs": "4px",
+                    "unit": "4px",
+                    "3xl": "64px",
+                    "2xl": "48px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "display-lg-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9ff;
+        }
+        .tab-active {
+            border-bottom: 2px solid #2563EB;
+            color: #2563EB;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="text-on-background bg-background">
+<!-- TopNavBar (exactly match SCREEN_9) -->
+<nav class="docked full-width top-0 sticky z-50 bg-secondary text-on-secondary border-b border-outline/20 shadow-sm">
+<div class="flex justify-between items-center w-full px-margin-desktop py-base max-w-container-max mx-auto h-16">
+<div class="flex items-center gap-8">
+<a class="font-display-lg text-display-lg font-bold text-on-primary" href="#">VIETSHOP</a>
+<div class="hidden md:flex items-center gap-6">
+<a class="font-label-lg text-label-lg text-on-secondary/80 hover:text-primary transition-colors duration-200" href="#">Trang chủ</a>
+<a class="font-label-lg text-label-lg text-on-primary border-b-2 border-primary pb-1 hover:text-primary transition-colors duration-200" href="#">Sản phẩm</a>
+<a class="font-label-lg text-label-lg text-on-secondary/80 hover:text-primary transition-colors duration-200" href="#">Danh mục</a>
+<a class="font-label-lg text-label-lg text-on-secondary/80 hover:text-primary transition-colors duration-200" href="#">Blog</a>
+<a class="font-label-lg text-label-lg text-on-secondary/80 hover:text-primary transition-colors duration-200" href="#">Giới thiệu</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden lg:flex items-center bg-white/10 px-4 py-2 rounded-full border border-white/20">
+<span class="material-symbols-outlined text-on-secondary/60">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm w-48 text-on-secondary placeholder-on-secondary/40" placeholder="Tìm kiếm sản phẩm..." type="text">
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<button class="scale-95 active:opacity-80 transition-all text-on-secondary hover:text-primary">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+</button>
+<span class="absolute -top-2 -right-2 bg-error text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">3</span>
+</div>
+<button class="scale-95 active:opacity-80 transition-all text-on-secondary hover:text-primary">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<main class="max-w-[1440px] mx-auto px-margin-desktop py-lg">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-xs text-on-surface-variant font-label-md text-label-md mb-lg">
+<a class="hover:text-primary transition-colors" href="#">Home</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Electronics</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-primary font-semibold">Headphones</span>
+</nav>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Product Gallery -->
+<div class="lg:col-span-7 flex flex-col gap-md">
+<div class="bg-white rounded-xl border border-outline-variant overflow-hidden aspect-square flex items-center justify-center p-md group transition-all duration-300 hover:shadow-lg">
+<img alt="Wireless Studio X1" class="w-full h-full object-cover rounded-xl" data-alt="A premium pair of high-fidelity wireless headphones in deep obsidian black, showcased in a minimalist studio setting with soft side lighting that accentuates the brushed metal finish and plush memory foam ear cushions. The atmosphere is sophisticated and modern, reflecting a precision engineering aesthetic with deep blue shadow tones and clean white highlights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_V1u3nwE8cbcV-puL9krUAyuSvPtW3rXA9gwzjxptg3bcZAPjaHKEwN2e4l9jslAraeKN47G1LOqbC2hjkpVcgCZKLPM3yJrtRcxHkWyduGmBjEx_NGfj_jg09e-U4q0nE5KG3m9wTRZIOxviw5y-BSUkOiRji9rbKH8OBLJbw4i8hrRp5QimASmzU1Ey5eXLeT-QZ1vvgvZPcLOUTRQsjmm6Vf7_6P1MDdswH52lMt3QDhSJ5pm9_hJGxss4GtyratWIGUSd5YEY">
+</div>
+<div class="grid grid-cols-4 gap-sm">
+<div class="aspect-square bg-white border-2 border-primary rounded-xl p-xs cursor-pointer overflow-hidden">
+<img alt="Thumbnail 1" class="w-full h-full object-cover rounded-lg" data-alt="Close-up shot of professional wireless headphones featuring a sleek matte finish and ergonomic headband, presented on a clean reflective surface with high-key lighting for a premium corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsjtjBnzsNM4SAE5u82pF6GWTaEwr_s1i4AgHPAYy_0CwaqhW5IKdQNM5DCh-X7GtuLd-JGf4O8gTSfJAoVqEcnXVVuWHyLIQsfiaXvxq70utF4ekRtUh9jyxZOq3RV3rZVIsiMsSDpawSSM02Yx2Q3ZETDRiVKKXr5_zimNMqjEz-7-e-SOIvWDNKA3zkX6verqjlVuAKI_I5gBnYz8iue3-LdDzjrBBQSUpkKTyOCGpzzfNmaN4Y9OC94Irx9-aTuqJGNsBtxKgP">
+</div>
+<div class="aspect-square bg-white border border-outline-variant rounded-xl p-xs cursor-pointer hover:border-primary transition-colors overflow-hidden">
+<img alt="Thumbnail 2" class="w-full h-full object-cover rounded-lg" data-alt="A side view of premium silver headphones focusing on the intricate hinge design and metallic accents, set against a soft blurred background of a modern workspace with natural daylight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC280lvJ-H1zj_0e4DN8JhbD2CD6TExDeqJVj_cmuhJn9SybNj-ZAwDS3_pxRoDE7qf6gUlmNQkX0gFV4igu0fgOs3B_EpT3aFmaNjZ0cL8Fm0DsYsiMIIzQ4wIP8osJiJdk-P1EtGZLL25DrF8WsgMzA2lzbLc2HPJQymT2W-N5cC_M87OjgekwocFN7kfqqlCrOY8qKw8EsjTiiX4G53NSXma3p8wW6_gni67yGL_-r6bfbS58XLgVCLcnf8Ko0niYc5YWZ7jF5j1">
+</div>
+<div class="aspect-square bg-white border border-outline-variant rounded-xl p-xs cursor-pointer hover:border-primary transition-colors overflow-hidden">
+<img alt="Thumbnail 3" class="w-full h-full object-cover rounded-lg" data-alt="The intuitive control panel on the side of a pair of high-end headphones, showing the tactile buttons for volume and power in a sharp, detailed macro photograph with cold studio lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwuUyrKXHjkuZ1VDVz0bBZRP40HVvLkjFKjXPWUs7PYawJmostUN5Zf_eFHFcONBQvHqe6O8YBT0ujcD3DVBAYe1XLxhFfg__HeJ57cQCiubA2fxKuG8WBzPO_Cp0KKiCy6JRoiQYJeQzjxBGiXUHqEnZkH9xatCdtzBrOlQpEnEFxhf7gjV0AZCz5Uubo2S_E-HroXHvnDcNyVeerukCKPwyqUpxDFcWKqyuRd8OdGxXN4DRx0joTBSFFNLnJMukhDmb9P1KVAxE_">
+</div>
+<div class="aspect-square bg-white border border-outline-variant rounded-xl p-xs cursor-pointer hover:border-primary transition-colors overflow-hidden">
+<img alt="Thumbnail 4" class="w-full h-full object-cover rounded-lg" data-alt="Headphones resting on a minimalist charging dock in a high-tech home office environment, illuminated by soft blue ambient lighting to create a calm, futuristic mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqm4PdJjzUYO8DqecnhAymI_58N2A4E6Bu050vTitWIj4WjC-rFCE-sd3KlOdKyc9V-h0WwQ9u4kmryDF0wEb80hqR57I6F_p9PiKatOMLkopKIlOJV77E4kzC3j-88HvBprK1oCV1LdwAH0tv8KgORmANL8W8UT6xwVg1xTqgcA0vJFJWEP79T4-vrQjPG7-f4IgTtVQUMbYob_C_U1Pj0TeDv1nM0A47OElJmFQTN1KMkFXS68sG0k4sOLA79KftsElZ4sX_QkVu">
+</div>
+</div>
+</div>
+<!-- Product Info -->
+<div class="lg:col-span-5 flex flex-col">
+<span class="inline-block w-fit px-sm py-xs bg-surface-container-highest text-secondary font-label-sm text-label-sm rounded-lg mb-sm">AUDIO PROFESSIONAL</span>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-md">Wireless Studio X1 - Premium Noise Cancelling Headphones</h1>
+<div class="flex items-center gap-sm mb-lg">
+<div class="flex text-accent">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(124 reviews)</span>
+<span class="text-outline-variant">|</span>
+<span class="font-body-sm text-body-sm text-primary font-medium">In Stock</span>
+</div>
+<div class="flex items-baseline gap-md mb-lg">
+<span class="font-headline-md text-headline-md text-primary">2.490.000đ</span>
+<span class="font-body-md text-body-md text-on-surface-variant line-through">3.200.000đ</span>
+<span class="bg-error/10 text-error px-sm py-xs rounded font-label-sm text-label-sm">-22%</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-xl leading-relaxed">
+                    High-fidelity audio with active noise cancellation, 40-hour battery life, and ultra-comfortable memory foam ear cushions. Engineered for professionals who demand clarity and comfort.
+                </p>
+<!-- Variants -->
+<div class="mb-lg">
+<h3 class="font-label-md text-label-md text-on-surface mb-sm uppercase tracking-wider">Color</h3>
+<div class="flex gap-md">
+<button class="w-10 h-10 rounded-full border-2 border-primary bg-slate-900 ring-2 ring-offset-2 ring-transparent transition-all"></button>
+<button class="w-10 h-10 rounded-full border border-outline-variant bg-slate-200 hover:scale-110 transition-all"></button>
+<button class="w-10 h-10 rounded-full border border-outline-variant bg-blue-800 hover:scale-110 transition-all"></button>
+</div>
+</div>
+<div class="mb-2xl">
+<h3 class="font-label-md text-label-md text-on-surface mb-sm uppercase tracking-wider">Quantity</h3>
+<div class="flex items-center w-fit border border-outline-variant rounded-lg">
+<button class="p-md hover:bg-surface-container-low transition-colors"><span class="material-symbols-outlined text-[20px]">remove</span></button>
+<span class="px-lg font-title-lg text-title-lg min-w-[60px] text-center">1</span>
+<button class="p-md hover:bg-surface-container-low transition-colors"><span class="material-symbols-outlined text-[20px]">add</span></button>
+</div>
+</div>
+<!-- CTAs -->
+<div class="flex flex-col sm:flex-row gap-gutter">
+<button class="flex-1 bg-primary text-on-primary py-lg rounded-xl font-title-lg text-title-lg shadow-sm hover:bg-primary/90 transition-all active:scale-[0.98]">
+                        Thêm vào giỏ
+                    </button>
+<button class="flex-1 border border-primary text-primary py-lg rounded-xl font-title-lg text-title-lg hover:bg-primary/5 transition-all active:scale-[0.98]">
+                        Mua ngay
+                    </button>
+</div>
+</div>
+</div>
+<!-- Product Tabs -->
+<div class="mt-3xl border-t border-outline-variant pt-2xl">
+<div class="flex border-b border-outline-variant gap-2xl overflow-x-auto no-scrollbar">
+<button class="pb-md font-title-lg text-title-lg tab-active whitespace-nowrap">Description</button>
+<button class="pb-md font-title-lg text-title-lg text-on-surface-variant hover:text-on-surface transition-colors whitespace-nowrap">Specifications</button>
+<button class="pb-md font-title-lg text-title-lg text-on-surface-variant hover:text-on-surface transition-colors whitespace-nowrap">Customer Reviews</button>
+</div>
+<div class="py-2xl">
+<div class="max-w-3xl">
+<h2 class="font-headline-md text-headline-md mb-md">Engineered for Perfection</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-xl">
+                        The Wireless Studio X1 provides a seamless listening experience with advanced acoustic technology. Our custom-designed 40mm drivers deliver rich, spatial sound that places you at the center of your music. Whether you're in a busy commute or a quiet office, the intelligent ANC adapts to your environment.
+                    </p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+<div class="flex items-start gap-md">
+<span class="material-symbols-outlined text-primary p-sm bg-surface-container rounded-xl">battery_charging_full</span>
+<div>
+<h4 class="font-title-lg text-title-lg mb-xs">40H Battery Life</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Listen for days without needing a charge. Quick charge gives 3 hours in 10 mins.</p>
+</div>
+</div>
+<div class="flex items-start gap-md">
+<span class="material-symbols-outlined text-primary p-sm bg-surface-container rounded-xl">noise_aware</span>
+<div>
+<h4 class="font-title-lg text-title-lg mb-xs">Smart ANC</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Three levels of active noise cancellation to suit any environment.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Related Products -->
+<section class="mt-3xl">
+<div class="flex justify-between items-end mb-xl">
+<div>
+<h2 class="font-headline-lg text-headline-lg">Sản phẩm liên quan</h2>
+<div class="w-16 h-1 bg-primary mt-sm rounded-full"></div>
+</div>
+<a class="text-primary font-label-lg text-label-lg flex items-center gap-xs hover:gap-sm transition-all" href="#">Xem tất cả <span class="material-symbols-outlined">arrow_forward</span></a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Related Card 1 -->
+<div class="bg-white rounded-xl border border-outline-variant p-md flex flex-col hover:shadow-lg transition-all group cursor-pointer">
+<div class="aspect-square bg-surface-container rounded-lg mb-md overflow-hidden relative">
+<img alt="Studio Buds" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Elegant silver wireless earbuds displayed on a floating geometric stand, with sharp focus and clean minimalist composition. The aesthetic is modern corporate, featuring cool grey tones and soft white studio lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7YGAEYmT0x4rkUpl66CS4EFK3lORtkvkRh4MnvdwXGpR_9EiGlGkXVhtZc-Fy1fCJ53s4o466KWSkDR7oPa_cGSa56UqQPOZ6p896zoJHcOLa_Q-b2VXXf0uLigYM4hPrk6adnr-t9D_v21gHWupLAw6dIF3Wf2tf-ts56pe6smrI1cZrtt08F1bXK7ZNRUzwxIvQckKGoX3YfQOivvB-_yhwhFuSGsgA_JUEEFcRyz4GDP-RTGC2cgGEaV9-q_I226VKbYVY73GF">
+<button class="absolute top-sm right-sm p-sm bg-white/80 backdrop-blur rounded-full shadow-sm text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-xs">AUDIO</span>
+<h3 class="font-title-lg text-title-lg mb-sm line-clamp-1">Studio Buds Pro 2</h3>
+<div class="mt-auto flex items-center justify-between">
+<span class="font-body-lg text-body-lg font-bold text-primary">1.290.000đ</span>
+<button class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+</button>
+</div>
+</div>
+<!-- Related Card 2 -->
+<div class="bg-white rounded-xl border border-outline-variant p-md flex flex-col hover:shadow-lg transition-all group cursor-pointer">
+<div class="aspect-square bg-surface-container rounded-lg mb-md overflow-hidden relative">
+<img alt="Power Bass" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="High-performance over-ear gaming headset in matte black with subtle blue LED accents, placed in a high-tech dark studio setting with precision rim lighting for a professional look." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkyXLAU4ZKu-qJZ2w9QocdfJNZW7RXb8KfljCrwnjn4YQWIa1HyyIgn1IYSmmXJFf-qvyxOKOwqkwxKQqjg-esU4fEj0QSI_MOZpU85eYkv__U5-cQA4XHPC5Kv1BGgJSIoYFdFn6lres8ktwDcmqPqqmG-ZaajanX9ifutMQsDyeSfezfWWepZDX2kB4tpr7eEk57E1XkuUBA-PxHZHKnYN1s_63Hk7ZLWo55CFZ0x0w6PDuHwKUb8wHZ-_2RJaAnSbJ3-K_2mVFX">
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-xs">GAMING</span>
+<h3 class="font-title-lg text-title-lg mb-sm line-clamp-1">V-X Gaming Headset</h3>
+<div class="mt-auto flex items-center justify-between">
+<span class="font-body-lg text-body-lg font-bold text-primary">1.850.000đ</span>
+<button class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+</button>
+</div>
+</div>
+<!-- Related Card 3 -->
+<div class="bg-white rounded-xl border border-outline-variant p-md flex flex-col hover:shadow-lg transition-all group cursor-pointer">
+<div class="aspect-square bg-surface-container rounded-lg mb-md overflow-hidden relative">
+<img alt="Sport Air" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Lightweight sport-focused headphones in a vibrant blue color, captured with dynamic motion-blur background suggesting speed and activity, while maintaining a clean product-focused lighting scheme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrDyc0B86zvEZ83YhR-yvi0rSDOz64gMHYwmSn4FMVP9ewGQGeIJ5DwX61tI-y-hu8QGTNaWRHbG3FxRWauFtVRxESGnqtzEaOk4w1_VzW5xSGrZJHi3PDKURrVbaxkShDDQZGB1oCw51tcbvg9SLera9pJSv0lqk3NL7TrWom22QxeWtx9KlVemJfpWOqQ7C7qF9CBrhykmcsHEyQxzH-2ViZ3KJ4_eG-edTzjwJZ2zTrJ-_peEa-Oa3W1m_414Hnz59TcZZGhFMy">
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-xs">SPORTS</span>
+<h3 class="font-title-lg text-title-lg mb-sm line-clamp-1">Sport Air Ultralight</h3>
+<div class="mt-auto flex items-center justify-between">
+<span class="font-body-lg text-body-lg font-bold text-primary">950.000đ</span>
+<button class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+</button>
+</div>
+</div>
+<!-- Related Card 4 -->
+<div class="bg-white rounded-xl border border-outline-variant p-md flex flex-col hover:shadow-lg transition-all group cursor-pointer">
+<div class="aspect-square bg-surface-container rounded-lg mb-md overflow-hidden relative">
+<img alt="Classic X" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Retro-styled modern headphones featuring mahogany wood ear cups and tan leather headband, set in a cozy library atmosphere with soft warm incandescent lighting to emphasize artisanal craftsmanship." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB82cIpi32uli0rPF50RvgMU-YvG3KydXiE9SgbQXUWlrnUdMj7nd6RZh2j4_WkjhD2oS457bmbyZai_eJHATyp9xctN2S5UsMQCs2uSnWENG-IIDUFQobhcy7dbKrjskZI-bnbveg4kXo7c8tbFzrUpjMqzS0SGhQCst4-MHMnRZYrqlOFDec35qSwS5Nu24kJouj-oPVCEETYLCDScFw7Xre3Hs16tCBN3Q_5tDX5XZbLWY2vLvYO00AAqLEKoNDOGj9eqzs64Oao">
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-xs">PREMIUM</span>
+<h3 class="font-title-lg text-title-lg mb-sm line-clamp-1">Heritage Wood X</h3>
+<div class="mt-auto flex items-center justify-between">
+<span class="font-body-lg text-body-lg font-bold text-primary">3.100.000đ</span>
+<button class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer (exactly match SCREEN_9) -->
+<footer class="full-width bg-secondary text-on-secondary mt-3xl">
+<div class="w-full px-margin-desktop py-section-gap grid grid-cols-1 md:grid-cols-4 gap-gutter max-w-container-max mx-auto py-2xl">
+<div class="flex flex-col gap-4">
+<span class="font-headline-lg text-headline-lg font-black text-on-primary">VIETSHOP</span>
+<p class="font-body-sm text-body-sm text-on-secondary/70">Nâng tầm trải nghiệm mua sắm trực tuyến của bạn với những sản phẩm chất lượng và dịch vụ tận tâm nhất.</p>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-label-lg text-label-lg uppercase opacity-70">Liên kết nhanh</h4>
+<div class="flex flex-col gap-2">
+<a class="font-body-sm text-body-sm text-on-secondary/80 hover:text-primary transition-colors" href="#">Về chúng tôi</a>
+<a class="font-body-sm text-body-sm text-on-secondary/80 hover:text-primary transition-colors" href="#">Sản phẩm mới</a>
+<a class="font-body-sm text-body-sm text-on-secondary/80 hover:text-primary transition-colors" href="#">Blog thời trang</a>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-label-lg text-label-lg uppercase opacity-70">Chính sách</h4>
+<div class="flex flex-col gap-2">
+<a class="font-body-sm text-body-sm text-on-secondary/80 hover:text-primary transition-colors" href="#">Chính sách bảo mật</a>
+<a class="font-body-sm text-body-sm text-on-secondary/80 hover:text-primary transition-colors" href="#">Điều khoản dịch vụ</a>
+<a class="font-body-sm text-body-sm text-on-secondary/80 hover:text-primary transition-colors" href="#">Câu hỏi thường gặp</a>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-label-lg text-label-lg uppercase opacity-70">Đăng ký bản tin</h4>
+<p class="font-body-sm text-body-sm text-on-secondary/80">Nhận thông tin khuyến mãi sớm nhất</p>
+<div class="flex mt-2">
+<input class="bg-white/10 border border-white/20 px-4 py-2 flex-grow focus:ring-0 text-on-secondary placeholder-on-secondary/40" placeholder="Email của bạn" type="email">
+<button class="bg-primary text-on-primary px-4 py-2 font-label-lg hover:bg-primary/90">Gửi</button>
+</div>
+</div>
+</div>
+<div class="max-w-container-max mx-auto px-margin-desktop py-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="font-label-sm text-label-sm text-on-secondary/60">© 2024 VIETSHOP. Bảo lưu mọi quyền.</p>
+<div class="flex gap-6">
+<span class="material-symbols-outlined text-on-secondary/60 hover:text-primary cursor-pointer transition-colors">social_leaderboard</span>
+<span class="material-symbols-outlined text-on-secondary/60 hover:text-primary cursor-pointer transition-colors">photo_camera</span>
+<span class="material-symbols-outlined text-on-secondary/60 hover:text-primary cursor-pointer transition-colors">play_circle</span>
+</div>
+</div>
+</footer>
+<script>
+        // Light micro-interactions for tabs
+        const tabs = document.querySelectorAll('.tab-active, .text-on-surface-variant');
+        tabs.forEach(tab => {
+            if(tab.tagName === 'BUTTON' && !tab.classList.contains('p-md')) {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => {
+                        if(t.tagName === 'BUTTON') {
+                            t.classList.remove('tab-active');
+                            t.classList.add('text-on-surface-variant');
+                        }
+                    });
+                    tab.classList.add('tab-active');
+                    tab.classList.remove('text-on-surface-variant');
+                });
+            }
+        });
+
+        // Quantity selector logic
+        const quantityContainer = document.querySelector('.min-w-\\[60px\\]');
+        const quantityButtons = document.querySelectorAll('button.p-md');
+        let count = 1;
+
+        quantityButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const icon = btn.querySelector('.material-symbols-outlined').textContent;
+                if(icon === 'add') count++;
+                if(icon === 'remove' && count > 1) count--;
+                quantityContainer.textContent = count;
+            });
+        });
+
+        // Simple micro-interaction for buttons (from SCREEN_9 style)
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.classList.add('scale-95');
+                setTimeout(() => btn.classList.remove('scale-95'), 100);
+            });
+        });
+    </script>
+</body></html>

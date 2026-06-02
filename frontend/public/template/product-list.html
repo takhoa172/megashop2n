@@ -1,0 +1,450 @@
+<!DOCTYPE html><html lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary": "#2563EB",
+                      "on-primary": "#ffffff",
+                      "secondary": "#0F172A",
+                      "on-secondary": "#ffffff",
+                      "accent": "#F59E0B",
+                      "on-accent": "#ffffff",
+                      "surface-tint": "#2563EB",
+                      "surface-variant": "#d3e4fe",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary-fixed-variant": "#0F172A",
+                      "surface-dim": "#cbdbf5",
+                      "surface-container-low": "#eff4ff",
+                      "tertiary-fixed-dim": "#adc6ff",
+                      "background": "#f8f9ff",
+                      "surface-bright": "#f8f9ff",
+                      "on-error-container": "#93000a",
+                      "error": "#ba1a1a",
+                      "tertiary-container": "#001a42",
+                      "on-surface-variant": "#45464d",
+                      "surface": "#f8f9ff",
+                      "on-secondary-container": "#ffffff",
+                      "secondary-fixed-dim": "#0F172A",
+                      "inverse-primary": "#bec6e0",
+                      "on-surface": "#0F172A",
+                      "on-background": "#0F172A",
+                      "error-container": "#ffdad6",
+                      "outline-variant": "#c6c6cd",
+                      "inverse-on-surface": "#eaf1ff",
+                      "primary-fixed": "#dbe1ff",
+                      "primary-container": "#2563EB",
+                      "secondary-container": "#0F172A",
+                      "surface-container-highest": "#d3e4fe",
+                      "on-tertiary-fixed": "#001a42",
+                      "surface-container-high": "#dce9ff",
+                      "on-primary-fixed": "#00174b",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "on-secondary-fixed": "#0F172A",
+                      "inverse-surface": "#213145",
+                      "tertiary": "#F59E0B",
+                      "on-error": "#ffffff",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "tertiary-fixed": "#ffddb8",
+                      "on-primary-container": "#ffffff",
+                      "on-tertiary-container": "#001a42",
+                      "surface-container": "#e5eeff",
+                      "on-tertiary": "#ffffff",
+                      "secondary-fixed": "#dae2fd",
+                      "on-tertiary-fixed-variant": "#653e00",
+                      "outline": "#76777d"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sm": "8px",
+                      "md": "16px",
+                      "margin-mobile": "16px",
+                      "2xl": "48px",
+                      "unit": "4px",
+                      "3xl": "64px",
+                      "lg": "24px",
+                      "xl": "32px",
+                      "gutter": "24px",
+                      "margin-desktop": "48px",
+                      "xs": "4px",
+                      "container-max": "1280px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "title-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "label-lg": ["Inter"],
+                      "display-lg-mobile": ["Inter"],
+                      "body-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg": ["30px", {"lineHeight": "38px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                      "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d3e4fe;
+            border-radius: 10px;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-background">
+<!-- TopNavBar (Updated to match SCREEN_5) -->
+<nav class="docked full-width top-0 sticky z-50 bg-secondary text-on-secondary border-b border-outline/20 shadow-sm">
+<div class="flex justify-between items-center w-full px-margin-desktop py-4 max-w-container-max mx-auto">
+<div class="flex items-center gap-8">
+<a class="font-display-lg text-display-lg font-bold text-on-primary" href="#">VIETSHOP</a>
+<div class="hidden md:flex items-center gap-6">
+<a class="font-label-lg text-label-lg text-on-secondary/80 hover:text-primary transition-colors duration-200" href="#">Trang chủ</a>
+<a class="font-label-lg text-label-lg text-on-primary border-b-2 border-primary pb-1 hover:text-primary transition-colors duration-200" href="#">Sản phẩm</a>
+<a class="font-label-lg text-label-lg text-on-secondary/80 hover:text-primary transition-colors duration-200" href="#">Danh mục</a>
+<a class="font-label-lg text-label-lg text-on-secondary/80 hover:text-primary transition-colors duration-200" href="#">Blog</a>
+<a class="font-label-lg text-label-lg text-on-secondary/80 hover:text-primary transition-colors duration-200" href="#">Giới thiệu</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden lg:flex items-center bg-white/10 px-4 py-2 rounded-full border border-white/20">
+<span class="material-symbols-outlined text-on-secondary/60">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm w-48 text-on-secondary placeholder-on-secondary/40" placeholder="Tìm kiếm sản phẩm..." type="text">
+</div>
+<div class="flex items-center gap-4">
+<button class="scale-95 active:opacity-80 transition-all text-on-secondary hover:text-primary">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+</button>
+<button class="scale-95 active:opacity-80 transition-all text-on-secondary hover:text-primary">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<main class="pt-12 pb-3xl w-full max-w-container-max mx-auto px-margin-desktop">
+<div class="flex flex-col md:flex-row gap-gutter">
+<!-- Left Sidebar: Integrated Style -->
+<aside class="w-full md:w-1/4 flex flex-col gap-xl">
+<div class="bg-surface-container-low p-lg rounded-xl">
+<h2 class="font-title-lg text-title-lg mb-lg">Bộ lọc tìm kiếm</h2>
+<!-- Categories -->
+<div class="mb-xl">
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-md">Danh mục</h3>
+<div class="flex flex-col gap-sm">
+<label class="flex items-center gap-sm cursor-pointer group">
+<input checked="" class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox">
+<span class="font-body-sm text-body-sm group-hover:text-primary transition-colors">Thời trang</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox">
+<span class="font-body-sm text-body-sm group-hover:text-primary transition-colors">Điện tử</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox">
+<span class="font-body-sm text-body-sm group-hover:text-primary transition-colors">Đồ gia dụng</span>
+</label>
+</div>
+</div>
+<!-- Price Range -->
+<div class="mb-xl">
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-md">Khoảng giá (VNĐ)</h3>
+<div class="flex flex-col gap-md">
+<div class="flex items-center gap-sm">
+<input class="w-full bg-surface-container-lowest border-none p-2 rounded-lg text-sm focus:ring-2 focus:ring-primary outline-none" placeholder="Từ" type="number">
+<span class="text-outline">—</span>
+<input class="w-full bg-surface-container-lowest border-none p-2 rounded-lg text-sm focus:ring-2 focus:ring-primary outline-none" placeholder="Đến" type="number">
+</div>
+<button class="bg-primary text-on-primary font-label-md py-2 rounded-lg hover:bg-secondary transition-all">Áp dụng</button>
+</div>
+</div>
+<!-- Brands -->
+<div class="mb-xl">
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-md">Thương hiệu</h3>
+<div class="grid grid-cols-2 gap-sm">
+<button class="bg-surface-container-lowest p-2 rounded-lg text-xs hover:text-primary transition-all">Samsung</button>
+<button class="bg-surface-container-lowest p-2 rounded-lg text-xs hover:text-primary transition-all">Nike</button>
+<button class="bg-surface-container-lowest p-2 rounded-lg text-xs hover:text-primary transition-all">Apple</button>
+<button class="bg-surface-container-lowest p-2 rounded-lg text-xs hover:text-primary transition-all">Sony</button>
+</div>
+</div>
+<!-- Ratings -->
+<div>
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-md">Đánh giá</h3>
+<div class="flex flex-col gap-sm">
+<button class="flex items-center gap-xs group">
+<div class="flex text-accent">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="text-xs text-on-surface-variant group-hover:text-primary">(5.0)</span>
+</button>
+<button class="flex items-center gap-xs group">
+<div class="flex text-accent">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]">star</span>
+</div>
+<span class="text-xs text-on-surface-variant group-hover:text-primary">trên 4.0</span>
+</button>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content: Product Grid -->
+<section class="w-full md:w-3/4">
+<!-- Header with Sorting -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-lg gap-md">
+<div>
+<h1 class="font-headline-lg text-headline-lg">Tất cả sản phẩm</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Hiển thị 1 - 12 trên 150 sản phẩm</p>
+</div>
+<div class="flex items-center gap-md">
+<span class="font-label-md text-label-md text-on-surface-variant">Sắp xếp:</span>
+<select class="bg-surface-container-low border-none rounded-lg py-2 pl-3 pr-8 font-label-md outline-none focus:ring-2 focus:ring-primary cursor-pointer">
+<option>Mới nhất</option>
+<option>Giá tăng dần</option>
+<option>Giá giảm dần</option>
+<option>Bán chạy nhất</option>
+</select>
+</div>
+</div>
+<!-- Product Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Product Card 1 -->
+<div class="bg-white rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col group p-4 border border-outline-variant/30">
+<div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-surface-container-low mb-4">
+<img alt="Product" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFLiyWoDREL-KLN0O2QwFBZlaODyXi9fUvu1wSJnb6Kyhesyn-Uq-4QZnjynHLFsSfzrxIvSnNy4v62x8TpkjSV6i1d9NfPd6aCbVDUD3hv0K67lQLFBPzpKXEX2CO5TB5r1Xvggzr3L1TeLPGEYa_PCbCkSYy85C80pMk_BEqxkv1vNnyA8rPLdCwkqGDUll6CLbswLTvmOYkBGxhw-WB-WY3FhJuCNldKwUobDvQa0QOn4_n-jaDm1mTQbqor8RN32ss9uKxjfdF">
+<span class="absolute top-2 left-2 bg-error text-on-primary font-label-sm text-[10px] px-2 py-1 rounded uppercase tracking-wider">Hot</span>
+</div>
+<div class="flex flex-col flex-grow">
+<span class="text-xs text-on-surface-variant mb-1 uppercase tracking-tighter">Audio Professional</span>
+<h3 class="font-headline-md text-headline-md mb-2 line-clamp-1">Wireless Studio X1</h3>
+<div class="mt-auto">
+<div class="flex items-baseline gap-sm mb-4">
+<span class="text-primary font-bold text-lg">2.490.000đ</span>
+<span class="text-on-surface-variant text-xs line-through">3.200.000đ</span>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-lg py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-secondary transition-colors">
+<span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+                                Thêm vào giỏ
+                            </button>
+</div>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-white rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col group p-4 border border-outline-variant/30">
+<div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-surface-container-low mb-4">
+<img alt="Product" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCn6-RvGaO7n8WdS4cLA-IpGnnd7kKe_qRyUCCk2eTjp60xXrmIfXVeDJq2IDSI0CmlwzDEwCtf3zwCJzW3sN6fyD2zrVIjKLdm9T8aI3muxZEQjpTfesG2JzYJWJdIjnU5YBrPL_svrYYZIemmU9qWh4Qfjyqs6yMBSRhcaqMFsidcXIu2FOs-xRVecBH48gLuDxrxY1fAHmtZ9LKJzhJ9wf5Ji-5oi9DZu2VfURkSqsuAM2QQTmT1I-OgGGpkoY9I_WgBQ3v5u4EU">
+<span class="absolute top-2 left-2 bg-accent text-on-accent font-label-sm text-[10px] px-2 py-1 rounded uppercase tracking-wider">Giảm 15%</span>
+</div>
+<div class="flex flex-col flex-grow">
+<span class="text-xs text-on-surface-variant mb-1 uppercase tracking-tighter">Wearables</span>
+<h3 class="font-headline-md text-headline-md mb-2 line-clamp-1">Elite Smartwatch V4</h3>
+<div class="mt-auto">
+<div class="flex items-baseline gap-sm mb-4">
+<span class="text-primary font-bold text-lg">5.800.000đ</span>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-lg py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-secondary transition-colors">
+<span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+                                Thêm vào giỏ
+                            </button>
+</div>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="bg-white rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col group p-4 border border-outline-variant/30">
+<div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-surface-container-low mb-4">
+<img alt="Product" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuChrHEeLyvP9_zjVs4uca2yYfGfhDlLSvgAa--SvFawYR235xNFf07QY3arqDND3qvfshj6MkLJ5QX_l8k3WB5u1ZUcG8apAtnINKHDGkbUn7LC6feiydiTI-FPIEf7aq4VflqI8kloaUBAgcNzeT-P56bXtUfwL4mwmCeS5C40pyqfS6XOg_HBeejAst2WFyefBSsVS5KVwABUCGp4GloAiRfggyquqUt6SyhIb30uApRb-V6okttmM_Ieq4Tk0CX5dH7fwgG1dNX0">
+</div>
+<div class="flex flex-col flex-grow">
+<span class="text-xs text-on-surface-variant mb-1 uppercase tracking-tighter">Computing</span>
+<h3 class="font-headline-md text-headline-md mb-2 line-clamp-1">ProBook Slim 14</h3>
+<div class="mt-auto">
+<div class="flex items-baseline gap-sm mb-4">
+<span class="text-primary font-bold text-lg">28.990.000đ</span>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-lg py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-secondary transition-colors">
+<span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+                                Thêm vào giỏ
+                            </button>
+</div>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="bg-white rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col group p-4 border border-outline-variant/30">
+<div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-surface-container-low mb-4">
+<img alt="Product" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCx3ro4_xz_4wkkGy99VxDNUBILZPKtXvjMW62lman4T2ykerAcaPbkwARs-Qu1BuRmcOCGP0DToTBBn91TmDOm3JtG1SeSTk7340ncTom4g52BhcuK-VHaSkp5IAYlek5bI4kv236kqIqZoXU2dMzniOfWjsUcluOPI2kNvWLfMUK-EsOh24UbyH7loDKHtykkVeYJexLGc5MTJj0--wbYcPSDeksf9zCweK7O0_fA4MWQe-oMXD5wUyGju-dFfPoQA0qE6d7t5jB6">
+<span class="absolute top-2 left-2 bg-error text-on-primary font-label-sm text-[10px] px-2 py-1 rounded uppercase tracking-wider">Hot</span>
+</div>
+<div class="flex flex-col flex-grow">
+<span class="text-xs text-on-surface-variant mb-1 uppercase tracking-tighter">Accessories</span>
+<h3 class="font-headline-md text-headline-md mb-2 line-clamp-1">Mechanical Key K80</h3>
+<div class="mt-auto">
+<div class="flex items-baseline gap-sm mb-4">
+<span class="text-primary font-bold text-lg">1.850.000đ</span>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-lg py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-secondary transition-colors">
+<span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+                                Thêm vào giỏ
+                            </button>
+</div>
+</div>
+</div>
+<!-- Product Card 5 -->
+<div class="bg-white rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col group p-4 border border-outline-variant/30">
+<div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-surface-container-low mb-4">
+<img alt="Product" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwLDnjMTbHOliZ6TDCPdFim_ZMiDyouvxK9S-eUqAuYifXF2sa4bqpGevcJQcB0DcyNtscs3pdmrKXU5HrnaDYn4jSdxFnw6QxYaoC1FvJye6aHFpFf_1ZjpYl-67UsFtGbzrxNL5o6SQ_4ojlUcyPKT8osFKDoIcbRNc_W9aTUyv-7ZhT1KVxy9iv3FP1VkrPglRrEQ7Xfyiyb656XF6Q-lMUhnH91QaZjIy52HIIMN4bOdKkNkCOWjHI8HA7xTEZbWE8C84J_mv_">
+</div>
+<div class="flex flex-col flex-grow">
+<span class="text-xs text-on-surface-variant mb-1 uppercase tracking-tighter">Display</span>
+<h3 class="font-headline-md text-headline-md mb-2 line-clamp-1">UltraVision 4K Pro</h3>
+<div class="mt-auto">
+<div class="flex items-baseline gap-sm mb-4">
+<span class="text-primary font-bold text-lg">12.200.000đ</span>
+<span class="text-on-surface-variant text-xs line-through">15.000.000đ</span>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-lg py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-secondary transition-colors">
+<span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+                                Thêm vào giỏ
+                            </button>
+</div>
+</div>
+</div>
+<!-- Product Card 6 -->
+<div class="bg-white rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col group p-4 border border-outline-variant/30">
+<div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-surface-container-low mb-4">
+<img alt="Product" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpK6jpI6pe6qz6uuO6L13pue2hpbaDWkTKkc2h_uUXAmwBZv-rV0PUdHSZU7IPM_2wkaJHXHCI4rRksi8mS9Y84PqT3Gk1pvRTRhTAVtUYNjDhm49Z6m68sbL3ondNRFh4DZ2uZBrk1zTBiEuP6D1btCVmMGRw6N5MNTKIlgO1TqLtK7CsnGEuTCiswXodhbd6PSv6SrxMe-9T5VKxwFpDztLGmgfHhH7OVjjE0JOyjp4zQTik1uI8Dxx7u3hk0kibgpWCAyU9cQc-">
+<span class="absolute top-2 left-2 bg-accent text-on-accent font-label-sm text-[10px] px-2 py-1 rounded uppercase tracking-wider">Mới về</span>
+</div>
+<div class="flex flex-col flex-grow">
+<span class="text-xs text-on-surface-variant mb-1 uppercase tracking-tighter">Fashion</span>
+<h3 class="font-headline-md text-headline-md mb-2 line-clamp-1">Urban Comfort Sneaker</h3>
+<div class="mt-auto">
+<div class="flex items-baseline gap-sm mb-4">
+<span class="text-primary font-bold text-lg">1.550.000đ</span>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-lg py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-secondary transition-colors">
+<span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+                                Thêm vào giỏ
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination (Updated) -->
+<div class="mt-2xl flex justify-center items-center gap-sm">
+<button class="w-10 h-10 flex items-center justify-center bg-surface-container-low rounded-lg hover:text-primary transition-all">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center bg-primary text-on-primary rounded-lg">1</button>
+<button class="w-10 h-10 flex items-center justify-center bg-surface-container-low rounded-lg hover:text-primary transition-all">2</button>
+<button class="w-10 h-10 flex items-center justify-center bg-surface-container-low rounded-lg hover:text-primary transition-all">3</button>
+<span class="text-outline">...</span>
+<button class="w-10 h-10 flex items-center justify-center bg-surface-container-low rounded-lg hover:text-primary transition-all">12</button>
+<button class="w-10 h-10 flex items-center justify-center bg-surface-container-low rounded-lg hover:text-primary transition-all">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer (Updated to match SCREEN_5) -->
+<footer class="full-width bg-secondary text-on-secondary">
+<div class="w-full px-margin-desktop py-16 grid grid-cols-1 md:grid-cols-4 gap-gutter max-w-container-max mx-auto">
+<div class="flex flex-col gap-4">
+<span class="font-headline-lg text-headline-lg font-black text-on-primary">VIETSHOP</span>
+<p class="font-body-sm text-body-sm text-on-secondary/70">Nâng tầm trải nghiệm mua sắm trực tuyến của bạn với những sản phẩm chất lượng và dịch vụ tận tâm nhất.</p>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-label-lg text-label-lg uppercase opacity-70">Liên kết nhanh</h4>
+<div class="flex flex-col gap-2">
+<a class="font-body-sm text-body-sm text-on-secondary/80 hover:text-primary transition-colors" href="#">Về chúng tôi</a>
+<a class="font-body-sm text-body-sm text-on-secondary/80 hover:text-primary transition-colors" href="#">Sản phẩm mới</a>
+<a class="font-body-sm text-body-sm text-on-secondary/80 hover:text-primary transition-colors" href="#">Blog thời trang</a>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-label-lg text-label-lg uppercase opacity-70">Chính sách</h4>
+<div class="flex flex-col gap-2">
+<a class="font-body-sm text-body-sm text-on-secondary/80 hover:text-primary transition-colors" href="#">Chính sách bảo mật</a>
+<a class="font-body-sm text-body-sm text-on-secondary/80 hover:text-primary transition-colors" href="#">Điều khoản dịch vụ</a>
+<a class="font-body-sm text-body-sm text-on-secondary/80 hover:text-primary transition-colors" href="#">Câu hỏi thường gặp</a>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-label-lg text-label-lg uppercase opacity-70">Đăng ký bản tin</h4>
+<p class="font-body-sm text-body-sm text-on-secondary/80">Nhận thông tin khuyến mãi sớm nhất</p>
+<div class="flex mt-2">
+<input class="bg-white/10 border border-white/20 px-4 py-2 flex-grow focus:ring-0 text-on-secondary placeholder-on-secondary/40" placeholder="Email của bạn" type="email">
+<button class="bg-primary text-on-primary px-4 py-2 font-label-lg hover:bg-secondary transition-colors">Gửi</button>
+</div>
+</div>
+</div>
+<div class="max-w-container-max mx-auto px-margin-desktop py-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="font-label-sm text-label-sm text-on-secondary/60">© 2024 VIETSHOP. Bảo lưu mọi quyền.</p>
+<div class="flex gap-6">
+<span class="material-symbols-outlined text-on-secondary/60 hover:text-primary cursor-pointer transition-colors">social_leaderboard</span>
+<span class="material-symbols-outlined text-on-secondary/60 hover:text-primary cursor-pointer transition-colors">photo_camera</span>
+<span class="material-symbols-outlined text-on-secondary/60 hover:text-primary cursor-pointer transition-colors">play_circle</span>
+</div>
+</div>
+</footer>
+<script>
+    // Micro-interactions
+    document.querySelectorAll('button, a').forEach(el => {
+        el.addEventListener('mousedown', () => {
+            el.classList.add('scale-95');
+        });
+        el.addEventListener('mouseup', () => {
+            el.classList.remove('scale-95');
+        });
+        el.addEventListener('mouseleave', () => {
+            el.classList.remove('scale-95');
+        });
+    });
+</script>
+</body></html>
