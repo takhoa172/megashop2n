@@ -43,7 +43,7 @@ export default function AboutPage() {
       <div className="max-w-container-max mx-auto px-margin-desktop">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
           <div className="lg:col-span-5 space-y-lg">
-            <div className="bg-white border border-outline-variant/30 rounded-2xl p-xl shadow-sm">
+            <div className="bg-white border border-outline-variant/30 rounded-xl p-xl shadow-sm">
               <h2 className="font-title-lg text-title-lg text-on-background mb-xl">Thông tin liên hệ</h2>
               <div className="space-y-xl">
                 <div className="flex gap-md items-start">
@@ -92,7 +92,7 @@ export default function AboutPage() {
           </div>
 
           <div className="lg:col-span-7">
-            <div className="bg-white border border-outline-variant/30 rounded-2xl p-xl shadow-sm">
+            <div className="bg-white border border-outline-variant/30 rounded-xl p-xl shadow-sm">
               {submitted ? (
                 <div className="text-center py-3xl">
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-lg">

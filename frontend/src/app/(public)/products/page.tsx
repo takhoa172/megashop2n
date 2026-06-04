@@ -14,7 +14,7 @@ const PAGE_SIZE = 12
 function ProductListContent() {
   const searchParams = useSearchParams()
   const keyword = searchParams.get("keyword") || ""
-  const [selectedCat, setSelectedCat] = useState("")
+  const [selectedCats, setSelectedCats] = useState<string[]>([])
   const [sortBy, setSortBy] = useState("newest")
   const [page, setPage] = useState(1)
   const [priceFrom, setPriceFrom] = useState("")
@@ -41,7 +41,7 @@ function ProductListContent() {
 
   const params: Record<string, string> = { page_size: String(PAGE_SIZE), page: String(page) }
   if (keyword) params.keyword = keyword
-  if (selectedCat) params.category = selectedCat
+  if (selectedCats.length > 0) params.category = selectedCats.join(",")
   if (sortBy === "price-asc") params.ordering = "sale_price"
   else if (sortBy === "price-desc") params.ordering = "-sale_price"
   else params.ordering = "-created_at"
@@ -74,7 +74,9 @@ function ProductListContent() {
   }
 
   const handleCategoryChange = (catId: string) => {
-    setSelectedCat(catId)
+    setSelectedCats((prev) =>
+      prev.includes(catId) ? prev.filter((id) => id !== catId) : [...prev, catId]
+    )
     setPage(1)
   }
 
@@ -106,7 +108,7 @@ function ProductListContent() {
       </nav>
       <div className="flex flex-col md:flex-row gap-gutter">
         <aside className="w-full md:w-1/4 flex flex-col gap-xl">
-          <div className="bg-surface-container-low p-lg rounded-2xl">
+          <div className="bg-surface-container-low p-lg rounded-xl">
             <h2 className="font-title-lg text-title-lg mb-lg">Bộ lọc tìm kiếm</h2>
 
             <div className="mb-xl">
@@ -114,22 +116,20 @@ function ProductListContent() {
               <div className="flex flex-col gap-sm">
                 <label className="flex items-center gap-sm cursor-pointer group">
                   <input
-                    type="radio"
-                    name="category"
-                    checked={selectedCat === ""}
-                    onChange={() => handleCategoryChange("")}
-                    className="w-4 h-4 border-outline-variant text-primary focus:ring-primary"
+                    type="checkbox"
+                    checked={selectedCats.length === 0}
+                    onChange={() => setSelectedCats([])}
+                    className="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary"
                   />
                   <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">Tất cả</span>
                 </label>
                 {categories.map((cat: any) => (
                   <label key={cat.id} className="flex items-center gap-sm cursor-pointer group">
                     <input
-                      type="radio"
-                      name="category"
-                      checked={selectedCat === cat.id}
+                      type="checkbox"
+                      checked={selectedCats.includes(cat.id)}
                       onChange={() => handleCategoryChange(cat.id)}
-                      className="w-4 h-4 border-outline-variant text-primary focus:ring-primary"
+                      className="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary"
                     />
                     <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">{cat.name}</span>
                   </label>
@@ -253,7 +253,7 @@ function ProductListContent() {
                   <Link
                     key={product.id}
                     href={`/products/${product.id}`}
-                    className="bg-white rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 flex flex-col group p-4 border border-outline-variant/30"
+                    className="bg-white rounded-xl overflow-hidden hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 flex flex-col group p-4 border border-outline-variant/30"
                   >
                     <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-surface-container-low mb-4">
                       <img

@@ -52,7 +52,7 @@ export default function LoginPage() {
 
   return (
     <main className="flex-grow flex items-center justify-center py-3xl px-margin-mobile md:px-margin-desktop bg-background">
-      <div className="w-full max-w-[480px] bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-sm overflow-hidden relative">
+      <div className="w-full max-w-[480px] bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden relative">
         <div className="p-xl md:p-2xl" id="auth-container">
           {/* Login Form */}
           <section

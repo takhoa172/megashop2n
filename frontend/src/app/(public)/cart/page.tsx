@@ -33,7 +33,7 @@ export default function CartPage() {
       <div className="flex flex-col lg:flex-row gap-gutter">
         <div className="flex-1 space-y-md">
           {items.map((item) => (
-            <div key={item.id} className="flex gap-lg p-lg bg-white rounded-2xl border border-outline-variant items-center">
+            <div key={item.id} className="flex gap-lg p-lg bg-white rounded-xl border border-outline-variant items-center">
               <div className="w-20 h-20 rounded-xl overflow-hidden bg-surface-container-low flex-shrink-0">
                 <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
               </div>
@@ -76,7 +76,7 @@ export default function CartPage() {
         </div>
 
         <div className="lg:w-80">
-          <div className="bg-white rounded-2xl border border-outline-variant p-xl sticky top-28">
+          <div className="bg-white rounded-xl border border-outline-variant p-xl sticky top-28">
             <h2 className="font-title-lg text-title-lg mb-lg">Tổng đơn hàng</h2>
             <div className="flex justify-between mb-md">
               <span className="text-on-surface-variant">Tạm tính</span>

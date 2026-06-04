@@ -74,7 +74,7 @@ function BlogListContent() {
 
       {featured && (
         <section className="mb-3xl">
-          <div className="group relative bg-surface-container-lowest border border-outline-variant rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300">
+          <div className="group relative bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300">
             <div className="grid grid-cols-1 md:grid-cols-12">
               <div className="md:col-span-7 h-[300px] md:h-[500px] overflow-hidden">
                 <img
@@ -136,7 +136,7 @@ function BlogListContent() {
 
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
         {paginatedBlogs.map((post: any) => (
-          <Link key={post.id} href={`/blogs/${post.slug}`} className="flex flex-col bg-surface-container-lowest border border-outline-variant rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 group">
+          <Link key={post.id} href={`/blogs/${post.slug}`} className="flex flex-col bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 group">
             <div className="relative h-56 overflow-hidden">
               <img
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"

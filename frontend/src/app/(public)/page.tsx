@@ -35,7 +35,7 @@ function ProductCard({ product }: { product: any }) {
     setTimeout(() => setAdded(false), 2000)
   }
   return (
-    <Link href={`/products/${product.id}`} className="group border border-outline-variant rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,.08)] hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 p-4 bg-white">
+    <Link href={`/products/${product.id}`} className="group border border-outline-variant rounded-xl shadow-[0_4px_12px_rgba(0,0,0,.08)] hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 p-4 bg-white">
       <div className="relative overflow-hidden mb-4 aspect-[3/4] rounded-xl">
         <img
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -178,7 +178,7 @@ export default function HomePage() {
             </p>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-gutter text-on-background">
               {(priceZeroList.length > 0 ? priceZeroList.slice(0, 4) : placeholderProducts.slice(0, 4)).map((product: any) => (
-                <Link key={product.id} href={`/products/${product.id}`} className="bg-white p-4 rounded-2xl shadow-sm group">
+                <Link key={product.id} href={`/products/${product.id}`} className="bg-white p-4 rounded-xl shadow-sm group">
                   <div className="relative mb-4">
                     <img
                       className="w-full aspect-square object-cover rounded-xl"
@@ -210,7 +210,7 @@ export default function HomePage() {
         <div className="overflow-x-auto hide-scrollbar -mx-margin-mobile md:-mx-0">
           <div className="flex gap-gutter px-margin-mobile md:px-0 min-w-max md:min-w-0">
             {(budgetList.length > 0 ? budgetList : placeholderProducts).map((product: any) => (
-              <Link key={product.id} href={`/products/${product.id}`} className="bg-white p-4 rounded-2xl shadow-sm group min-w-[280px]">
+              <Link key={product.id} href={`/products/${product.id}`} className="bg-white p-4 rounded-xl shadow-sm group min-w-[280px]">
                 <div className="aspect-square overflow-hidden rounded-xl bg-surface-container mb-4">
                   <img
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform"
@@ -236,7 +236,7 @@ export default function HomePage() {
           {(blogList.length > 0 ? blogList : placeholderBlogs).map((post: any) => (
             <Link key={post.id} href={`/blogs/${post.slug}`} className="group block">
               <article>
-                <div className="overflow-hidden mb-6 h-[220px] rounded-2xl">
+                <div className="overflow-hidden mb-6 h-[220px] rounded-xl">
                   <img
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     src={post.featured_image || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800"}

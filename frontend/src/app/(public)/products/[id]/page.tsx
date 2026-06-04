@@ -72,7 +72,7 @@ export default function ProductDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
         {/* Gallery */}
         <div className="lg:col-span-7 flex flex-col gap-md">
-          <div className="bg-white rounded-2xl border border-outline-variant overflow-hidden aspect-square flex items-center justify-center p-md group transition-all duration-300 hover:shadow-lg">
+          <div className="bg-white rounded-xl border border-outline-variant overflow-hidden aspect-square flex items-center justify-center p-md group transition-all duration-300 hover:shadow-lg">
             <img
               alt={product.name}
               className="w-full h-full object-cover"
@@ -310,7 +310,7 @@ export default function ProductDetailPage() {
               <Link
                 key={product.id}
                 href={`/products/${product.id}`}
-                className="bg-white rounded-2xl border border-outline-variant p-md flex flex-col hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 group cursor-pointer"
+                className="bg-white rounded-xl border border-outline-variant p-md flex flex-col hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 group cursor-pointer"
               >
                 <div className="aspect-square bg-surface-container rounded-xl mb-md overflow-hidden relative">
                   <img
