@@ -52,7 +52,7 @@ function ProductCard({ product }: { product: any }) {
         ))}
         <span className="font-label-sm text-label-sm text-on-surface-variant ml-1">4.8 (120)</span>
       </div>
-      <p className="font-bold text-primary mb-4">{product.sale_price !== null ? formatCurrency(product.sale_price) : "Liên hệ"}</p>
+      <p className="font-bold text-primary mb-4">{product.sale_price != null ? (product.sale_price > 0 ? formatCurrency(product.sale_price) : "Miễn phí") : "Liên hệ"}</p>
       <button onClick={handleAddToCart} className="w-full bg-primary text-on-primary py-3 font-label-lg hover:bg-secondary hover:opacity-90 transition-all active:scale-95">{added ? "Đã thêm ✓" : "Thêm vào giỏ"}</button>
     </Link>
   )
@@ -156,7 +156,7 @@ export default function HomePage() {
                   </div>
                   <div className="min-w-0">
                     <h3 className="font-headline-md text-headline-md text-body-md truncate">{product.name}</h3>
-                    <p className="text-primary font-bold">{formatCurrency(product.sale_price || product.purchase_price)}</p>
+                    <p className="text-primary font-bold">{product.sale_price != null && product.sale_price > 0 ? formatCurrency(product.sale_price) : "Miễn phí"}</p>
                   </div>
                 </Link>
               )
@@ -219,7 +219,7 @@ export default function HomePage() {
                   />
                 </div>
                 <h4 className="font-label-lg text-secondary mb-1">{product.name}</h4>
-                <p className="text-primary font-bold text-[22px]">{formatCurrency(product.sale_price || product.purchase_price)}</p>
+                <p className="text-primary font-bold text-[22px]">{product.sale_price != null && product.sale_price > 0 ? formatCurrency(product.sale_price) : "Miễn phí"}</p>
               </Link>
             ))}
           </div>

@@ -12,7 +12,6 @@ cat_detail = BlogCategoryViewSet.as_view(
 
 urlpatterns = [
     path("", post_list, name="blogs-list"),
-    path("<uuid:pk>", post_detail, name="blogs-detail-pk"),
     path("<slug:slug>", post_detail, name="blogs-detail"),
     path("categories", cat_list, name="blog-categories"),
     path("categories/<uuid:pk>", cat_detail, name="blog-category-detail"),

@@ -271,9 +271,9 @@ function ProductListContent() {
                       <div className="mt-auto">
                         <div className="flex items-baseline gap-sm mb-4">
                           <span className="text-primary font-bold text-lg">
-                            {product.sale_price !== null ? formatCurrency(product.sale_price) : "Liên hệ"}
+                            {product.sale_price != null ? (product.sale_price > 0 ? formatCurrency(product.sale_price) : "Miễn phí") : "Liên hệ"}
                           </span>
-                          {product.purchase_price > 0 && product.sale_price !== null && product.sale_price < product.purchase_price && (
+                          {product.purchase_price > 0 && product.sale_price != null && product.sale_price < product.purchase_price && (
                             <span className="text-on-surface-variant text-xs line-through">
                               {formatCurrency(product.purchase_price)}
                             </span>

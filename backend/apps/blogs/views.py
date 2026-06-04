@@ -1,3 +1,4 @@
+import uuid
 from rest_framework import viewsets, filters
 from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404
@@ -37,8 +38,13 @@ class BlogPostViewSet(viewsets.ModelViewSet):
 
     def get_object(self):
         queryset = self.filter_queryset(self.get_queryset())
-        if "slug" in self.kwargs:
-            return get_object_or_404(queryset, slug=self.kwargs["slug"])
+        lookup = self.kwargs.get("slug")
+        if lookup:
+            try:
+                uuid.UUID(str(lookup))
+                return get_object_or_404(queryset, pk=lookup)
+            except (ValueError, AttributeError):
+                return get_object_or_404(queryset, slug=lookup)
         return super().get_object()
 
     def get_queryset(self):

@@ -116,9 +116,9 @@ export default function ProductDetailPage() {
           </div>
           <div className="flex items-baseline gap-md mb-lg">
             <span className="font-headline-md text-headline-md text-primary">
-              {product.sale_price !== null ? formatCurrency(product.sale_price) : "Liên hệ"}
+                    {product.sale_price != null ? (product.sale_price > 0 ? formatCurrency(product.sale_price) : "Miễn phí") : "Liên hệ"}
             </span>
-            {Number(product.purchase_price) > 0 && product.sale_price !== null && Number(product.sale_price) < Number(product.purchase_price) && (
+            {Number(product.purchase_price) > 0 && product.sale_price != null && Number(product.sale_price) < Number(product.purchase_price) && (
               <>
                 <span className="font-body-md text-body-md text-on-surface-variant line-through">
                   {formatCurrency(product.purchase_price)}
@@ -328,7 +328,7 @@ export default function ProductDetailPage() {
                 <h3 className="font-title-lg text-title-lg mb-sm line-clamp-1">{product.name}</h3>
                 <div className="mt-auto flex items-center justify-between">
                   <span className="font-body-lg text-body-lg font-bold text-primary">
-                    {product.sale_price !== null ? formatCurrency(product.sale_price) : "Liên hệ"}
+              {product.sale_price != null ? (product.sale_price > 0 ? formatCurrency(product.sale_price) : "Miễn phí") : "Liên hệ"}
                   </span>
                   <span className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
                     <span className="material-symbols-outlined text-[20px]">add_shopping_cart</span>
