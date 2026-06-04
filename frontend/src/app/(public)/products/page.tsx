@@ -251,7 +251,7 @@ function ProductListContent() {
                     href={`/products/${product.id}`}
                     className="bg-white rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 flex flex-col group p-4 border border-outline-variant/30"
                   >
-                    <div className="relative aspect-square overflow-hidden rounded-xl bg-surface-container-low mb-4">
+                    <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-surface-container-low mb-4">
                       <img
                         alt={product.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"

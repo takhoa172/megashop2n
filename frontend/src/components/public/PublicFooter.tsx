@@ -67,7 +67,7 @@ export function PublicFooter() {
             )}
           </div>
         </div>
-        <div className="border-t border-white/10 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="max-w-container-max mx-auto px-margin-desktop border-t border-white/10 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-label-sm text-on-secondary/60">
             {footer?.copyright_text || "© 2024 VIETSHOP. Bảo lưu mọi quyền."}
           </p>

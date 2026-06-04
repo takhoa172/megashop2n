@@ -36,7 +36,7 @@ function ProductCard({ product }: { product: any }) {
   }
   return (
     <Link href={`/products/${product.id}`} className="group border border-outline-variant rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,.08)] hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 p-4 bg-white">
-      <div className="relative overflow-hidden mb-4 aspect-square rounded-xl">
+      <div className="relative overflow-hidden mb-4 aspect-[3/4] rounded-xl">
         <img
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           src={product.images?.[0]?.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400"}
@@ -98,8 +98,8 @@ export default function HomePage() {
           </div>
           <Link href="/products" className="text-primary font-label-lg border-b border-primary hover:text-primary/70 hover:border-primary/70 transition-colors">Xem tất cả</Link>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-gutter">
-          {(suggestedList.length > 0 ? suggestedList.slice(0, 4) : placeholderProducts.slice(0, 4)).map((product: any) => (
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-gutter">
+          {(suggestedList.length > 0 ? suggestedList.slice(0, 5) : placeholderProducts.slice(0, 5)).map((product: any) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
@@ -208,20 +208,22 @@ export default function HomePage() {
           <div className="h-[1px] flex-grow bg-outline-variant" />
           <span className="font-label-lg text-primary">Dưới 500k</span>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-gutter">
-          {(budgetList.length > 0 ? budgetList : placeholderProducts).map((product: any) => (
-            <Link key={product.id} href={`/products/${product.id}`} className="bg-white p-4 rounded-2xl shadow-sm group">
-              <div className="aspect-square overflow-hidden rounded-xl bg-surface-container mb-4">
-                <img
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                  src={product.images?.[0]?.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400"}
-                  alt={product.name}
-                />
-              </div>
-              <h4 className="font-label-lg text-secondary mb-1">{product.name}</h4>
-              <p className="text-primary font-bold text-[22px]">{formatCurrency(product.sale_price || product.purchase_price)}</p>
-            </Link>
-          ))}
+        <div className="overflow-x-auto hide-scrollbar -mx-margin-mobile md:-mx-0">
+          <div className="flex gap-gutter px-margin-mobile md:px-0 min-w-max md:min-w-0">
+            {(budgetList.length > 0 ? budgetList : placeholderProducts).map((product: any) => (
+              <Link key={product.id} href={`/products/${product.id}`} className="bg-white p-4 rounded-2xl shadow-sm group min-w-[280px]">
+                <div className="aspect-square overflow-hidden rounded-xl bg-surface-container mb-4">
+                  <img
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    src={product.images?.[0]?.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400"}
+                    alt={product.name}
+                  />
+                </div>
+                <h4 className="font-label-lg text-secondary mb-1">{product.name}</h4>
+                <p className="text-primary font-bold text-[22px]">{formatCurrency(product.sale_price || product.purchase_price)}</p>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
