@@ -47,11 +47,10 @@ function ProductCard({ product }: { product: any }) {
       <p className="text-on-surface-variant font-label-sm mb-1 uppercase">{product.category_name || "Sản phẩm"}</p>
       <h3 className="font-headline-md text-headline-md mb-2 truncate">{product.name}</h3>
       <div className="flex items-center gap-1 mb-3">
-        <span className="material-symbols-outlined text-accent text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-        <span className="material-symbols-outlined text-accent text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-        <span className="material-symbols-outlined text-accent text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-        <span className="material-symbols-outlined text-accent text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-        <span className="material-symbols-outlined text-accent text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>star_half</span>
+        {[1, 2, 3, 4, 5].map((s) => (
+          <span key={s} className="material-symbols-outlined text-accent text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+        ))}
+        <span className="font-label-sm text-label-sm text-on-surface-variant ml-1">4.8 (120)</span>
       </div>
       <p className="font-bold text-primary mb-4">{product.sale_price !== null ? formatCurrency(product.sale_price) : "Liên hệ"}</p>
       <button onClick={handleAddToCart} className="w-full bg-primary text-on-primary py-3 font-label-lg hover:bg-secondary hover:opacity-90 transition-all active:scale-95">{added ? "Đã thêm ✓" : "Thêm vào giỏ"}</button>

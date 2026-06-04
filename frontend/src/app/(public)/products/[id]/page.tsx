@@ -178,7 +178,7 @@ export default function ProductDetailPage() {
       {/* Tabs Section */}
       <div className="mt-3xl border-t border-outline-variant pt-2xl">
         <div className="flex border-b border-outline-variant gap-2xl overflow-x-auto no-scrollbar">
-          {["description", "specifications"].map((tab) => (
+          {["description", "specifications", "reviews"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -188,18 +188,34 @@ export default function ProductDetailPage() {
                   : "text-on-surface-variant hover:text-on-surface transition-colors"
               }`}
             >
-              {tab === "description" ? "Mô tả sản phẩm" : "Thông số kỹ thuật"}
+              {tab === "description" ? "Mô tả" : tab === "specifications" ? "Thông số kỹ thuật" : "Đánh giá"}
             </button>
           ))}
         </div>
         <div className="py-2xl">
           {activeTab === "description" ? (
             <div className="max-w-3xl">
-              <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed whitespace-pre-line">
+              <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed whitespace-pre-line mb-xl">
                 {product.description || "Sản phẩm chất lượng cao từ VIETSHOP. Chúng tôi cam kết mang đến những sản phẩm tốt nhất với giá cả cạnh tranh nhất thị trường."}
               </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-lg">
+                <div className="flex items-start gap-md bg-surface-container-low p-lg rounded-xl">
+                  <span className="material-symbols-outlined text-primary text-3xl">battery_charging_full</span>
+                  <div>
+                    <h4 className="font-title-lg text-title-lg mb-xs">40H Battery Life</h4>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">Thời lượng pin siêu lâu dài</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-md bg-surface-container-low p-lg rounded-xl">
+                  <span className="material-symbols-outlined text-primary text-3xl">noise_aware</span>
+                  <div>
+                    <h4 className="font-title-lg text-title-lg mb-xs">Smart ANC</h4>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">Chống ồn thông minh</p>
+                  </div>
+                </div>
+              </div>
             </div>
-          ) : (
+          ) : activeTab === "specifications" ? (
             <div className="max-w-3xl">
               <h2 className="font-headline-md text-headline-md mb-md">Thông số kỹ thuật</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-xl">
@@ -233,6 +249,44 @@ export default function ProductDetailPage() {
                     <p className="font-body-sm text-body-sm text-on-surface-variant">{new Date(product.created_at).toLocaleDateString("vi-VN")}</p>
                   </div>
                 </div>
+              </div>
+            </div>
+          ) : (
+            <div className="max-w-3xl">
+              <h2 className="font-headline-md text-headline-md mb-lg">Đánh giá khách hàng</h2>
+              <div className="flex items-center gap-xl mb-xl p-lg bg-surface-container-low rounded-xl">
+                <div className="text-center">
+                  <span className="font-display-lg text-display-lg text-primary">4.8</span>
+                  <p className="font-label-sm text-label-sm text-on-surface-variant">trên 5</p>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-md mb-sm">
+                    <div className="flex text-accent">
+                      {[1, 2, 3, 4, 5].map((s) => <span key={s} className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" as any }}>star</span>)}
+                    </div>
+                    <span className="font-label-sm text-label-sm text-on-surface-variant">124 đánh giá</span>
+                  </div>
+                  <p className="font-body-md text-body-md text-on-surface-variant">Khách hàng đánh giá sản phẩm này rất tốt!</p>
+                </div>
+              </div>
+              <div className="space-y-lg">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="border-b border-outline-variant pb-lg">
+                    <div className="flex items-center gap-sm mb-sm">
+                      <div className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center">
+                        <span className="material-symbols-outlined text-on-surface-variant">person</span>
+                      </div>
+                      <div>
+                        <p className="font-title-md text-title-md">Nguyễn Văn A</p>
+                        <div className="flex text-accent">
+                          {[1, 2, 3, 4, 5].map((s) => <span key={s} className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: s <= 4 ? "'FILL' 1" as any : undefined }}>{s <= 4 ? "star" : "star"}</span>)}
+                        </div>
+                      </div>
+                      <span className="ml-auto font-label-sm text-label-sm text-on-surface-variant">2 ngày trước</span>
+                    </div>
+                    <p className="font-body-md text-body-md text-on-surface-variant">Sản phẩm chất lượng tốt, đóng gói cẩn thận, giao hàng nhanh. Rất đáng mua!</p>
+                  </div>
+                ))}
               </div>
             </div>
           )}

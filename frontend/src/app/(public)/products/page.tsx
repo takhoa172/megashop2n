@@ -87,8 +87,11 @@ function ProductListContent() {
     if (product.is_suggested) {
       return <span className="absolute top-2 left-2 bg-error text-on-primary font-label-sm text-[10px] px-2 py-1 rounded uppercase tracking-wider">Hot</span>
     }
-    if (product.sale_price === 0) {
-      return <span className="absolute top-2 left-2 bg-accent text-on-accent font-label-sm text-[10px] px-2 py-1 rounded uppercase tracking-wider">FREE</span>
+    const discount = product.purchase_price > 0 && product.sale_price !== null && product.sale_price > 0
+      ? Math.round((1 - product.sale_price / product.purchase_price) * 100)
+      : 0
+    if (discount > 0) {
+      return <span className="absolute top-2 left-2 bg-accent text-on-accent font-label-sm text-[10px] px-2 py-1 rounded uppercase tracking-wider">-{discount}%</span>
     }
     return null
   }
@@ -238,6 +241,7 @@ function ProductListContent() {
                 <option value="newest">Mới nhất</option>
                 <option value="price-asc">Giá tăng dần</option>
                 <option value="price-desc">Giá giảm dần</option>
+                <option value="best-selling">Bán chạy nhất</option>
               </select>
             </div>
           </div>

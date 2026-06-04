@@ -4,8 +4,11 @@ import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { getPublicFooter } from "@/services/public"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 export function PublicFooter() {
+  const pathname = usePathname()
+  const isLoginPage = pathname === "/login"
   const { data: footer } = useQuery({
     queryKey: ["public-footer"],
     queryFn: getPublicFooter,
@@ -16,6 +19,24 @@ export function PublicFooter() {
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault()
     if (email) setSubscribed(true)
+  }
+
+  if (isLoginPage) {
+    return (
+      <footer className="bg-on-background text-on-surface py-lg">
+        <div className="max-w-container-max mx-auto px-margin-desktop flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="font-label-sm text-label-sm opacity-60">
+            {footer?.copyright_text || "© 2024 VIETSHOP. Bảo lưu mọi quyền."}
+          </p>
+          <div className="flex gap-lg">
+            <Link href="#" className="font-label-sm text-label-sm opacity-60 hover:opacity-100 transition-opacity">Chính sách bảo mật</Link>
+            <Link href="#" className="font-label-sm text-label-sm opacity-60 hover:opacity-100 transition-opacity">Điều khoản dịch vụ</Link>
+            <Link href="#" className="font-label-sm text-label-sm opacity-60 hover:opacity-100 transition-opacity">Câu hỏi thường gặp</Link>
+            <Link href="#" className="font-label-sm text-label-sm opacity-60 hover:opacity-100 transition-opacity">Liên hệ</Link>
+          </div>
+        </div>
+      </footer>
+    )
   }
 
   return (
