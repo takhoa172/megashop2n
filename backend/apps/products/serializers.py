@@ -50,3 +50,8 @@ class ProductCreateSerializer(serializers.ModelSerializer):
         if value < 0:
             raise serializers.ValidationError("Purchase price must be >= 0")
         return value
+
+    def validate_sale_price(self, value):
+        if value is not None and value < 0:
+            raise serializers.ValidationError("Sale price must be >= 0")
+        return value

@@ -1,5 +1,6 @@
 from rest_framework import viewsets, filters
 from rest_framework.permissions import AllowAny
+from django.shortcuts import get_object_or_404
 from .models import BlogPost, BlogCategory
 from .serializers import (
     BlogPostSerializer,
@@ -33,6 +34,12 @@ class BlogPostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+        if "slug" in self.kwargs:
+            return get_object_or_404(queryset, slug=self.kwargs["slug"])
+        return super().get_object()
 
     def get_queryset(self):
         qs = super().get_queryset()

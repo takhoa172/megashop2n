@@ -25,23 +25,23 @@ export default function ReportsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Reports</h1>
+      <h1 className="text-2xl font-bold">Reports (Báo cáo)</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-          <p className="text-sm text-slate-500">Yearly Revenue</p>
+          <p className="text-sm text-slate-500">Yearly Revenue (Doanh thu năm)</p>
           <p className="text-3xl font-bold text-blue-600">
             {formatCurrency(summary?.yearly.revenue || 0)}
           </p>
         </div>
         <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-          <p className="text-sm text-slate-500">Yearly Cost</p>
+          <p className="text-sm text-slate-500">Yearly Cost (Chi phí năm)</p>
           <p className="text-3xl font-bold text-red-600">
             {formatCurrency(summary?.yearly.cost || 0)}
           </p>
         </div>
         <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-          <p className="text-sm text-slate-500">Yearly Profit</p>
+          <p className="text-sm text-slate-500">Yearly Profit (Lợi nhuận năm)</p>
           <p className="text-3xl font-bold text-green-600">
             {formatCurrency(summary?.yearly.profit || 0)}
           </p>

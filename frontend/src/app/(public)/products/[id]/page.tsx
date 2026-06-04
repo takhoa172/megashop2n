@@ -6,12 +6,15 @@ import { useState } from "react"
 import Link from "next/link"
 import { getPublicProduct, getSuggested } from "@/services/public"
 import { formatCurrency } from "@/lib/utils"
+import { useCart } from "@/contexts/CartContext"
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>()
   const [quantity, setQuantity] = useState(1)
   const [selectedImage, setSelectedImage] = useState(0)
   const [activeTab, setActiveTab] = useState("description")
+  const [added, setAdded] = useState(false)
+  const { addItem } = useCart()
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", id],
@@ -20,8 +23,20 @@ export default function ProductDetailPage() {
 
   const { data: related } = useQuery({
     queryKey: ["suggested"],
-    queryFn: getSuggested,
+    queryFn: () => getSuggested(),
   })
+
+  const handleAddToCart = () => {
+    if (!product) return
+    addItem({
+      id: product.id,
+      name: product.name,
+      image: product.images?.[0]?.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400",
+      price: product.sale_price ?? product.purchase_price,
+    })
+    setAdded(true)
+    setTimeout(() => setAdded(false), 2000)
+  }
 
   if (isLoading) {
     return (
@@ -103,13 +118,13 @@ export default function ProductDetailPage() {
             <span className="font-headline-md text-headline-md text-primary">
               {product.sale_price !== null ? formatCurrency(product.sale_price) : "Liên hệ"}
             </span>
-            {product.purchase_price > 0 && product.sale_price > product.purchase_price && (
+            {Number(product.purchase_price) > 0 && product.sale_price !== null && Number(product.sale_price) < Number(product.purchase_price) && (
               <>
                 <span className="font-body-md text-body-md text-on-surface-variant line-through">
                   {formatCurrency(product.purchase_price)}
                 </span>
                 <span className="bg-error/10 text-error px-sm py-xs rounded font-label-sm text-label-sm">
-                  -{Math.round((1 - product.sale_price / product.purchase_price) * 100)}%
+                  -{Math.round((1 - Number(product.sale_price) / Number(product.purchase_price)) * 100)}%
                 </span>
               </>
             )}
@@ -150,8 +165,8 @@ export default function ProductDetailPage() {
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-gutter">
-            <button className="flex-1 bg-primary text-on-primary py-lg rounded-xl font-title-lg text-title-lg shadow-sm hover:bg-primary/90 transition-all active:scale-[0.98]">
-              Thêm vào giỏ
+            <button onClick={handleAddToCart} className="flex-1 bg-primary text-on-primary py-lg rounded-xl font-title-lg text-title-lg shadow-sm hover:bg-primary/90 transition-all active:scale-[0.98]">
+              {added ? "Đã thêm ✓" : "Thêm vào giỏ"}
             </button>
             <button className="flex-1 border border-primary text-primary py-lg rounded-xl font-title-lg text-title-lg hover:bg-primary/5 transition-all active:scale-[0.98]">
               Mua ngay
@@ -163,7 +178,7 @@ export default function ProductDetailPage() {
       {/* Tabs Section */}
       <div className="mt-3xl border-t border-outline-variant pt-2xl">
         <div className="flex border-b border-outline-variant gap-2xl overflow-x-auto no-scrollbar">
-          {["description", "specifications", "reviews"].map((tab) => (
+          {["description", "specifications"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -173,33 +188,54 @@ export default function ProductDetailPage() {
                   : "text-on-surface-variant hover:text-on-surface transition-colors"
               }`}
             >
-              {tab === "description" ? "Description" : tab === "specifications" ? "Specifications" : "Customer Reviews"}
+              {tab === "description" ? "Mô tả sản phẩm" : "Thông số kỹ thuật"}
             </button>
           ))}
         </div>
         <div className="py-2xl">
-          <div className="max-w-3xl">
-            <h2 className="font-headline-md text-headline-md mb-md">Engineered for Perfection</h2>
-            <p className="font-body-lg text-body-lg text-on-surface-variant mb-xl">
-              The Wireless Studio X1 provides a seamless listening experience with advanced acoustic technology. Our custom-designed 40mm drivers deliver rich, spatial sound that places you at the center of your music. Whether you're in a busy commute or a quiet office, the intelligent ANC adapts to your environment.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-xl">
-              <div className="flex items-start gap-md">
-                <span className="material-symbols-outlined text-primary p-sm bg-surface-container rounded-xl">battery_charging_full</span>
-                <div>
-                  <h4 className="font-title-lg text-title-lg mb-xs">40H Battery Life</h4>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant">Listen for days without needing a charge. Quick charge gives 3 hours in 10 mins.</p>
+          {activeTab === "description" ? (
+            <div className="max-w-3xl">
+              <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed whitespace-pre-line">
+                {product.description || "Sản phẩm chất lượng cao từ VIETSHOP. Chúng tôi cam kết mang đến những sản phẩm tốt nhất với giá cả cạnh tranh nhất thị trường."}
+              </p>
+            </div>
+          ) : (
+            <div className="max-w-3xl">
+              <h2 className="font-headline-md text-headline-md mb-md">Thông số kỹ thuật</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-xl">
+                <div className="flex items-start gap-md">
+                  <span className="material-symbols-outlined text-primary p-sm bg-surface-container rounded-xl">inventory_2</span>
+                  <div>
+                    <h4 className="font-title-lg text-title-lg mb-xs">SKU</h4>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">{product.sku}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-start gap-md">
-                <span className="material-symbols-outlined text-primary p-sm bg-surface-container rounded-xl">noise_aware</span>
-                <div>
-                  <h4 className="font-title-lg text-title-lg mb-xs">Smart ANC</h4>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant">Three levels of active noise cancellation to suit any environment.</p>
+                <div className="flex items-start gap-md">
+                  <span className="material-symbols-outlined text-primary p-sm bg-surface-container rounded-xl">category</span>
+                  <div>
+                    <h4 className="font-title-lg text-title-lg mb-xs">Danh mục</h4>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">{product.category_name || "Chưa phân loại"}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-md">
+                  <span className="material-symbols-outlined text-primary p-sm bg-surface-container rounded-xl">sell</span>
+                  <div>
+                    <h4 className="font-title-lg text-title-lg mb-xs">Trạng thái</h4>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">
+                      {product.status === "in_stock" ? "Còn hàng" : product.status === "sold" ? "Đã bán" : "Chờ định giá"}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-md">
+                  <span className="material-symbols-outlined text-primary p-sm bg-surface-container rounded-xl">calendar_today</span>
+                  <div>
+                    <h4 className="font-title-lg text-title-lg mb-xs">Ngày tạo</h4>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">{new Date(product.created_at).toLocaleDateString("vi-VN")}</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 

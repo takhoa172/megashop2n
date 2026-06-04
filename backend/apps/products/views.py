@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status
+from rest_framework import filters, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -19,8 +19,9 @@ class ProductViewSet(viewsets.ModelViewSet):
         if self.action in ["list", "retrieve"]:
             return [AllowAny()]
         return [p() for p in self.permission_classes]
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_class = ProductFilter
+    ordering_fields = ["sale_price", "purchase_price", "created_at", "name"]
     lookup_field = "id"
 
     def get_serializer_class(self):
@@ -30,9 +31,10 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         response = super().retrieve(request, *args, **kwargs)
-        product = self.get_object()
-        ip = request.META.get("REMOTE_ADDR", "")
-        ProductView.objects.create(product=product, ip_address=ip)
+        if not request.user.is_authenticated or request.user.role not in ["SUPER_ADMIN", "MANAGER", "STAFF"]:
+            product = response.data
+            ip = request.META.get("REMOTE_ADDR", "")
+            ProductView.objects.create(product_id=product["id"], ip_address=ip)
         return response
 
     def perform_create(self, serializer):

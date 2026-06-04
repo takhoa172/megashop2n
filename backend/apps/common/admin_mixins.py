@@ -21,13 +21,64 @@ class CroppableFileWidget(forms.FileInput):
         )
 
     def render(self, name, value, attrs=None, renderer=None):
-        html = super().render(name, value, attrs, renderer)
-        html += format_html(
-            '<div id="cropper-container-{0}" class="cropper-container"'
-            '  style="display:none;margin-top:8px;max-width:600px">'
-            '  <img id="cropper-img-{0}" style="max-width:100%">'
-            "</div>",
-            name,
+        attrs = attrs or {}
+        attrs["class"] = attrs.get("class", "") + " croppable-file-input"
+        file_input_html = super().render(name, value, attrs, renderer)
+        wrapper_id = f"dropzone-wrapper-{name}"
+        preview_id = f"dropzone-preview-{name}"
+        container_id = f"cropper-container-{name}"
+        img_id = f"cropper-img-{name}"
+        current_url = value if value and not hasattr(value, "url") else ""
+
+        preview_style = "display:none" if not current_url else "display:block"
+        placeholder_style = "display:none" if current_url else "display:block"
+        if current_url:
+            preview_img_html = format_html(
+                '<img id="dropzone-img-{name}" src="{url}"'
+                '  style="max-width:100%;max-height:300px;border-radius:4px">',
+                name=name, url=current_url,
+            )
+        else:
+            preview_img_html = format_html(
+                '<img id="dropzone-img-{name}" style="max-width:100%;max-height:300px;border-radius:4px">',
+                name=name,
+            )
+
+        html = format_html(
+            '<div id="{wrapper_id}" class="dropzone-wrapper"'
+            '  data-current-url="{current_url}"'
+            '  style="border:2px dashed #ccc;border-radius:8px;padding:24px;'
+            '         text-align:center;cursor:pointer;background:#fafafa;'
+            '         transition:border-color .2s;position:relative">'
+            '  <div class="dropzone-placeholder" style="color:#888;font-size:14px;{placeholder_style}">'
+            '    <div style="font-size:32px;margin-bottom:8px">📁</div>'
+            '    <div><strong>Kéo thả ảnh vào đây</strong></div>'
+            '    <div style="margin-top:4px;font-size:12px">hoặc nhấp để chọn file</div>'
+            '  </div>'
+            '  <div id="{preview_id}" class="dropzone-preview"'
+            '    style="{preview_style};position:relative">'
+            '    {preview_img}'
+            '    <button type="button" class="dropzone-remove"'
+            '      style="position:absolute;top:-8px;right:-8px;width:24px;height:24px;'
+            '             border-radius:50%;border:none;background:#e74c3c;color:#fff;'
+            '             cursor:pointer;font-size:14px;line-height:24px">×</button>'
+            '  </div>'
+            '  {file_input}'
+            '  <div id="{container_id}" class="cropper-container"'
+            '    style="display:none;margin-top:8px;max-width:600px">'
+            '    <img id="{img_id}" style="max-width:100%">'
+            '  </div>'
+            '</div>',
+            wrapper_id=wrapper_id,
+            current_url=current_url,
+            placeholder_style=placeholder_style,
+            preview_id=preview_id,
+            preview_style=preview_style,
+            preview_img=preview_img_html,
+            name=name,
+            file_input=file_input_html,
+            container_id=container_id,
+            img_id=img_id,
         )
         return html
 

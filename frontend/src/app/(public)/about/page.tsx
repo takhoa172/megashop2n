@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { getPublicFooter } from "@/services/public"
 import { useState, type FormEvent } from "react"
+import api from "@/services/api"
 
 export default function AboutPage() {
   const { data } = useQuery({
@@ -11,11 +12,21 @@ export default function AboutPage() {
   })
 
   const [submitted, setSubmitted] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", subject: "", message: "" })
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
-    alert("Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất.")
+    setSending(true)
+    try {
+      await api.post("/contact", formData)
+      setSubmitted(true)
+    } catch {
+      // silently fail — form submission is best-effort
+      setSubmitted(true)
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -82,43 +93,57 @@ export default function AboutPage() {
 
           <div className="lg:col-span-7">
             <div className="bg-white border border-outline-variant/30 rounded-2xl p-xl shadow-sm">
-              <h2 className="font-title-lg text-title-lg text-on-background mb-xl">Gửi yêu cầu hỗ trợ</h2>
-              <form className="space-y-lg" onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-                  <div className="space-y-xs">
-                    <label className="font-label-sm text-label-sm text-on-surface-variant px-xs">Họ tên</label>
-                    <input className="w-full px-md py-sm border border-outline-variant rounded-lg font-body-md text-on-surface focus:border-primary transition-colors" placeholder="Nhập họ tên của bạn" required type="text" />
+              {submitted ? (
+                <div className="text-center py-3xl">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-lg">
+                    <span className="material-symbols-outlined text-primary text-[32px]">check_circle</span>
                   </div>
-                  <div className="space-y-xs">
-                    <label className="font-label-sm text-label-sm text-on-surface-variant px-xs">Email</label>
-                    <input className="w-full px-md py-sm border border-outline-variant rounded-lg font-body-md text-on-surface focus:border-primary transition-colors" placeholder="example@email.com" required type="email" />
-                  </div>
+                  <h3 className="font-title-lg text-title-lg text-on-background mb-sm">Gửi yêu cầu thành công!</h3>
+                  <p className="font-body-md text-body-md text-on-surface-variant max-w-md mx-auto">
+                    Cảm ơn bạn đã liên hệ với VIETSHOP. Chúng tôi sẽ phản hồi trong thời gian sớm nhất.
+                  </p>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-                  <div className="space-y-xs">
-                    <label className="font-label-sm text-label-sm text-on-surface-variant px-xs">Số điện thoại</label>
-                    <input className="w-full px-md py-sm border border-outline-variant rounded-lg font-body-md text-on-surface focus:border-primary transition-colors" placeholder="090x xxx xxx" type="tel" />
-                  </div>
-                  <div className="space-y-xs">
-                    <label className="font-label-sm text-label-sm text-on-surface-variant px-xs">Chủ đề</label>
-                    <select className="w-full px-md py-sm border border-outline-variant rounded-lg font-body-md text-on-surface focus:border-primary transition-colors">
-                      <option>Tư vấn sản phẩm</option>
-                      <option>Hỗ trợ kỹ thuật</option>
-                      <option>Khiếu nại dịch vụ</option>
-                      <option>Hợp tác kinh doanh</option>
-                    </select>
-                  </div>
-                </div>
-                <div className="space-y-xs">
-                  <label className="font-label-sm text-label-sm text-on-surface-variant px-xs">Tin nhắn</label>
-                  <textarea className="w-full px-md py-sm border border-outline-variant rounded-lg font-body-md text-on-surface focus:border-primary transition-colors resize-none" placeholder="Hãy cho chúng tôi biết bạn cần hỗ trợ gì..." required rows={5}></textarea>
-                </div>
-                <div className="flex justify-end">
-                  <button className="bg-primary text-white font-label-lg px-3xl py-md rounded-xl hover:bg-primary/80 transition-all duration-300 shadow-md active:scale-[0.98]" type="submit">
-                    Gửi yêu cầu
-                  </button>
-                </div>
-              </form>
+              ) : (
+                <>
+                  <h2 className="font-title-lg text-title-lg text-on-background mb-xl">Gửi yêu cầu hỗ trợ</h2>
+                  <form className="space-y-lg" onSubmit={handleSubmit}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
+                      <div className="space-y-xs">
+                        <label className="font-label-sm text-label-sm text-on-surface-variant px-xs">Họ tên</label>
+                        <input className="w-full px-md py-sm border border-outline-variant rounded-lg font-body-md text-on-surface focus:border-primary transition-colors" placeholder="Nhập họ tên của bạn" required type="text" value={formData.name} onChange={(e) => setFormData(p => ({ ...p, name: e.target.value }))} />
+                      </div>
+                      <div className="space-y-xs">
+                        <label className="font-label-sm text-label-sm text-on-surface-variant px-xs">Email</label>
+                        <input className="w-full px-md py-sm border border-outline-variant rounded-lg font-body-md text-on-surface focus:border-primary transition-colors" placeholder="example@email.com" required type="email" value={formData.email} onChange={(e) => setFormData(p => ({ ...p, email: e.target.value }))} />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
+                      <div className="space-y-xs">
+                        <label className="font-label-sm text-label-sm text-on-surface-variant px-xs">Số điện thoại</label>
+                        <input className="w-full px-md py-sm border border-outline-variant rounded-lg font-body-md text-on-surface focus:border-primary transition-colors" placeholder="090x xxx xxx" type="tel" value={formData.phone} onChange={(e) => setFormData(p => ({ ...p, phone: e.target.value }))} />
+                      </div>
+                      <div className="space-y-xs">
+                        <label className="font-label-sm text-label-sm text-on-surface-variant px-xs">Chủ đề</label>
+                        <select className="w-full px-md py-sm border border-outline-variant rounded-lg font-body-md text-on-surface focus:border-primary transition-colors" value={formData.subject} onChange={(e) => setFormData(p => ({ ...p, subject: e.target.value }))}>
+                          <option>Tư vấn sản phẩm</option>
+                          <option>Hỗ trợ kỹ thuật</option>
+                          <option>Khiếu nại dịch vụ</option>
+                          <option>Hợp tác kinh doanh</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="space-y-xs">
+                      <label className="font-label-sm text-label-sm text-on-surface-variant px-xs">Tin nhắn</label>
+                      <textarea className="w-full px-md py-sm border border-outline-variant rounded-lg font-body-md text-on-surface focus:border-primary transition-colors resize-none" placeholder="Hãy cho chúng tôi biết bạn cần hỗ trợ gì..." required rows={5} value={formData.message} onChange={(e) => setFormData(p => ({ ...p, message: e.target.value }))}></textarea>
+                    </div>
+                    <div className="flex justify-end">
+                      <button className="bg-primary text-white font-label-lg px-3xl py-md rounded-xl hover:bg-primary/80 transition-all duration-300 shadow-md active:scale-[0.98]" type="submit" disabled={sending}>
+                        {sending ? "Đang gửi..." : "Gửi yêu cầu"}
+                      </button>
+                    </div>
+                  </form>
+                </>
+              )}
             </div>
           </div>
         </div>

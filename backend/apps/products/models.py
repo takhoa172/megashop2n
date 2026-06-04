@@ -20,7 +20,8 @@ class Product(models.Model):
     description = models.TextField(blank=True, null=True)
     purchase_price = models.DecimalField(max_digits=15, decimal_places=2, default=0)
     sale_price = models.DecimalField(
-        max_digits=15, decimal_places=2, null=True, blank=True
+        max_digits=15, decimal_places=2, null=True, blank=True,
+        help_text="null = chưa set, 0 = thanh lý miễn phí, >0 = giá bán"
     )
     status = models.CharField(
         max_length=30, choices=Status.choices, default=Status.PENDING_PRICE

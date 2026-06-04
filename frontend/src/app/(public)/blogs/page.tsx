@@ -41,7 +41,7 @@ function BlogListContent() {
 
   const { data: blogs, isLoading } = useQuery({
     queryKey: ["public-blogs"],
-    queryFn: getPublicBlogs,
+    queryFn: () => getPublicBlogs(),
   })
 
   const blogList = blogs || []

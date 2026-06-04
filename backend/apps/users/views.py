@@ -82,6 +82,8 @@ class RefreshView(APIView):
 
 
 class LogoutView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         try:
             refresh = RefreshToken(request.data["refresh"])

@@ -6,10 +6,12 @@ import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { getSiteSettings } from "@/services/public"
 import { useAuth } from "@/contexts/AuthContext"
+import { useCart } from "@/contexts/CartContext"
 
 const defaultNavLinks = [
   { href: "/", label: "Trang chủ" },
   { href: "/products", label: "Sản phẩm" },
+  { href: "/products", label: "Danh mục" },
   { href: "/blogs", label: "Blog" },
   { href: "/about", label: "Giới thiệu" },
 ]
@@ -18,6 +20,7 @@ export function PublicNavbar() {
   const pathname = usePathname()
   const router = useRouter()
   const { user } = useAuth()
+  const { itemCount } = useCart()
   const [searchQuery, setSearchQuery] = useState("")
   const [mobileMenu, setMobileMenu] = useState(false)
 
@@ -77,9 +80,14 @@ export function PublicNavbar() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </form>
-          <button className="text-white/80 hover:text-primary transition-colors">
+          <Link href="/cart" className="text-white/80 hover:text-primary transition-colors relative">
             <span className="material-symbols-outlined">shopping_cart</span>
-          </button>
+            {itemCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-error text-on-primary text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center rounded-full">
+                {itemCount > 99 ? "99+" : itemCount}
+              </span>
+            )}
+          </Link>
           {user ? (
             <Link href="/account" className="text-white/80 hover:text-primary transition-colors">
               <span className="material-symbols-outlined">account_circle</span>

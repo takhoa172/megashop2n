@@ -15,13 +15,13 @@ import {
 } from "lucide-react"
 
 const navItems = [
-  { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/products", label: "Products", icon: Package },
-  { href: "/admin/purchases", label: "Purchases", icon: ShoppingCart },
-  { href: "/admin/sales", label: "Sales", icon: DollarSign },
-  { href: "/admin/blogs", label: "Blogs", icon: FileText },
-  { href: "/admin/reports", label: "Reports", icon: BarChart3 },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
+  { href: "/admin/dashboard", label: "Dashboard (Tổng quan)", icon: LayoutDashboard },
+  { href: "/admin/products", label: "Products (Sản phẩm)", icon: Package },
+  { href: "/admin/purchases", label: "Purchases (Nhập hàng)", icon: ShoppingCart },
+  { href: "/admin/sales", label: "Sales (Bán hàng)", icon: DollarSign },
+  { href: "/admin/blogs", label: "Blogs (Bài viết)", icon: FileText },
+  { href: "/admin/reports", label: "Reports (Báo cáo)", icon: BarChart3 },
+  { href: "/admin/settings", label: "Settings (Cài đặt)", icon: Settings },
 ]
 
 interface SidebarProps {
@@ -67,7 +67,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                     : "text-slate-300 hover:bg-slate-800 hover:text-white"
                 )}
               >
-                <item.icon size={18} />
+                {item.icon && <item.icon size={18} />}
                 {item.label}
               </Link>
             )

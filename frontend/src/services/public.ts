@@ -1,19 +1,25 @@
-import api from "./api"
+// Re-exports with backward-compatible signatures
+import { getProducts, getProduct } from "./products"
+import { getCategories } from "./categories"
+import { getBlogPosts, getBlogPost } from "./blogs"
+import { getSliders } from "./sliders"
+import { getFooter } from "./settings"
+import { getActiveNotification as getActiveNotif } from "./notifications"
 
-export async function getPublicProducts(params?: Record<string, string>) {
-  const { data } = await api.get("/products/", { params })
-  return data
-}
-
-export async function getPublicProduct(id: string) {
-  const { data } = await api.get(`/products/${id}`)
-  return data
-}
-
-export async function getPublicCategories() {
-  const { data } = await api.get("/categories/")
+export const getPublicProducts = (params?: Record<string, string>) => getProducts(params)
+export const getPublicProduct = (id: string) => getProduct(id)
+export const getPublicCategories = () => getCategories()
+export const getPublicBlogs = async (params?: Record<string, string>) => {
+  const data = await getBlogPosts(params)
   return data.results || data
 }
+export const getPublicBlog = (slug: string) => getBlogPost(slug)
+export const getPublicSliders = () => getSliders()
+export const getPublicFooter = () => getFooter()
+export const getActiveNotification = () => getActiveNotif()
+
+// Unique public-only endpoints
+import api from "./api"
 
 export async function getSuggested() {
   const { data } = await api.get("/products/suggested")
@@ -30,32 +36,7 @@ export async function getPriceZero() {
   return data
 }
 
-export async function getPublicBlogs() {
-  const { data } = await api.get("/blogs/")
-  return data.results || data
-}
-
-export async function getPublicBlog(slug: string) {
-  const { data } = await api.get(`/blogs/${slug}`)
-  return data
-}
-
-export async function getPublicSliders() {
-  const { data } = await api.get("/sliders/")
-  return data.results || data
-}
-
 export async function getSiteSettings() {
   const { data } = await api.get("/settings/site")
-  return data
-}
-
-export async function getPublicFooter() {
-  const { data } = await api.get("/settings/footer")
-  return data
-}
-
-export async function getActiveNotification() {
-  const { data } = await api.get("/notifications/active")
   return data
 }

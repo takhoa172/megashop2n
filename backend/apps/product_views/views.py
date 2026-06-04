@@ -1,5 +1,5 @@
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from apps.products.models import Product
 from apps.products.serializers import ProductSerializer
@@ -8,7 +8,7 @@ from .models import ProductView
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def most_viewed(request):
     top_products = (
         Product.objects
@@ -21,7 +21,7 @@ def most_viewed(request):
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def suggested(request):
     products = Product.objects.filter(is_suggested=True)
     serializer = ProductSerializer(products, many=True)
@@ -29,7 +29,7 @@ def suggested(request):
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def price_zero(request):
     products = Product.objects.filter(sale_price=0)
     serializer = ProductSerializer(products, many=True)

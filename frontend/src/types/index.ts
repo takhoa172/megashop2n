@@ -3,6 +3,7 @@ export interface User {
   email: string
   username: string
   full_name: string
+  phone?: string
   role: "SUPER_ADMIN" | "MANAGER" | "STAFF"
   is_active: boolean
   created_at: string

@@ -14,6 +14,7 @@ export default function LoginPage() {
 
   const [regName, setRegName] = useState("")
   const [regEmail, setRegEmail] = useState("")
+  const [regPhone, setRegPhone] = useState("")
   const [regPassword, setRegPassword] = useState("")
   const [regConfirm, setRegConfirm] = useState("")
 
@@ -35,7 +36,7 @@ export default function LoginPage() {
       return
     }
     try {
-      await register(regName, regEmail, regPassword, regConfirm)
+      await register(regName, regEmail, regPhone, regPassword, regConfirm)
     } catch (err: any) {
       const msg = err?.response?.data?.message
         || err?.response?.data?.email?.[0]
@@ -166,6 +167,16 @@ export default function LoginPage() {
                     value={regEmail}
                     onChange={(e) => setRegEmail(e.target.value)}
                     required
+                  />
+                </div>
+                <div>
+                  <label className="block font-label-md text-label-md text-on-surface-variant mb-xs">Số điện thoại</label>
+                  <input
+                    className="w-full px-md py-sm border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/10 transition-all font-body-md text-body-md"
+                    placeholder="090x xxx xxx"
+                    type="tel"
+                    value={regPhone}
+                    onChange={(e) => setRegPhone(e.target.value)}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-md">

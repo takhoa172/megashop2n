@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { getPublicFooter } from "@/services/public"
 import Link from "next/link"
@@ -9,6 +10,13 @@ export function PublicFooter() {
     queryKey: ["public-footer"],
     queryFn: getPublicFooter,
   })
+  const [email, setEmail] = useState("")
+  const [subscribed, setSubscribed] = useState(false)
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (email) setSubscribed(true)
+  }
 
   return (
     <footer className="bg-secondary text-on-secondary">
@@ -40,16 +48,23 @@ export function PublicFooter() {
           <div className="flex flex-col gap-4">
             <h4 className="font-label-lg text-label-lg uppercase opacity-70">Đăng ký bản tin</h4>
             <p className="text-body-sm text-on-secondary/80">Nhận thông tin khuyến mãi sớm nhất</p>
-            <div className="flex mt-2">
-              <input
-                className="bg-white/10 border border-white/20 px-4 py-2 flex-grow focus:ring-0 text-on-secondary placeholder-on-secondary/40"
-                placeholder="Email của bạn"
-                type="email"
-              />
-              <button className="bg-primary text-on-primary px-4 py-2 font-label-lg hover:bg-primary/90">
-                Gửi
-              </button>
-            </div>
+            {subscribed ? (
+              <p className="text-primary font-label-md">Đã đăng ký thành công!</p>
+            ) : (
+              <form className="flex mt-2" onSubmit={handleSubscribe}>
+                <input
+                  className="bg-white/10 border border-white/20 px-4 py-2 flex-grow focus:ring-0 text-on-secondary placeholder-on-secondary/40"
+                  placeholder="Email của bạn"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <button className="bg-primary text-on-primary px-4 py-2 font-label-lg hover:bg-primary/90" type="submit">
+                  Gửi
+                </button>
+              </form>
+            )}
           </div>
         </div>
         <div className="border-t border-white/10 py-8 flex flex-col md:flex-row justify-between items-center gap-4">

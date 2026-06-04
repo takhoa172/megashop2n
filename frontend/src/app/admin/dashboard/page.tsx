@@ -44,26 +44,26 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+      <h1 className="text-2xl font-bold">Dashboard (Tổng quan)</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          title="Today Revenue"
+          title="Today Revenue (Doanh thu)"
           value={formatCurrency(summary?.today.revenue || 0)}
           icon={<DollarSign className="text-blue-600" size={20} />}
         />
         <StatCard
-          title="Today Cost"
+          title="Today Cost (Chi phí)"
           value={formatCurrency(summary?.today.cost || 0)}
           icon={<TrendingDown className="text-red-600" size={20} />}
         />
         <StatCard
-          title="Today Profit"
+          title="Today Profit (Lợi nhuận)"
           value={formatCurrency(summary?.today.profit || 0)}
           icon={<TrendingUp className="text-green-600" size={20} />}
         />
         <StatCard
-          title="Products Sold Today"
+          title="Products Sold Today (Đã bán)"
           value={String(summary?.today.products_sold || 0)}
           icon={<ShoppingBag className="text-purple-600" size={20} />}
         />
@@ -81,19 +81,19 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-          <p className="text-sm text-slate-500">Monthly Revenue</p>
+          <p className="text-sm text-slate-500">Monthly Revenue (Doanh thu tháng)</p>
           <p className="text-xl font-bold">
             {formatCurrency(summary?.monthly.revenue || 0)}
           </p>
         </div>
         <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-          <p className="text-sm text-slate-500">Monthly Cost</p>
+          <p className="text-sm text-slate-500">Monthly Cost (Chi phí tháng)</p>
           <p className="text-xl font-bold">
             {formatCurrency(summary?.monthly.cost || 0)}
           </p>
         </div>
         <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-          <p className="text-sm text-slate-500">Monthly Profit</p>
+          <p className="text-sm text-slate-500">Monthly Profit (Lợi nhuận tháng)</p>
           <p className="text-xl font-bold">
             {formatCurrency(summary?.monthly.profit || 0)}
           </p>

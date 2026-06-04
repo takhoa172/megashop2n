@@ -7,6 +7,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { getPublicProducts, getPublicCategories } from "@/services/public"
 import { formatCurrency } from "@/lib/utils"
+import { useCart } from "@/contexts/CartContext"
 
 const PAGE_SIZE = 12
 
@@ -20,6 +21,23 @@ function ProductListContent() {
   const [priceTo, setPriceTo] = useState("")
   const [appliedPriceFrom, setAppliedPriceFrom] = useState("")
   const [appliedPriceTo, setAppliedPriceTo] = useState("")
+  const [selectedBrand, setSelectedBrand] = useState("")
+  const [selectedRating, setSelectedRating] = useState(0)
+  const [addedId, setAddedId] = useState<string | null>(null)
+  const { addItem } = useCart()
+
+  const handleAddToCart = (e: React.MouseEvent, product: any) => {
+    e.preventDefault()
+    e.stopPropagation()
+    addItem({
+      id: product.id,
+      name: product.name,
+      image: product.images?.[0]?.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400",
+      price: product.sale_price ?? product.purchase_price,
+    })
+    setAddedId(product.id)
+    setTimeout(() => setAddedId(null), 2000)
+  }
 
   const params: Record<string, string> = { page_size: String(PAGE_SIZE), page: String(page) }
   if (keyword) params.keyword = keyword
@@ -29,6 +47,8 @@ function ProductListContent() {
   else params.ordering = "-created_at"
   if (appliedPriceFrom) params.price_min = appliedPriceFrom
   if (appliedPriceTo) params.price_max = appliedPriceTo
+  if (selectedBrand && !keyword) params.keyword = selectedBrand
+  if (selectedRating) params.min_rating = String(selectedRating)
 
   const { data: catData } = useQuery({
     queryKey: ["categories"],
@@ -75,6 +95,12 @@ function ProductListContent() {
 
   return (
     <div className="pt-12 pb-3xl max-w-container-max mx-auto px-margin-desktop">
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-xs text-on-surface-variant font-label-md text-label-md mb-lg">
+        <Link href="/" className="hover:text-primary transition-colors">Trang chủ</Link>
+        <span className="material-symbols-outlined text-[16px]">chevron_right</span>
+        <span className="text-primary font-semibold">Sản phẩm</span>
+      </nav>
       <div className="flex flex-col md:flex-row gap-gutter">
         <aside className="w-full md:w-1/4 flex flex-col gap-xl">
           <div className="bg-surface-container-low p-lg rounded-2xl">
@@ -143,7 +169,15 @@ function ProductListContent() {
                 {["Samsung", "Nike", "Apple", "Sony"].map((brand) => (
                   <button
                     key={brand}
-                    className="bg-surface-container-lowest p-2 rounded-lg text-xs hover:text-primary transition-all"
+                    onClick={() => {
+                      setSelectedBrand(selectedBrand === brand ? "" : brand)
+                      setPage(1)
+                    }}
+                    className={`p-2 rounded-lg text-xs transition-all ${
+                      selectedBrand === brand
+                        ? "bg-primary text-on-primary"
+                        : "bg-surface-container-lowest hover:text-primary"
+                    }`}
                   >
                     {brand}
                   </button>
@@ -154,7 +188,10 @@ function ProductListContent() {
             <div>
               <h3 className="font-label-md text-label-md text-on-surface-variant mb-md">Đánh giá</h3>
               <div className="flex flex-col gap-sm">
-                <button className="flex items-center gap-xs group">
+                <button
+                  onClick={() => { setSelectedRating(selectedRating === 5 ? 0 : 5); setPage(1) }}
+                  className={`flex items-center gap-xs group ${selectedRating === 5 ? "opacity-100" : "opacity-60 hover:opacity-100"} transition-opacity`}
+                >
                   <div className="flex text-accent">
                     {[1, 2, 3, 4, 5].map((i) => (
                       <span key={i} className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
@@ -162,7 +199,10 @@ function ProductListContent() {
                   </div>
                   <span className="text-xs text-on-surface-variant group-hover:text-primary">(5.0)</span>
                 </button>
-                <button className="flex items-center gap-xs group">
+                <button
+                  onClick={() => { setSelectedRating(selectedRating === 4 ? 0 : 4); setPage(1) }}
+                  className={`flex items-center gap-xs group ${selectedRating === 4 ? "opacity-100" : "opacity-60 hover:opacity-100"} transition-opacity`}
+                >
                   <div className="flex text-accent">
                     {[1, 2, 3, 4].map((i) => (
                       <span key={i} className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
@@ -235,9 +275,12 @@ function ProductListContent() {
                             </span>
                           )}
                         </div>
-                        <button className="w-full bg-primary text-on-primary font-label-lg py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-secondary hover:opacity-90 transition-all">
+                        <button
+                          onClick={(e) => handleAddToCart(e, product)}
+                          className="w-full bg-primary text-on-primary font-label-lg py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-secondary hover:opacity-90 transition-all"
+                        >
                           <span className="material-symbols-outlined text-[20px]">shopping_cart</span>
-                          Thêm vào giỏ
+                          {addedId === product.id ? "Đã thêm ✓" : "Thêm vào giỏ"}
                         </button>
                       </div>
                     </div>

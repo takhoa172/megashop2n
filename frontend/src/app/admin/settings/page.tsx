@@ -6,6 +6,9 @@ import {
   getFooter,
   updateFooter,
   FooterSettings,
+  getSiteSettings,
+  updateSiteSettings,
+  SiteSettings,
 } from "@/services/settings"
 import { getSliders, createSlider, deleteSlider, Slider } from "@/services/sliders"
 import {
@@ -23,14 +26,14 @@ import { User, Category } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
 import { Trash2 } from "lucide-react"
 
-const tabs = ["Footer", "Sliders", "Notifications", "Users", "Categories"]
+const tabs = ["Site", "Footer", "Sliders (Ảnh trượt)", "Notifications (Thông báo)", "Users (Người dùng)", "Categories (Danh mục)"]
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("Footer")
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Settings</h1>
+      <h1 className="text-2xl font-bold">Settings (Cài đặt)</h1>
       <div className="flex gap-1 border-b border-slate-200">
         {tabs.map((tab) => (
           <button
@@ -46,6 +49,7 @@ export default function SettingsPage() {
           </button>
         ))}
       </div>
+      {activeTab === "Site" && <SiteSettingsTab />}
       {activeTab === "Footer" && <FooterTab />}
       {activeTab === "Sliders" && <SlidersTab />}
       {activeTab === "Notifications" && <NotificationsTab />}
@@ -78,23 +82,22 @@ function FooterTab() {
 
   return (
     <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
-      <Field label="Company Name" name="company_name" defaultValue={data.company_name} />
-      <Field label="Phone" name="phone" defaultValue={data.phone} />
+      <Field label="Company Name (Tên công ty)" name="company_name" defaultValue={data.company_name} />
+      <Field label="Phone (Số điện thoại)" name="phone" defaultValue={data.phone} />
       <Field label="Email" name="email" defaultValue={data.email} />
       <Field label="Facebook URL" name="facebook" defaultValue={data.facebook} />
       <Field label="Youtube URL" name="youtube" defaultValue={data.youtube} />
-      <Field label="Copyright" name="copyright_text" defaultValue={data.copyright_text} />
+      <Field label="Copyright (Bản quyền)" name="copyright_text" defaultValue={data.copyright_text} />
       <div className="md:col-span-2">
-        <label className="text-sm font-medium">Address</label>
+        <label className="text-sm font-medium">Address (Địa chỉ)</label>
         <textarea name="address" defaultValue={data.address || ""} className="flex w-full rounded-md border border-slate-200 px-3 py-2 text-sm min-h-[60px]" />
       </div>
       <div className="md:col-span-2">
-        <label className="text-sm font-medium">Description</label>
-        <textarea name="description" defaultValue={data.description || ""} className="flex w-full rounded-md border border-slate-200 px-3 py-2 text-sm min-h-[60px]" />
+        <label className="text-sm font-medium">Description (Mô tả)</label>        <textarea name="description" defaultValue={data.description || ""} className="flex w-full rounded-md border border-slate-200 px-3 py-2 text-sm min-h-[60px]" />
       </div>
       <div className="md:col-span-2">
         <Button type="submit" disabled={mutation.isPending}>
-          Save Footer
+          Save Footer (Lưu)
         </Button>
       </div>
     </form>
@@ -107,6 +110,79 @@ function Field({ label, name, defaultValue }: { label: string; name: string; def
       <label className="text-sm font-medium">{label}</label>
       <Input name={name} defaultValue={defaultValue || ""} />
     </div>
+  )
+}
+
+function SiteSettingsTab() {
+  const queryClient = useQueryClient()
+  const { data } = useQuery({ queryKey: ["site-settings"], queryFn: getSiteSettings })
+  const [logoPreview, setLogoPreview] = useState<string | null>(null)
+
+  const mutation = useMutation({
+    mutationFn: updateSiteSettings,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["site-settings"] }),
+  })
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const form = new FormData(e.currentTarget)
+    const payload: Record<string, string> = {
+      site_name: form.get("site_name") as string,
+      site_logo_url: form.get("site_logo_url") as string,
+      meta_description: form.get("meta_description") as string,
+    }
+    mutation.mutate(payload)
+  }
+
+  const handleLogoFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (ev) => setLogoPreview(ev.target?.result as string)
+    reader.readAsDataURL(file)
+  }
+
+  if (!data) return <p className="text-sm text-slate-500">Loading...</p>
+
+  return (
+    <form onSubmit={handleSubmit} className="max-w-2xl space-y-4">
+      <Field label="Site Name (Tên trang)" name="site_name" defaultValue={data.site_name} />
+      <div className="space-y-1">
+        <label className="text-sm font-medium">Logo URL (hoặc tải ảnh lên)</label>
+        <input
+          name="site_logo_url"
+          defaultValue={data.site_logo_url || ""}
+          placeholder="https://..."
+          className="flex h-9 w-full rounded-md border border-slate-200 px-3 text-sm"
+        />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleLogoFile}
+          className="flex h-9 rounded-md border border-slate-200 px-3 text-sm mt-1"
+        />
+        {(logoPreview || data.site_logo_url) && (
+          <div className="mt-1">
+            <img
+              src={logoPreview || data.site_logo_url}
+              alt="Logo preview"
+              className="w-32 h-16 object-contain rounded border"
+            />
+          </div>
+        )}
+      </div>
+      <div className="space-y-1">
+        <label className="text-sm font-medium">Meta Description (Mô tả SEO)</label>
+        <textarea
+          name="meta_description"
+          defaultValue={data.meta_description || ""}
+          className="flex w-full rounded-md border border-slate-200 px-3 py-2 text-sm min-h-[60px]"
+        />
+      </div>
+      <Button type="submit" disabled={mutation.isPending}>
+        Save Site Settings (Lưu)
+      </Button>
+    </form>
   )
 }
 
@@ -127,14 +203,32 @@ function SlidersTab() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["sliders"] }),
   })
 
+  const [sliderPreview, setSliderPreview] = useState<string | null>(null)
+  const [sliderUrl, setSliderUrl] = useState("")
+
+  const handleSliderFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (ev) => setSliderPreview(ev.target?.result as string)
+    reader.readAsDataURL(file)
+  }
+
   const columns: ColumnDef<Slider>[] = [
-    { header: "Title", accessorKey: "title", cell: ({ row }) => row.original.title || "-" },
+    { header: "Title (Tiêu đề)", accessorKey: "title", cell: ({ row }) => row.original.title || "-" },
     {
-      header: "Active",
+      header: "Image (Ảnh)",
+      accessorKey: "image_url",
+      cell: ({ row }) => row.original.image_url ? (
+        <img src={row.original.image_url} alt="" className="w-16 h-10 object-cover rounded" />
+      ) : "-",
+    },
+    {
+      header: "Active (Kích hoạt)",
       accessorKey: "is_active",
       cell: ({ row }) => (row.original.is_active ? "✅" : "❌"),
     },
-    { header: "Order", accessorKey: "sort_order" },
+    { header: "Order (Thứ tự)", accessorKey: "sort_order" },
     {
       header: "",
       id: "actions",
@@ -149,30 +243,57 @@ function SlidersTab() {
   const handleCreate = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const form = new FormData(e.currentTarget)
+    if (!form.get("image_url") && !sliderPreview) return
     createMutation.mutate(form)
     e.currentTarget.reset()
+    setSliderPreview(null)
+    setSliderUrl("")
   }
 
   return (
     <div className="space-y-4">
       <form onSubmit={handleCreate} className="flex gap-3 items-end flex-wrap">
         <div className="space-y-1">
-          <label className="text-sm font-medium">Title</label>
+          <label className="text-sm font-medium">Title (Tiêu đề)</label>
           <input name="title" className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
         </div>
         <div className="space-y-1">
-          <label className="text-sm font-medium">Image URL *</label>
-          <input name="image_url" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
+          <label className="text-sm font-medium">Image URL (hoặc tải ảnh lên)</label>
+          <input
+            name="image_url"
+            value={sliderUrl}
+            onChange={(e) => setSliderUrl(e.target.value)}
+            placeholder="https://..."
+            className="flex h-9 rounded-md border border-slate-200 px-3 text-sm w-64"
+          />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleSliderFile}
+            className="flex h-9 rounded-md border border-slate-200 px-3 text-sm w-64 mt-1"
+          />
+          {sliderPreview && (
+            <div className="mt-1">
+              <img src={sliderPreview} alt="Preview" className="w-32 h-20 object-cover rounded border" />
+              <button
+                type="button"
+                onClick={() => setSliderPreview(null)}
+                className="text-xs text-red-500 mt-1 hover:underline"
+              >
+                Remove (Xoá)
+              </button>
+            </div>
+          )}
         </div>
         <div className="space-y-1">
           <label className="text-sm font-medium">Link URL</label>
           <input name="link_url" className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
         </div>
         <div className="space-y-1">
-          <label className="text-sm font-medium">Order</label>
+          <label className="text-sm font-medium">Order (Thứ tự)</label>
           <input name="sort_order" type="number" defaultValue={0} className="flex h-9 w-20 rounded-md border border-slate-200 px-3 text-sm" />
         </div>
-        <Button type="submit" size="sm">Add Slider</Button>
+        <Button type="submit" size="sm">Add Slider (Thêm)</Button>
       </form>
       <DataTable columns={columns} data={sliders || []} />
     </div>
@@ -197,10 +318,10 @@ function NotificationsTab() {
   })
 
   const columns: ColumnDef<Notification>[] = [
-    { header: "Title", accessorKey: "title" },
-    { header: "Active", accessorKey: "is_active", cell: ({ row }) => (row.original.is_active ? "✅" : "❌") },
-    { header: "Start", accessorKey: "start_date" },
-    { header: "End", accessorKey: "end_date", cell: ({ row }) => row.original.end_date || "∞" },
+    { header: "Title (Tiêu đề)", accessorKey: "title" },
+    { header: "Active (Kích hoạt)", accessorKey: "is_active", cell: ({ row }) => (row.original.is_active ? "✅" : "❌") },
+    { header: "Start (Bắt đầu)", accessorKey: "start_date" },
+    { header: "End (Kết thúc)", accessorKey: "end_date", cell: ({ row }) => row.original.end_date || "∞" },
     {
       header: "",
       id: "actions",
@@ -228,14 +349,14 @@ function NotificationsTab() {
     <div className="space-y-4">
       <form onSubmit={handleCreate} className="flex gap-3 items-end flex-wrap">
         <div className="space-y-1">
-          <label className="text-sm font-medium">Title *</label>
+          <label className="text-sm font-medium">Title (Tiêu đề) *</label>
           <input name="title" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
         </div>
         <div className="space-y-1">
-          <label className="text-sm font-medium">Message *</label>
+          <label className="text-sm font-medium">Message (Nội dung) *</label>
           <input name="message" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
         </div>
-        <Button type="submit" size="sm">Add Notification</Button>
+        <Button type="submit" size="sm">Add Notification (Thêm)</Button>
       </form>
       <DataTable columns={columns} data={notifications || []} />
     </div>
@@ -251,9 +372,9 @@ function UsersTab() {
   })
 
   const columns: ColumnDef<User>[] = [
-    { header: "Name", accessorKey: "full_name" },
+    { header: "Name (Tên)", accessorKey: "full_name" },
     { header: "Email", accessorKey: "email" },
-    { header: "Role", accessorKey: "role" },
+    { header: "Role (Vai trò)", accessorKey: "role" },
   ]
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -273,14 +394,14 @@ function UsersTab() {
     <div className="space-y-4">
       <form onSubmit={handleSubmit} className="flex gap-3 items-end flex-wrap">
         <input name="email" placeholder="Email" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
-        <input name="username" placeholder="Username" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
-        <input name="full_name" placeholder="Full Name" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
-        <input name="password" type="password" placeholder="Password" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
+        <input name="username" placeholder="Username (Tên đăng nhập)" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
+        <input name="full_name" placeholder="Full Name (Họ tên)" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
+        <input name="password" type="password" placeholder="Password (Mật khẩu)" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
         <select name="role" className="flex h-9 rounded-md border border-slate-200 px-3 text-sm">
-          <option value="STAFF">Staff</option>
-          <option value="MANAGER">Manager</option>
+          <option value="STAFF">Staff (Nhân viên)</option>
+          <option value="MANAGER">Manager (Quản lý)</option>
         </select>
-        <Button type="submit" size="sm">Add User</Button>
+        <Button type="submit" size="sm">Add User (Thêm)</Button>
       </form>
       <DataTable columns={columns} data={users || []} />
     </div>
@@ -296,8 +417,8 @@ function CategoriesTab() {
   })
 
   const columns: ColumnDef<Category>[] = [
-    { header: "Name", accessorKey: "name" },
-    { header: "Slug", accessorKey: "slug" },
+    { header: "Name (Tên)", accessorKey: "name" },
+    { header: "Slug (Đường dẫn)", accessorKey: "slug" },
   ]
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -310,8 +431,8 @@ function CategoriesTab() {
   return (
     <div className="space-y-4">
       <form onSubmit={handleSubmit} className="flex gap-3 items-end">
-        <input name="name" placeholder="Category Name" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
-        <Button type="submit" size="sm">Add Category</Button>
+        <input name="name" placeholder="Category Name (Tên danh mục)" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
+        <Button type="submit" size="sm">Add Category (Thêm)</Button>
       </form>
       <DataTable columns={columns} data={categories || []} />
     </div>

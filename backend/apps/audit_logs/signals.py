@@ -1,10 +1,7 @@
-import json
 from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import receiver
-from django.contrib.auth import get_user_model
 from .models import AuditLog
-
-User = get_user_model()
+from core.audit_middleware import get_current_user
 
 MODELS_TO_AUDIT = ["Product", "Purchase", "Sale"]
 
@@ -20,12 +17,6 @@ def _serialize_model(instance):
             value = str(value.pk)
         data[name] = str(value) if value is not None else None
     return data
-
-
-def _get_user(request=None):
-    if request and hasattr(request, "user"):
-        return request.user
-    return None
 
 
 @receiver(pre_save)
@@ -55,7 +46,7 @@ def audit_post_save(sender, **kwargs):
     old_data = getattr(instance, "_audit_old_data", None)
     new_data = _serialize_model(instance)
     AuditLog.objects.create(
-        user=getattr(instance, "_audit_user", None),
+        user=get_current_user(),
         action=action,
         table_name=sender.__name__,
         object_id=instance.pk,
@@ -70,7 +61,7 @@ def audit_post_delete(sender, **kwargs):
         return
     instance = kwargs["instance"]
     AuditLog.objects.create(
-        user=getattr(instance, "_audit_user", None),
+        user=get_current_user(),
         action="DELETE",
         table_name=sender.__name__,
         object_id=instance.pk,

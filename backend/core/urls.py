@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from apps.settings.views import ContactView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -16,6 +17,8 @@ urlpatterns = [
     path("api/sliders/", include("apps.sliders.urls")),
     path("api/settings/", include("apps.settings.urls")),
     path("api/notifications/", include("apps.notifications.urls")),
+    path("api/audit-logs/", include("apps.audit_logs.urls")),
+    path("api/contact", ContactView.as_view(), name="contact"),
 ]
 
 if settings.DEBUG:

@@ -1,6 +1,7 @@
 services:
   postgres:
     image: postgres:16-alpine
+    restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data
     env_file:
@@ -17,12 +18,14 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
     env_file:
       - .env
     volumes:
+      - ./backend:/app
       - static_volume:/app/static
       - media_volume:/app/media
     expose:
@@ -38,6 +41,9 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost/api
+    restart: unless-stopped
     env_file:
       - .env
     expose:
@@ -45,6 +51,7 @@ services:
 
   nginx:
     image: nginx:alpine
+    restart: unless-stopped
     ports:
       - "80:80"
     volumes:

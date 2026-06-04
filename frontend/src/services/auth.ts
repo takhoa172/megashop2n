@@ -29,10 +29,11 @@ export async function getUsers(): Promise<User[]> {
 export async function register(
   full_name: string,
   email: string,
+  phone: string,
   password: string,
   password_confirm: string
 ): Promise<{ access: string; refresh: string; user: User }> {
-  const { data } = await api.post("/auth/register", { full_name, email, password, password_confirm })
+  const { data } = await api.post("/auth/register", { full_name, email, phone, password, password_confirm })
   return data
 }
 

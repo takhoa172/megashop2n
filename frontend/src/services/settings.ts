@@ -14,6 +14,14 @@ export interface FooterSettings {
   description: string | null
 }
 
+export interface SiteSettings {
+  id: string
+  site_name: string
+  site_logo_url: string
+  nav_links: { href: string; label: string }[]
+  meta_description: string
+}
+
 export async function getFooter() {
   const { data } = await api.get("/settings/footer")
   return data
@@ -23,5 +31,17 @@ export async function updateFooter(
   footerData: Partial<FooterSettings>
 ) {
   const { data } = await api.put("/settings/footer", footerData)
+  return data
+}
+
+export async function getSiteSettings() {
+  const { data } = await api.get("/settings/site")
+  return data
+}
+
+export async function updateSiteSettings(
+  siteData: Partial<SiteSettings>
+) {
+  const { data } = await api.put("/settings/site", siteData)
   return data
 }
