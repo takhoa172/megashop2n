@@ -9,7 +9,7 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="max-w-container-max mx-auto px-margin-desktop py-3xl text-center">
+      <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-3xl text-center">
         <span className="material-symbols-outlined text-7xl text-outline-variant">shopping_cart</span>
         <h1 className="font-headline-lg text-headline-lg mt-6 mb-2">Giỏ hàng trống</h1>
         <p className="text-on-surface-variant mb-8">Bạn chưa có sản phẩm nào trong giỏ hàng</p>
@@ -21,7 +21,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="max-w-container-max mx-auto px-margin-desktop py-3xl">
+    <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-3xl">
       <nav className="flex items-center gap-xs text-on-surface-variant font-label-md text-label-md mb-lg">
         <Link href="/" className="hover:text-primary transition-colors">Trang chủ</Link>
         <span className="material-symbols-outlined text-[16px]">chevron_right</span>
@@ -33,7 +33,7 @@ export default function CartPage() {
       <div className="flex flex-col lg:flex-row gap-gutter">
         <div className="flex-1 space-y-md">
           {items.map((item) => (
-            <div key={item.id} className="flex gap-lg p-lg bg-white rounded-xl border border-outline-variant items-center">
+            <div key={item.id} className="flex flex-col sm:flex-row gap-lg p-lg bg-white rounded-xl border border-outline-variant items-center">
               <div className="w-20 h-20 rounded-xl overflow-hidden bg-surface-container-low flex-shrink-0">
                 <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
               </div>

@@ -41,7 +41,7 @@ export function PublicFooter() {
 
   return (
     <footer className="bg-secondary text-on-secondary">
-      <div className="w-full px-margin-desktop py-section-gap grid grid-cols-1 md:grid-cols-4 gap-gutter max-w-container-max mx-auto">
+      <div className="w-full px-margin-mobile md:px-margin-desktop py-section-gap grid grid-cols-1 md:grid-cols-4 gap-gutter max-w-container-max mx-auto">
           <div className="flex flex-col gap-4">
             <span className="font-headline-lg text-headline-lg font-black text-on-primary">
               {footer?.company_name || "VIETSHOP"}
@@ -88,7 +88,7 @@ export function PublicFooter() {
             )}
           </div>
         </div>
-        <div className="max-w-container-max mx-auto px-margin-desktop border-t border-white/10 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop border-t border-white/10 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-label-sm text-on-secondary/60">
             {footer?.copyright_text || "© 2024 VIETSHOP. Bảo lưu mọi quyền."}
           </p>

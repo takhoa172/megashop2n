@@ -99,7 +99,7 @@ function ProductListContent() {
   }
 
   return (
-    <div className="pt-12 pb-3xl max-w-container-max mx-auto px-margin-desktop">
+    <div className="pt-12 pb-3xl max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-xs text-on-surface-variant font-label-md text-label-md mb-lg">
         <Link href="/" className="hover:text-primary transition-colors">Trang chủ</Link>

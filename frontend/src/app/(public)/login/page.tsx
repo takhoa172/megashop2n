@@ -123,7 +123,7 @@ export default function LoginPage() {
             <div className="text-center">
               <p className="font-body-md text-body-md text-on-surface-variant">
                 Chưa có tài khoản?
-                <button className="text-primary font-title-lg hover:underline transition-all ml-1" type="button" onClick={() => toggle(false)}>Đăng ký ngay</button>
+                <button className="text-primary font-title-lg hover:underline transition-all ml-1 whitespace-nowrap" type="button" onClick={() => toggle(false)}>Đăng ký ngay</button>
               </p>
             </div>
           </section>
@@ -144,7 +144,7 @@ export default function LoginPage() {
             </div>
             <form onSubmit={handleRegister} className="space-y-md">
               {error && (
-                <p className="text-sm text-red-600 bg-red-50 p-2 rounded">{error}</p>
+                <p className="text-sm text-error bg-error-container p-2 rounded-lg">{error}</p>
               )}
               <div className="grid grid-cols-1 gap-md">
                 <div>
@@ -179,7 +179,7 @@ export default function LoginPage() {
                     onChange={(e) => setRegPhone(e.target.value)}
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-md">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
                   <div>
                     <label className="block font-label-md text-label-md text-on-surface-variant mb-xs">Mật khẩu</label>
                     <input
@@ -214,7 +214,7 @@ export default function LoginPage() {
             <div className="text-center mt-xl">
               <p className="font-body-md text-body-md text-on-surface-variant">
                 Đã có tài khoản?
-                <button className="text-primary font-title-lg hover:underline transition-all ml-1" type="button" onClick={() => toggle(true)}>Đăng nhập ngay</button>
+                <button className="text-primary font-title-lg hover:underline transition-all ml-1 whitespace-nowrap" type="button" onClick={() => toggle(true)}>Đăng nhập ngay</button>
               </p>
             </div>
           </section>
