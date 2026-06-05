@@ -48,7 +48,7 @@ export function PublicNavbar() {
 
   return (
     <nav className={`sticky top-0 z-50 ${isLoginPage ? "bg-on-background" : "bg-secondary"} border-b border-white/10`}>
-      <div className="max-w-container-max mx-auto px-margin-desktop py-base flex justify-between items-center">
+      <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-base flex justify-between items-center">
         <Link href="/" className="flex items-center gap-2">
           {siteLogo ? (
             <img src={siteLogo} alt={siteName} className="h-8 w-auto" />
@@ -113,7 +113,7 @@ export function PublicNavbar() {
         </div>
       </div>
       {!isLoginPage && mobileMenu && (
-        <div className="md:hidden border-t border-white/10 px-margin-desktop py-4 space-y-3">
+        <div className="md:hidden border-t border-white/10 px-margin-mobile md:px-margin-desktop py-4 space-y-3">
           {navLinks.map((link: { href: string; label: string }) => (
             <Link
               key={link.label}

@@ -59,7 +59,7 @@ export default function ProductDetailPage() {
   const relatedList = (related || []).filter((p: any) => p.id !== product.id).slice(0, 4)
 
   return (
-    <div className="max-w-container-max mx-auto px-margin-desktop py-lg">
+    <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-lg">
       {/* Breadcrumbs */}
       <nav className="flex items-center gap-xs text-on-surface-variant font-label-md text-label-md mb-lg flex-wrap">
         <Link href="/" className="hover:text-primary transition-colors">Home</Link>

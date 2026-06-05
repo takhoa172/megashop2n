@@ -32,7 +32,7 @@ export default function AboutPage() {
   return (
     <main className="flex-grow pb-section-gap">
       <section className="bg-surface-container-low py-2xl mb-2xl">
-        <div className="max-w-container-max mx-auto px-margin-desktop text-center">
+        <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop text-center">
           <h1 className="font-headline-lg text-headline-lg text-on-background mb-md">Liên hệ với chúng tôi</h1>
           <p className="font-body-lg text-body-lg text-on-surface-variant max-w-[800px] mx-auto">
             Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn. Đừng ngần ngại liên hệ với đội ngũ VIETSHOP để được giải đáp mọi thắc mắc về sản phẩm và dịch vụ.
@@ -40,7 +40,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <div className="max-w-container-max mx-auto px-margin-desktop">
+      <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
           <div className="lg:col-span-5 space-y-lg">
             <div className="bg-white border border-outline-variant/30 rounded-xl p-xl shadow-sm">

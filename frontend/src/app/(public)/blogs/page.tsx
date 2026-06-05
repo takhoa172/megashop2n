@@ -66,7 +66,7 @@ function BlogListContent() {
   }
 
   return (
-    <div className="max-w-container-max mx-auto px-margin-desktop py-2xl">
+    <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-2xl">
       <div className="mb-2xl">
         <h1 className="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-xs">Blog &amp; Tin tức</h1>
         <p className="font-body-lg text-body-lg text-on-surface-variant">Khám phá những xu hướng mới nhất và bí quyết mua sắm thông minh tại VIETSHOP.</p>
