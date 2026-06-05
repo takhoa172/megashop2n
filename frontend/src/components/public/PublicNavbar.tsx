@@ -11,7 +11,6 @@ import { useCart } from "@/contexts/CartContext"
 const defaultNavLinks = [
   { href: "/", label: "Trang chủ" },
   { href: "/products", label: "Sản phẩm" },
-  { href: "/products", label: "Danh mục" },
   { href: "/blogs", label: "Blog" },
   { href: "/about", label: "Giới thiệu" },
 ]
