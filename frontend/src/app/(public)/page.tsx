@@ -228,15 +228,15 @@ export default function HomePage() {
 
       {/* Blog & Tin tức */}
       <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-2xl md:py-section-gap border-t border-outline-variant">
-        <div className="text-center mb-16">
+        <div className="text-center mb-8 md:mb-16">
           <h2 className="font-headline-lg text-headline-lg">Blog &amp; Tin tức</h2>
           <p className="text-on-surface-variant mt-2">Cập nhật xu hướng và mẹo vặt hữu ích</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
           {(blogList.length > 0 ? blogList : placeholderBlogs).map((post: any) => (
-            <Link key={post.id} href={`/blogs/${post.slug}`} className="group block">
+            <Link key={post.id} href={`/blogs/${post.slug}`} className="group block bg-white border border-outline-variant rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
               <article>
-                <div className="overflow-hidden mb-6 h-[220px] rounded-xl">
+                <div className="overflow-hidden mb-4 h-48 rounded-xl">
                   <img
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     src={post.featured_image || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800"}
