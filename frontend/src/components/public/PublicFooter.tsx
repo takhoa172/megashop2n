@@ -24,11 +24,11 @@ export function PublicFooter() {
   if (isLoginPage) {
     return (
       <footer className="bg-on-background text-on-surface py-lg">
-        <div className="max-w-container-max mx-auto px-margin-desktop flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="font-label-sm text-label-sm opacity-60">
             {footer?.copyright_text || "© 2024 VIETSHOP. Bảo lưu mọi quyền."}
           </p>
-          <div className="flex gap-lg">
+          <div className="flex flex-wrap gap-x-lg gap-y-2 justify-center">
             <Link href="#" className="font-label-sm text-label-sm opacity-60 hover:opacity-100 transition-opacity">Chính sách bảo mật</Link>
             <Link href="#" className="font-label-sm text-label-sm opacity-60 hover:opacity-100 transition-opacity">Điều khoản dịch vụ</Link>
             <Link href="#" className="font-label-sm text-label-sm opacity-60 hover:opacity-100 transition-opacity">Câu hỏi thường gặp</Link>

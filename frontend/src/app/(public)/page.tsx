@@ -89,11 +89,11 @@ export default function HomePage() {
       <SliderHero />
 
       {/* Sản phẩm gợi ý */}
-      <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-section-gap">
-        <div className="flex justify-between items-end mb-12">
+      <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-2xl md:py-section-gap">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 md:mb-12 gap-2">
           <div>
             <span className="text-primary font-label-lg uppercase tracking-widest">Dành riêng cho bạn</span>
-            <h2 className="font-headline-lg text-headline-lg mt-2">Sản phẩm gợi ý</h2>
+            <h2 className="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg mt-2">Sản phẩm gợi ý</h2>
           </div>
           <Link href="/products" className="text-primary font-label-lg border-b border-primary hover:text-primary/70 hover:border-primary/70 transition-colors">Xem tất cả</Link>
         </div>
@@ -105,17 +105,17 @@ export default function HomePage() {
       </section>
 
       {/* Xu hướng thị trường */}
-      <section className="bg-surface-container-low py-section-gap">
+      <section className="bg-surface-container-low py-2xl md:py-section-gap">
         <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-          <div className="text-center mb-16">
-            <h2 className="font-display-lg text-display-lg">Xu hướng thị trường</h2>
+          <div className="text-center mb-8 md:mb-16">
+            <h2 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg">Xu hướng thị trường</h2>
             <p className="text-on-surface-variant mt-4">Những sản phẩm được quan tâm nhất trong 24h qua</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-gutter h-auto md:h-[600px]">
             {(mostViewedList.length > 0 ? mostViewedList.slice(0, 4) : placeholderProducts.slice(0, 4)).map((product: any, i: number) => {
               if (i === 0) {
                 return (
-                  <div key={product.id} className="md:col-span-2 md:row-span-2 relative overflow-hidden group rounded-2xl">
+                  <div key={product.id} className="md:col-span-2 md:row-span-2 relative overflow-hidden group rounded-2xl h-[300px] md:h-auto">
                     <img
                       className="w-full h-full object-cover absolute inset-0 group-hover:scale-105 transition-transform duration-500"
                       src={product.images?.[0]?.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800"}
@@ -135,7 +135,7 @@ export default function HomePage() {
               }
               if (i === 3) {
                 return (
-                  <div key={product.id || "member"} className="md:col-span-2 bg-secondary p-8 flex justify-between items-center text-on-secondary relative overflow-hidden group rounded-2xl">
+                  <div key={product.id || "member"} className="md:col-span-2 bg-secondary p-6 md:p-8 flex justify-between items-center text-on-secondary relative overflow-hidden group rounded-2xl">
                     <div>
                       <h3 className="font-headline-lg text-headline-lg mb-2">Đặc quyền Thành viên</h3>
                       <p className="opacity-80">Giảm thêm 10% cho mọi đơn hàng</p>
@@ -166,7 +166,7 @@ export default function HomePage() {
       </section>
 
       {/* Hàng thanh lý */}
-      <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-section-gap">
+      <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-2xl md:py-section-gap">
         <div className="bg-secondary rounded-xl p-6 md:p-12 text-on-secondary relative overflow-hidden">
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-4">
@@ -201,7 +201,7 @@ export default function HomePage() {
       </section>
 
       {/* Hàng giá rẻ */}
-      <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-section-gap">
+      <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-2xl md:py-section-gap">
         <div className="flex items-center gap-4 mb-10">
           <h2 className="font-headline-lg text-headline-lg">Hàng giá rẻ</h2>
           <div className="h-[1px] flex-grow bg-outline-variant" />
@@ -227,7 +227,7 @@ export default function HomePage() {
       </section>
 
       {/* Blog & Tin tức */}
-      <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-section-gap border-t border-outline-variant">
+      <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-2xl md:py-section-gap border-t border-outline-variant">
         <div className="text-center mb-16">
           <h2 className="font-headline-lg text-headline-lg">Blog &amp; Tin tức</h2>
           <p className="text-on-surface-variant mt-2">Cập nhật xu hướng và mẹo vặt hữu ích</p>

@@ -80,7 +80,7 @@ export default function ProductDetailPage() {
             />
           </div>
           {images.length > 1 && (
-            <div className="grid grid-cols-4 gap-sm">
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-sm">
               {images.map((img: any, i: number) => (
                 <button
                   key={i}
