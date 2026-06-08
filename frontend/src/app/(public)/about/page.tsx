@@ -149,14 +149,14 @@ export default function AboutPage() {
         </div>
 
         <div className="mt-3xl">
-          <div className="bg-white border border-outline-variant/30 rounded-2xl overflow-hidden shadow-sm h-[450px] relative group">
+          <div className="bg-white border border-outline-variant/30 rounded-2xl overflow-hidden shadow-sm h-[250px] md:h-[450px] relative group">
             <img
               alt="Bản đồ vị trí cửa hàng"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1400"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-on-background/40 to-transparent flex items-end p-xl">
-              <div className="bg-white p-lg rounded-xl shadow-lg border border-outline-variant/20 max-w-[24rem]">
+            <div className="absolute inset-0 bg-gradient-to-t from-on-background/40 to-transparent flex items-end p-md md:p-xl">
+              <div className="bg-white p-lg rounded-xl shadow-lg border border-outline-variant/20 max-w-none md:max-w-[24rem]">
                 <h3 className="font-title-lg text-title-lg text-on-background mb-xs">Cửa hàng trung tâm</h3>
                 <p className="font-body-sm text-body-sm text-on-surface-variant mb-md">Tọa lạc tại vị trí đắc địa trung tâm Quận 1, thuận tiện cho việc di chuyển và trải nghiệm trực tiếp.</p>
                 <a className="text-primary font-label-lg flex items-center gap-xs hover:underline" href="#">

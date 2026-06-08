@@ -41,7 +41,7 @@ export function PublicFooter() {
 
   return (
     <footer className="bg-secondary text-on-secondary">
-      <div className="w-full px-margin-mobile md:px-margin-desktop py-section-gap grid grid-cols-1 md:grid-cols-4 gap-gutter max-w-container-max mx-auto">
+      <div className="w-full px-margin-mobile md:px-margin-desktop py-2xl md:py-section-gap grid grid-cols-1 md:grid-cols-4 gap-gutter gap-y-2xl max-w-container-max mx-auto">
           <div className="flex flex-col gap-4">
             <span className="font-headline-lg text-headline-lg font-black text-on-primary">
               {footer?.company_name || "VIETSHOP"}
@@ -72,7 +72,7 @@ export function PublicFooter() {
             {subscribed ? (
               <p className="text-primary font-label-md">Đã đăng ký thành công!</p>
             ) : (
-              <form className="flex mt-2" onSubmit={handleSubscribe}>
+              <form className="flex flex-col sm:flex-row mt-2" onSubmit={handleSubscribe}>
                 <input
                   className="bg-white/10 border border-white/20 px-4 py-2 flex-grow focus:ring-0 text-on-secondary placeholder-on-secondary/40"
                   placeholder="Email của bạn"

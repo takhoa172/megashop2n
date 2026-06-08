@@ -83,7 +83,7 @@ function BlogListContent() {
                   alt={featured.title}
                 />
               </div>
-              <div className="md:col-span-5 p-2xl flex flex-col justify-center">
+              <div className="md:col-span-5 p-lg md:p-2xl flex flex-col justify-center">
                 <span className="inline-block px-md py-1 bg-primary-container text-on-primary-container font-label-md text-label-md rounded-xl w-fit mb-md">Nổi bật</span>
                 <h2 className="font-headline-lg text-headline-lg text-on-surface mb-md">{featured.title}</h2>
                 <p className="font-body-md text-body-md text-on-surface-variant mb-xl line-clamp-3">
