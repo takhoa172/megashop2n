@@ -202,16 +202,16 @@ export default function HomePage() {
 
       {/* Hàng giá rẻ */}
       <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-2xl md:py-section-gap">
-        <div className="flex items-center gap-4 mb-10">
-          <h2 className="font-headline-lg text-headline-lg">Hàng giá rẻ</h2>
+        <div className="flex items-center gap-4 mb-6 md:mb-10">
+          <h2 className="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg">Hàng giá rẻ</h2>
           <div className="h-[1px] flex-grow bg-outline-variant" />
           <span className="font-label-lg text-primary">Dưới 500k</span>
         </div>
         <div className="overflow-x-auto hide-scrollbar -mx-margin-mobile md:-mx-0">
           <div className="flex gap-gutter px-margin-mobile md:px-0 min-w-max md:min-w-0">
             {(budgetList.length > 0 ? budgetList : placeholderProducts).map((product: any) => (
-              <Link key={product.id} href={`/products/${product.id}`} className="bg-white p-4 rounded-xl shadow-sm group min-w-[280px]">
-                <div className="aspect-square overflow-hidden rounded-xl bg-surface-container mb-4">
+              <Link key={product.id} href={`/products/${product.id}`} className="bg-white p-3 rounded-xl shadow-sm group min-w-[160px] sm:min-w-[280px]">
+                <div className="aspect-[3/4] overflow-hidden rounded-xl bg-surface-container mb-2">
                   <img
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                     src={product.images?.[0]?.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400"}
@@ -219,7 +219,7 @@ export default function HomePage() {
                   />
                 </div>
                 <h4 className="font-label-lg text-secondary mb-1">{product.name}</h4>
-                <p className="text-primary font-bold text-[22px]">{product.sale_price != null && product.sale_price > 0 ? formatCurrency(product.sale_price) : "Miễn phí"}</p>
+                <p className="text-primary font-bold text-lg sm:text-[22px]">{product.sale_price != null && product.sale_price > 0 ? formatCurrency(product.sale_price) : "Miễn phí"}</p>
               </Link>
             ))}
           </div>
