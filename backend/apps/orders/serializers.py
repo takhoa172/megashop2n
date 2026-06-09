@@ -53,15 +53,19 @@ class OrderCreateSerializer(serializers.Serializer):
 
     def validate_items(self, items):
         if not items:
-            raise serializers.ValidationError("Must have at least one item")
+            raise serializers.ValidationError("Phải có ít nhất một sản phẩm")
         product_ids = [item["product_id"] for item in items]
         products = Product.objects.filter(id__in=product_ids)
         if len(products) != len(set(product_ids)):
-            raise serializers.ValidationError("Some products not found")
+            raise serializers.ValidationError("Một số sản phẩm không tìm thấy")
         for product in products:
             if product.status != "in_stock":
                 raise serializers.ValidationError(
-                    f"Product {product.name} is not available"
+                    f"Sản phẩm {product.name} không có sẵn"
+                )
+            if product.sale_price is None:
+                raise serializers.ValidationError(
+                    f"Sản phẩm {product.name} chưa có giá bán"
                 )
         return items
 
@@ -75,7 +79,7 @@ class OrderCreateSerializer(serializers.Serializer):
 
         for item_data in items_data:
             product = Product.objects.get(id=item_data["product_id"])
-            unit_price = product.sale_price if product.sale_price is not None else 0
+            unit_price = product.sale_price
             item_subtotal = unit_price * item_data["quantity"]
             subtotal += item_subtotal
             primary_image = product.images.filter(is_primary=True).first()

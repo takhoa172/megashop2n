@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     "apps.settings",
     "apps.notifications",
     "apps.product_views",
-    "apps.orders",
+    "apps.orders.apps.OrdersConfig",
 ]
 
 MIDDLEWARE = [

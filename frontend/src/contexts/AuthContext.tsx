@@ -67,7 +67,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(
     async (email: string, password: string) => {
       const data = await apiLogin(email, password)
-      localStorage.removeItem("cart")
       localStorage.setItem("access_token", data.access)
       localStorage.setItem("refresh_token", data.refresh)
       localStorage.setItem("user", JSON.stringify(data.user))
@@ -84,7 +83,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = useCallback(
     async (full_name: string, email: string, phone: string, password: string, password_confirm: string) => {
       const data = await apiRegister(full_name, email, phone, password, password_confirm)
-      localStorage.removeItem("cart")
       localStorage.setItem("access_token", data.access)
       localStorage.setItem("refresh_token", data.refresh)
       localStorage.setItem("user", JSON.stringify(data.user))

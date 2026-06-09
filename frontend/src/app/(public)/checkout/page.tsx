@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useCart } from "@/contexts/CartContext"
 import { useAuth } from "@/contexts/AuthContext"
 import { createOrder } from "@/services/orders"
+import { initPayment } from "@/services/payment"
 import { formatCurrency } from "@/lib/utils"
 
 export default function CheckoutPage() {
@@ -59,7 +60,8 @@ export default function CheckoutPage() {
       clearCart()
 
       if (paymentMethod === "vnpay") {
-        router.push(`/order/success?id=${order.id}`)
+        const { payment_url } = await initPayment(order.id, "vnpay")
+        window.location.href = payment_url
       } else {
         router.push(`/order/success?id=${order.id}`)
       }

@@ -79,3 +79,12 @@
 | 2026-06-02 | Fix P1-F9: Cart badge trên navbar |
 | 2026-06-02 | Fix P1-F10: Thêm "Danh mục" nav link |
 | 2026-06-02 | Fix P1-F14: Contact form API + backend ContactView |
+| 2026-06-09 | Fix Phase A — VNPay: views.py (PaymentReturnView, init_payment), signals.py, urls.py |
+| 2026-06-09 | Fix Phase B — VNPay frontend redirect, guest cart, sale_price=None, admin alert, cancel order button |
+| 2026-06-09 | Fix error messages → tiếng Việt, order separation admin/customer (get_queryset + ?all=1) |
+| 2026-06-09 | Fix Settings tabs key/label, Input component, whitespace-nowrap |
+| 2026-06-09 | Fix Sidebar sticky (không mất khi scroll), Footer grid responsive (grid-cols-1 md:grid-cols-2) |
+| 2026-06-09 | Fix Django Admin prefix: /admin/ → /django-admin/ (nginx + urls.py) |
+| 2026-06-09 | Fix globals.css — thêm @source directives cho Tailwind v4 scan đúng |
+| 2026-06-09 | Xoá dead code location /admin/ → Django trong nginx/default.conf
+| 2026-06-09 | Bỏ max-w-xl khỏi Settings Site form (root cause: @theme --spacing-xl:32px làm max-w-xl=32px). Đồng thời thay max-w-3xl → max-w-[48rem] ở product detail 3 chỗ. Thêm comment cảnh báo trong globals.css. |

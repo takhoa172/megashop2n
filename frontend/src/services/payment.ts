@@ -4,6 +4,6 @@ export async function initPayment(
   orderId: string,
   method: string
 ): Promise<{ payment_url: string }> {
-  const res = await api.post("/payment/init/", { order_id: orderId, method })
+  const res = await api.post(`/orders/${orderId}/init-payment/`)
   return res.data
 }
