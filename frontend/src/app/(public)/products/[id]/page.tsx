@@ -194,7 +194,7 @@ export default function ProductDetailPage() {
         </div>
         <div className="py-2xl">
           {activeTab === "description" ? (
-            <div className="max-w-3xl">
+            <div className="max-w-[48rem]">
               <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed whitespace-pre-line mb-xl">
                 {product.description || "Sản phẩm chất lượng cao từ VIETSHOP. Chúng tôi cam kết mang đến những sản phẩm tốt nhất với giá cả cạnh tranh nhất thị trường."}
               </p>
@@ -216,7 +216,7 @@ export default function ProductDetailPage() {
               </div>
             </div>
           ) : activeTab === "specifications" ? (
-            <div className="max-w-3xl">
+            <div className="max-w-[48rem]">
               <h2 className="font-headline-md text-headline-md mb-md">Thông số kỹ thuật</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-xl">
                 <div className="flex items-start gap-md">
@@ -252,7 +252,7 @@ export default function ProductDetailPage() {
               </div>
             </div>
           ) : (
-            <div className="max-w-3xl">
+            <div className="max-w-[48rem]">
               <h2 className="font-headline-md text-headline-md mb-lg">Đánh giá khách hàng</h2>
               <div className="flex items-center gap-xl mb-xl p-lg bg-surface-container-low rounded-xl">
                 <div className="text-center">

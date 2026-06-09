@@ -21,6 +21,7 @@ export default function AdminOrderDetailPage() {
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
+  const [error, setError] = useState("")
   const [selectedStatus, setSelectedStatus] = useState("")
 
   useEffect(() => {
@@ -41,7 +42,7 @@ export default function AdminOrderDetailPage() {
       const updated = await updateOrderStatus(order.id, selectedStatus)
       setOrder(updated)
     } catch (err) {
-      alert("Cập nhật thất bại")
+      setError("Cập nhật trạng thái thất bại")
     } finally {
       setUpdating(false)
     }
@@ -95,6 +96,9 @@ export default function AdminOrderDetailPage() {
           </button>
         </div>
       </div>
+      {error && (
+        <p className="text-red-600 bg-red-50 px-md py-sm rounded-lg mb-lg text-body-sm">{error}</p>
+      )}
 
       <div className="flex flex-col lg:flex-row gap-gutter">
         <div className="flex-1 space-y-lg">

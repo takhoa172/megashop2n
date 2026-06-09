@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@source "../components/";
+@source "../app/";
 
 @theme {
   --color-primary: #2563EB;
@@ -127,8 +129,8 @@
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  --spacing-2xl: 48px;
+  --spacing-xl: 32px;   /* CẢNH BÁO: max-w-xl/2xl/3xl cũng dùng --spacing-* này, ko dùng max-w-xl trong JSX */
+  --spacing-2xl: 48px;  /* Dùng arbitrary value như max-w-[36rem] thay thế */
   --spacing-3xl: 64px;
   --spacing-unit: 4px;
 }

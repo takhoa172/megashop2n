@@ -26,26 +26,33 @@ import { User, Category } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
 import { Trash2 } from "lucide-react"
 
-const tabs = ["Site", "Footer", "Sliders (Ảnh trượt)", "Notifications (Thông báo)", "Users (Người dùng)", "Categories (Danh mục)"]
+const tabs = [
+  { key: "Site", label: "Site" },
+  { key: "Footer", label: "Footer" },
+  { key: "Sliders", label: "Sliders (Ảnh trượt)" },
+  { key: "Notifications", label: "Notifications (Thông báo)" },
+  { key: "Users", label: "Users (Người dùng)" },
+  { key: "Categories", label: "Categories (Danh mục)" },
+]
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("Footer")
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Settings (Cài đặt)</h1>
-      <div className="flex gap-1 border-b border-slate-200">
+      <h1 className="text-2xl font-bold text-slate-900">Settings (Cài đặt)</h1>
+      <div className="flex gap-1 border-b border-slate-200 overflow-x-auto whitespace-nowrap">
         {tabs.map((tab) => (
           <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === tab
-                ? "border-slate-900 text-slate-900"
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+              activeTab === tab.key
+                ? "border-primary text-primary"
                 : "border-transparent text-slate-500 hover:text-slate-700"
             }`}
           >
-            {tab}
+            {tab.label}
           </button>
         ))}
       </div>
@@ -55,6 +62,23 @@ export default function SettingsPage() {
       {activeTab === "Notifications" && <NotificationsTab />}
       {activeTab === "Users" && <UsersTab />}
       {activeTab === "Categories" && <CategoriesTab />}
+    </div>
+  )
+}
+
+function Card({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      {children}
+    </div>
+  )
+}
+
+function Field({ label, name, defaultValue }: { label: string; name: string; defaultValue?: string | null }) {
+  return (
+    <div className="space-y-2 min-w-0">
+      <label className="text-sm font-medium text-slate-700">{label}</label>
+      <Input name={name} defaultValue={defaultValue || ""} />
     </div>
   )
 }
@@ -81,35 +105,37 @@ function FooterTab() {
   if (!data) return <p className="text-sm text-slate-500">Loading...</p>
 
   return (
-    <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
-      <Field label="Company Name (Tên công ty)" name="company_name" defaultValue={data.company_name} />
-      <Field label="Phone (Số điện thoại)" name="phone" defaultValue={data.phone} />
-      <Field label="Email" name="email" defaultValue={data.email} />
-      <Field label="Facebook URL" name="facebook" defaultValue={data.facebook} />
-      <Field label="Youtube URL" name="youtube" defaultValue={data.youtube} />
-      <Field label="Copyright (Bản quyền)" name="copyright_text" defaultValue={data.copyright_text} />
-      <div className="md:col-span-2">
-        <label className="text-sm font-medium">Address (Địa chỉ)</label>
-        <textarea name="address" defaultValue={data.address || ""} className="flex w-full rounded-md border border-slate-200 px-3 py-2 text-sm min-h-[60px]" />
-      </div>
-      <div className="md:col-span-2">
-        <label className="text-sm font-medium">Description (Mô tả)</label>        <textarea name="description" defaultValue={data.description || ""} className="flex w-full rounded-md border border-slate-200 px-3 py-2 text-sm min-h-[60px]" />
-      </div>
-      <div className="md:col-span-2">
-        <Button type="submit" disabled={mutation.isPending}>
-          Save Footer (Lưu)
-        </Button>
-      </div>
-    </form>
-  )
-}
-
-function Field({ label, name, defaultValue }: { label: string; name: string; defaultValue?: string | null }) {
-  return (
-    <div className="space-y-1">
-      <label className="text-sm font-medium">{label}</label>
-      <Input name={name} defaultValue={defaultValue || ""} />
-    </div>
+    <Card>
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <Field label="Company Name (Tên công ty)" name="company_name" defaultValue={data.company_name} />
+        <Field label="Phone (Số điện thoại)" name="phone" defaultValue={data.phone} />
+        <Field label="Email" name="email" defaultValue={data.email} />
+        <Field label="Facebook URL" name="facebook" defaultValue={data.facebook} />
+        <Field label="Youtube URL" name="youtube" defaultValue={data.youtube} />
+        <Field label="Copyright (Bản quyền)" name="copyright_text" defaultValue={data.copyright_text} />
+        <div className="md:col-span-2 space-y-2">
+          <label className="text-sm font-medium text-slate-700">Address (Địa chỉ)</label>
+          <textarea
+            name="address"
+            defaultValue={data.address || ""}
+            className="flex w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm min-h-[80px] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+          />
+        </div>
+        <div className="md:col-span-2 space-y-2">
+          <label className="text-sm font-medium text-slate-700">Description (Mô tả)</label>
+          <textarea
+            name="description"
+            defaultValue={data.description || ""}
+            className="flex w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm min-h-[80px] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+          />
+        </div>
+        <div className="md:col-span-2">
+          <Button type="submit" disabled={mutation.isPending} className="bg-primary text-white hover:bg-primary/90">
+            {mutation.isPending ? "Đang lưu..." : "Lưu Footer"}
+          </Button>
+        </div>
+      </form>
+    </Card>
   )
 }
 
@@ -145,44 +171,45 @@ function SiteSettingsTab() {
   if (!data) return <p className="text-sm text-slate-500">Loading...</p>
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl space-y-4">
-      <Field label="Site Name (Tên trang)" name="site_name" defaultValue={data.site_name} />
-      <div className="space-y-1">
-        <label className="text-sm font-medium">Logo URL (hoặc tải ảnh lên)</label>
-        <input
-          name="site_logo_url"
-          defaultValue={data.site_logo_url || ""}
-          placeholder="https://..."
-          className="flex h-9 w-full rounded-md border border-slate-200 px-3 text-sm"
-        />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleLogoFile}
-          className="flex h-9 rounded-md border border-slate-200 px-3 text-sm mt-1"
-        />
-        {(logoPreview || data.site_logo_url) && (
-          <div className="mt-1">
-            <img
-              src={logoPreview || data.site_logo_url}
-              alt="Logo preview"
-              className="w-32 h-16 object-contain rounded border"
-            />
-          </div>
-        )}
-      </div>
-      <div className="space-y-1">
-        <label className="text-sm font-medium">Meta Description (Mô tả SEO)</label>
-        <textarea
-          name="meta_description"
-          defaultValue={data.meta_description || ""}
-          className="flex w-full rounded-md border border-slate-200 px-3 py-2 text-sm min-h-[60px]"
-        />
-      </div>
-      <Button type="submit" disabled={mutation.isPending}>
-        Save Site Settings (Lưu)
-      </Button>
-    </form>
+    <Card>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <Field label="Tên trang web (Site Name)" name="site_name" defaultValue={data.site_name} />
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-slate-700">Logo URL (hoặc tải ảnh lên)</label>
+          <Input
+            name="site_logo_url"
+            defaultValue={data.site_logo_url || ""}
+            placeholder="https://..."
+          />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleLogoFile}
+            className="mt-2 flex h-9 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-primary/10 file:text-sm file:font-medium file:text-primary hover:file:bg-primary/20 transition-colors"
+          />
+          {(logoPreview || data.site_logo_url) && (
+            <div className="mt-2">
+              <img
+                src={logoPreview || data.site_logo_url}
+                alt="Logo preview"
+                className="w-32 h-16 object-contain rounded-lg border border-slate-200"
+              />
+            </div>
+          )}
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-slate-700">Mô tả SEO (Meta Description)</label>
+          <textarea
+            name="meta_description"
+            defaultValue={data.meta_description || ""}
+            className="flex w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm min-h-[80px] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+          />
+        </div>
+        <Button type="submit" disabled={mutation.isPending} className="bg-primary text-white hover:bg-primary/90">
+          {mutation.isPending ? "Đang lưu..." : "Lưu Cài đặt"}
+        </Button>
+      </form>
+    </Card>
   )
 }
 
@@ -215,20 +242,20 @@ function SlidersTab() {
   }
 
   const columns: ColumnDef<Slider>[] = [
-    { header: "Title (Tiêu đề)", accessorKey: "title", cell: ({ row }) => row.original.title || "-" },
+    { header: "Tiêu đề", accessorKey: "title", cell: ({ row }) => row.original.title || "-" },
     {
-      header: "Image (Ảnh)",
+      header: "Ảnh",
       accessorKey: "image_url",
       cell: ({ row }) => row.original.image_url ? (
         <img src={row.original.image_url} alt="" className="w-16 h-10 object-cover rounded" />
       ) : "-",
     },
     {
-      header: "Active (Kích hoạt)",
+      header: "Kích hoạt",
       accessorKey: "is_active",
       cell: ({ row }) => (row.original.is_active ? "✅" : "❌"),
     },
-    { header: "Order (Thứ tự)", accessorKey: "sort_order" },
+    { header: "Thứ tự", accessorKey: "sort_order" },
     {
       header: "",
       id: "actions",
@@ -251,52 +278,55 @@ function SlidersTab() {
   }
 
   return (
-    <div className="space-y-4">
-      <form onSubmit={handleCreate} className="flex gap-3 items-end flex-wrap">
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Title (Tiêu đề)</label>
-          <input name="title" className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
-        </div>
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Image URL (hoặc tải ảnh lên)</label>
-          <input
-            name="image_url"
-            value={sliderUrl}
-            onChange={(e) => setSliderUrl(e.target.value)}
-            placeholder="https://..."
-            className="flex h-9 rounded-md border border-slate-200 px-3 text-sm w-64"
-          />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleSliderFile}
-            className="flex h-9 rounded-md border border-slate-200 px-3 text-sm w-64 mt-1"
-          />
-          {sliderPreview && (
-            <div className="mt-1">
-              <img src={sliderPreview} alt="Preview" className="w-32 h-20 object-cover rounded border" />
-              <button
-                type="button"
-                onClick={() => setSliderPreview(null)}
-                className="text-xs text-red-500 mt-1 hover:underline"
-              >
-                Remove (Xoá)
-              </button>
-            </div>
-          )}
-        </div>
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Link URL</label>
-          <input name="link_url" className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
-        </div>
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Order (Thứ tự)</label>
-          <input name="sort_order" type="number" defaultValue={0} className="flex h-9 w-20 rounded-md border border-slate-200 px-3 text-sm" />
-        </div>
-        <Button type="submit" size="sm">Add Slider (Thêm)</Button>
-      </form>
-      <DataTable columns={columns} data={sliders || []} />
-    </div>
+    <Card>
+      <div className="space-y-4">
+        <form onSubmit={handleCreate} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">Tiêu đề</label>
+            <Input name="title" />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">Image URL</label>
+            <Input
+              name="image_url"
+              value={sliderUrl}
+              onChange={(e) => setSliderUrl(e.target.value)}
+              placeholder="https://..."
+            />
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={handleSliderFile}
+              className="mt-1"
+            />
+            {sliderPreview && (
+              <div className="mt-1">
+                <img src={sliderPreview} alt="Preview" className="w-32 h-20 object-cover rounded border" />
+                <button
+                  type="button"
+                  onClick={() => setSliderPreview(null)}
+                  className="text-xs text-red-500 mt-1 hover:underline"
+                >
+                  Xoá
+                </button>
+              </div>
+            )}
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">Link URL</label>
+            <Input name="link_url" />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">Thứ tự</label>
+            <Input name="sort_order" type="number" defaultValue={0} />
+          </div>
+          <Button type="submit" size="sm" className="bg-primary text-white hover:bg-primary/90">
+            Thêm Slider
+          </Button>
+        </form>
+        <DataTable columns={columns} data={sliders || []} />
+      </div>
+    </Card>
   )
 }
 
@@ -318,10 +348,10 @@ function NotificationsTab() {
   })
 
   const columns: ColumnDef<Notification>[] = [
-    { header: "Title (Tiêu đề)", accessorKey: "title" },
-    { header: "Active (Kích hoạt)", accessorKey: "is_active", cell: ({ row }) => (row.original.is_active ? "✅" : "❌") },
-    { header: "Start (Bắt đầu)", accessorKey: "start_date" },
-    { header: "End (Kết thúc)", accessorKey: "end_date", cell: ({ row }) => row.original.end_date || "∞" },
+    { header: "Tiêu đề", accessorKey: "title" },
+    { header: "Kích hoạt", accessorKey: "is_active", cell: ({ row }) => (row.original.is_active ? "✅" : "❌") },
+    { header: "Bắt đầu", accessorKey: "start_date" },
+    { header: "Kết thúc", accessorKey: "end_date", cell: ({ row }) => row.original.end_date || "∞" },
     {
       header: "",
       id: "actions",
@@ -346,20 +376,24 @@ function NotificationsTab() {
   }
 
   return (
-    <div className="space-y-4">
-      <form onSubmit={handleCreate} className="flex gap-3 items-end flex-wrap">
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Title (Tiêu đề) *</label>
-          <input name="title" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
-        </div>
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Message (Nội dung) *</label>
-          <input name="message" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
-        </div>
-        <Button type="submit" size="sm">Add Notification (Thêm)</Button>
-      </form>
-      <DataTable columns={columns} data={notifications || []} />
-    </div>
+    <Card>
+      <div className="space-y-4">
+        <form onSubmit={handleCreate} className="flex gap-3 items-end flex-wrap">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">Tiêu đề *</label>
+            <Input name="title" required />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">Nội dung *</label>
+            <Input name="message" required />
+          </div>
+          <Button type="submit" size="sm" className="bg-primary text-white hover:bg-primary/90">
+            Thêm Thông báo
+          </Button>
+        </form>
+        <DataTable columns={columns} data={notifications || []} />
+      </div>
+    </Card>
   )
 }
 
@@ -372,9 +406,9 @@ function UsersTab() {
   })
 
   const columns: ColumnDef<User>[] = [
-    { header: "Name (Tên)", accessorKey: "full_name" },
+    { header: "Họ tên", accessorKey: "full_name" },
     { header: "Email", accessorKey: "email" },
-    { header: "Role (Vai trò)", accessorKey: "role" },
+    { header: "Vai trò", accessorKey: "role" },
   ]
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -391,20 +425,24 @@ function UsersTab() {
   }
 
   return (
-    <div className="space-y-4">
-      <form onSubmit={handleSubmit} className="flex gap-3 items-end flex-wrap">
-        <input name="email" placeholder="Email" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
-        <input name="username" placeholder="Username (Tên đăng nhập)" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
-        <input name="full_name" placeholder="Full Name (Họ tên)" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
-        <input name="password" type="password" placeholder="Password (Mật khẩu)" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
-        <select name="role" className="flex h-9 rounded-md border border-slate-200 px-3 text-sm">
-          <option value="STAFF">Staff (Nhân viên)</option>
-          <option value="MANAGER">Manager (Quản lý)</option>
-        </select>
-        <Button type="submit" size="sm">Add User (Thêm)</Button>
-      </form>
-      <DataTable columns={columns} data={users || []} />
-    </div>
+    <Card>
+      <div className="space-y-4">
+        <form onSubmit={handleSubmit} className="flex gap-3 items-end flex-wrap">
+          <Input name="email" placeholder="Email" required />
+          <Input name="username" placeholder="Tên đăng nhập" required />
+          <Input name="full_name" placeholder="Họ tên" required />
+          <Input name="password" type="password" placeholder="Mật khẩu" required />
+          <select name="role" className="flex h-9 rounded-lg border border-slate-200 px-3 text-sm bg-white">
+            <option value="STAFF">Nhân viên</option>
+            <option value="MANAGER">Quản lý</option>
+          </select>
+          <Button type="submit" size="sm" className="bg-primary text-white hover:bg-primary/90">
+            Thêm Người dùng
+          </Button>
+        </form>
+        <DataTable columns={columns} data={users || []} />
+      </div>
+    </Card>
   )
 }
 
@@ -417,8 +455,8 @@ function CategoriesTab() {
   })
 
   const columns: ColumnDef<Category>[] = [
-    { header: "Name (Tên)", accessorKey: "name" },
-    { header: "Slug (Đường dẫn)", accessorKey: "slug" },
+    { header: "Tên", accessorKey: "name" },
+    { header: "Đường dẫn", accessorKey: "slug" },
   ]
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -429,12 +467,16 @@ function CategoriesTab() {
   }
 
   return (
-    <div className="space-y-4">
-      <form onSubmit={handleSubmit} className="flex gap-3 items-end">
-        <input name="name" placeholder="Category Name (Tên danh mục)" required className="flex h-9 rounded-md border border-slate-200 px-3 text-sm" />
-        <Button type="submit" size="sm">Add Category (Thêm)</Button>
-      </form>
-      <DataTable columns={columns} data={categories || []} />
-    </div>
+    <Card>
+      <div className="space-y-4">
+        <form onSubmit={handleSubmit} className="flex gap-3 items-end">
+          <Input name="name" placeholder="Tên danh mục" required />
+          <Button type="submit" size="sm" className="bg-primary text-white hover:bg-primary/90">
+            Thêm Danh mục
+          </Button>
+        </form>
+        <DataTable columns={columns} data={categories || []} />
+      </div>
+    </Card>
   )
 }

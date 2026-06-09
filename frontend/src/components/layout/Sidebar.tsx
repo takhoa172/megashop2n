@@ -55,7 +55,7 @@ export function Sidebar({ open, onClose, role }: SidebarProps) {
       )}
       <aside
         className={cn(
-          "fixed top-0 left-0 z-50 h-full w-64 bg-gradient-to-b from-slate-900 to-slate-800 text-white flex flex-col transform transition-transform duration-200 lg:translate-x-0 lg:static lg:z-auto",
+          "fixed top-0 left-0 z-50 h-full w-64 bg-gradient-to-b from-slate-900 to-slate-800 text-white flex flex-col transform transition-transform duration-200 lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen",
           open ? "translate-x-0" : "-translate-x-full"
         )}
       >

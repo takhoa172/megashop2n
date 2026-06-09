@@ -66,7 +66,7 @@ export async function getOrder(id: string): Promise<Order> {
 }
 
 export async function getAllOrders(): Promise<Order[]> {
-  const res = await api.get("/orders/")
+  const res = await api.get("/orders/", { params: { all: "1" } })
   return res.data.results || res.data
 }
 
@@ -75,5 +75,10 @@ export async function updateOrderStatus(
   status: string
 ): Promise<Order> {
   const res = await api.patch(`/orders/${id}/status/`, { status })
+  return res.data
+}
+
+export async function cancelOrder(id: string): Promise<Order> {
+  const res = await api.post(`/orders/${id}/cancel/`)
   return res.data
 }

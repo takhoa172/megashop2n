@@ -1,10 +1,10 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { useAuth } from "@/contexts/AuthContext"
-import { getOrder, Order } from "@/services/orders"
+import { getOrder, cancelOrder, Order } from "@/services/orders"
 import { formatCurrency } from "@/lib/utils"
 
 const statusLabels: Record<string, string> = {
@@ -22,6 +22,9 @@ export default function OrderDetailPage() {
   const { user } = useAuth()
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
+  const [cancelling, setCancelling] = useState(false)
+  const [cancelError, setCancelError] = useState("")
+  const router = useRouter()
 
   useEffect(() => {
     if (!user || !id) return
@@ -30,6 +33,20 @@ export default function OrderDetailPage() {
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [user, id])
+
+  const handleCancel = async () => {
+    if (!order) return
+    setCancelling(true)
+    setCancelError("")
+    try {
+      const updated = await cancelOrder(order.id)
+      setOrder(updated)
+    } catch (err: any) {
+      setCancelError(err?.response?.data?.detail || "Hủy đơn hàng thất bại")
+    } finally {
+      setCancelling(false)
+    }
+  }
 
   if (!user) {
     return (
@@ -85,7 +102,19 @@ export default function OrderDetailPage() {
               <span className={`px-sm py-0.5 rounded-full text-label-sm ${order.payment_status === "paid" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}`}>
                 {order.payment_status === "paid" ? "Đã thanh toán" : "Chưa thanh toán"}
               </span>
+              {order.status === "pending" && (
+                <button
+                  onClick={handleCancel}
+                  disabled={cancelling}
+                  className="ml-auto px-md py-sm rounded-lg text-label-sm bg-red-100 text-red-700 hover:bg-red-200 transition-colors disabled:opacity-50"
+                >
+                  {cancelling ? "Đang hủy..." : "Hủy đơn"}
+                </button>
+              )}
             </div>
+            {cancelError && (
+              <p className="text-red-600 bg-red-50 px-md py-sm rounded-lg mb-lg text-body-sm">{cancelError}</p>
+            )}
 
             <div className="space-y-sm mb-xl">
               {statusTimeline.map((s, idx) => (
