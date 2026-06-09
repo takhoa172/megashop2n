@@ -35,7 +35,7 @@ function ProductCard({ product }: { product: any }) {
     setTimeout(() => setAdded(false), 2000)
   }
   return (
-    <Link href={`/products/${product.id}`} className="group border border-outline-variant rounded-xl shadow-[0_4px_12px_rgba(0,0,0,.08)] hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 p-4 bg-white">
+    <Link href={`/products/${product.id}`} className="group border border-outline-variant rounded-xl shadow-[0_4px_12px_rgba(0,0,0,.08)] hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 p-4 bg-white overflow-hidden">
       <div className="relative overflow-hidden mb-4 aspect-[3/4] rounded-xl">
         <img
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -48,9 +48,9 @@ function ProductCard({ product }: { product: any }) {
       <h3 className="font-headline-md text-headline-md mb-2 truncate">{product.name}</h3>
       <div className="flex items-center gap-1 mb-3">
         {[1, 2, 3, 4, 5].map((s) => (
-          <span key={s} className="material-symbols-outlined text-accent text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+          <span key={s} className="material-symbols-outlined text-accent text-[16px] md:text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
         ))}
-        <span className="font-label-sm text-label-sm text-on-surface-variant ml-1">4.8 (120)</span>
+        <span className="font-label-sm text-label-sm text-on-surface-variant ml-1 hidden md:inline">4.8 (120)</span>
       </div>
       <p className="font-bold text-primary mb-4">{product.sale_price != null ? (product.sale_price > 0 ? formatCurrency(product.sale_price) : "Miễn phí") : "Liên hệ"}</p>
       <button onClick={handleAddToCart} className="w-full bg-primary text-on-primary py-3 font-label-lg hover:bg-secondary hover:opacity-90 transition-all active:scale-95">{added ? "Đã thêm ✓" : "Thêm vào giỏ"}</button>

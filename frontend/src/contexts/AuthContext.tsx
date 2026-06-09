@@ -67,11 +67,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(
     async (email: string, password: string) => {
       const data = await apiLogin(email, password)
+      localStorage.removeItem("cart")
       localStorage.setItem("access_token", data.access)
       localStorage.setItem("refresh_token", data.refresh)
       localStorage.setItem("user", JSON.stringify(data.user))
       setUser(data.user)
-      router.push("/")
+      if (data.user.role === "CUSTOMER") {
+        router.push("/")
+      } else {
+        router.push("/admin/dashboard")
+      }
     },
     [router]
   )
@@ -79,11 +84,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = useCallback(
     async (full_name: string, email: string, phone: string, password: string, password_confirm: string) => {
       const data = await apiRegister(full_name, email, phone, password, password_confirm)
+      localStorage.removeItem("cart")
       localStorage.setItem("access_token", data.access)
       localStorage.setItem("refresh_token", data.refresh)
       localStorage.setItem("user", JSON.stringify(data.user))
       setUser(data.user)
-      router.push("/")
+      if (data.user.role === "CUSTOMER") {
+        router.push("/")
+      } else {
+        router.push("/admin/dashboard")
+      }
     },
     [router]
   )
@@ -92,6 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("access_token")
     localStorage.removeItem("refresh_token")
     localStorage.removeItem("user")
+    localStorage.removeItem("cart")
     setUser(null)
     router.push("/login")
   }, [router])

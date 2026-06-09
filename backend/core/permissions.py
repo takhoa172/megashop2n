@@ -1,4 +1,5 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
+from apps.users.models import User
 
 
 class IsSuperAdmin(BasePermission):
@@ -28,3 +29,12 @@ class IsAdminOrReadOnly(BasePermission):
             "SUPER_ADMIN",
             "MANAGER",
         ]
+
+
+class IsCustomer(BasePermission):
+    def has_permission(self, request, view):
+        return (
+            request.user.is_authenticated
+            and request.user.is_active
+            and request.user.role == User.Role.CUSTOMER
+        )

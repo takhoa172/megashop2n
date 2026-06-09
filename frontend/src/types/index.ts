@@ -4,7 +4,7 @@ export interface User {
   username: string
   full_name: string
   phone?: string
-  role: "SUPER_ADMIN" | "MANAGER" | "STAFF"
+  role: "SUPER_ADMIN" | "MANAGER" | "STAFF" | "CUSTOMER"
   is_active: boolean
   created_at: string
   updated_at: string

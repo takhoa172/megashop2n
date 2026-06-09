@@ -56,6 +56,23 @@ class RegisterSerializer(serializers.Serializer):
         return user
 
 
+class CustomerRegisterSerializer(RegisterSerializer):
+    def create(self, validated_data):
+        validated_data.pop("password_confirm")
+        password = validated_data.pop("password")
+        username = validated_data["email"].split("@")[0]
+        base_username = username
+        suffix = 1
+        while User.objects.filter(username=username).exists():
+            username = f"{base_username}{suffix}"
+            suffix += 1
+        user = User(username=username, **validated_data)
+        user.set_password(password)
+        user.role = User.Role.CUSTOMER
+        user.save()
+        return user
+
+
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()

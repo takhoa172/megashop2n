@@ -47,10 +47,21 @@ def seed():
         )
     print(f"Created {Category.objects.count()} categories")
 
+    if not User.objects.filter(email="customer@example.com").exists():
+        User.objects.create_user(
+            email="customer@example.com",
+            username="customer",
+            full_name="Customer User",
+            password="password123",
+            role="CUSTOMER",
+        )
+        print(f"Created CUSTOMER: customer@example.com / password123")
+
     print("\nSeed complete!")
     print("  Admin: admin@example.com / admin123")
     print("  Manager: manager@example.com / password123")
     print("  Staff: staff@example.com / password123")
+    print("  Customer: customer@example.com / password123")
 
 
 if __name__ == "__main__":

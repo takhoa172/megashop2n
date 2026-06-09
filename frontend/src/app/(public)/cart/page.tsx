@@ -1,10 +1,14 @@
 "use client"
 
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useCart } from "@/contexts/CartContext"
+import { useAuth } from "@/contexts/AuthContext"
 import { formatCurrency } from "@/lib/utils"
 
 export default function CartPage() {
+  const router = useRouter()
+  const { user } = useAuth()
   const { items, total, removeItem, updateQuantity, clearCart } = useCart()
 
   if (items.length === 0) {
@@ -94,7 +98,10 @@ export default function CartPage() {
               <span className="font-title-lg text-title-lg">Tổng cộng</span>
               <span className="font-title-lg text-title-lg text-primary font-bold">{formatCurrency(total)}</span>
             </div>
-            <button className="w-full bg-primary text-on-primary py-lg rounded-xl font-title-lg text-title-lg hover:bg-primary/90 transition-all active:scale-[0.98]">
+            <button
+              onClick={() => router.push(user ? "/checkout" : "/login?redirect=/checkout")}
+              className="w-full bg-primary text-on-primary py-lg rounded-xl font-title-lg text-title-lg hover:bg-primary/90 transition-all active:scale-[0.98]"
+            >
               Tiến hành đặt hàng
             </button>
             <Link href="/products" className="block text-center mt-md text-primary font-label-md hover:underline">

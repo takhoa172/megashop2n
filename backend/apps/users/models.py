@@ -9,6 +9,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         SUPER_ADMIN = "SUPER_ADMIN", "Super Admin"
         MANAGER = "MANAGER", "Manager"
         STAFF = "STAFF", "Staff"
+        CUSTOMER = "CUSTOMER", "Customer"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True, max_length=255)
