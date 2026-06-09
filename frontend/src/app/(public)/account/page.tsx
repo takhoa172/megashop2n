@@ -36,6 +36,13 @@ export default function AccountPage() {
                   <p className="font-body-sm text-body-sm text-on-surface-variant">{user.email}</p>
                 </div>
               </div>
+              <Link
+                href="/account/orders"
+                className="w-full bg-surface-container-low text-primary font-label-lg py-md rounded-xl hover:bg-primary/10 transition-all flex items-center justify-center gap-sm mb-md"
+              >
+                <span className="material-symbols-outlined">receipt_long</span>
+                Đơn hàng của tôi
+              </Link>
               <button
                 onClick={logout}
                 className="w-full bg-red-50 text-red-600 font-label-lg py-md rounded-xl hover:bg-red-100 transition-all flex items-center justify-center gap-sm"

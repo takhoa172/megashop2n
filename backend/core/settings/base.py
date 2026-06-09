@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "apps.settings",
     "apps.notifications",
     "apps.product_views",
+    "apps.orders",
 ]
 
 MIDDLEWARE = [
@@ -131,5 +132,12 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
+
+VNPAY_TMN_CODE = os.environ.get("VNPAY_TMN_CODE", "")
+VNPAY_HASH_SECRET = os.environ.get("VNPAY_HASH_SECRET", "")
+VNPAY_RETURN_URL = os.environ.get(
+    "VNPAY_RETURN_URL",
+    "https://megashop2n.io.vn/api/orders/payment-return/",
+)
 
 

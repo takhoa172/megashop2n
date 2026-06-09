@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import LoginView, RegisterView, RefreshView, LogoutView, MeView, UserViewSet
+from .views import LoginView, RegisterView, CustomerRegisterView, RefreshView, LogoutView, MeView, UserViewSet
 
 users_list = UserViewSet.as_view({
     "get": "list",
@@ -15,6 +15,7 @@ users_detail = UserViewSet.as_view({
 urlpatterns = [
     path("login", LoginView.as_view(), name="auth-login"),
     path("register", RegisterView.as_view(), name="auth-register"),
+    path("register/customer", CustomerRegisterView.as_view(), name="auth-register-customer"),
     path("refresh", RefreshView.as_view(), name="auth-refresh"),
     path("logout", LogoutView.as_view(), name="auth-logout"),
     path("me", MeView.as_view(), name="auth-me"),

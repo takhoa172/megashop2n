@@ -33,7 +33,7 @@ export async function register(
   password: string,
   password_confirm: string
 ): Promise<{ access: string; refresh: string; user: User }> {
-  const { data } = await api.post("/auth/register", { full_name, email, phone, password, password_confirm })
+  const { data } = await api.post("/auth/register/customer", { full_name, email, phone, password, password_confirm })
   return data
 }
 

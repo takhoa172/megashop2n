@@ -18,6 +18,7 @@ urlpatterns = [
     path("api/settings/", include("apps.settings.urls")),
     path("api/notifications/", include("apps.notifications.urls")),
     path("api/audit-logs/", include("apps.audit_logs.urls")),
+    path("api/orders/", include("apps.orders.urls")),
     path("api/contact", ContactView.as_view(), name="contact"),
 ]
 
