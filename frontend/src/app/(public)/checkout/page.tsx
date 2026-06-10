@@ -60,7 +60,7 @@ export default function CheckoutPage() {
       clearCart()
 
       if (paymentMethod === "vnpay") {
-        const { payment_url } = await initPayment(order.id, "vnpay")
+        const { payment_url } = await initPayment(order.id)
         window.location.href = payment_url
       } else {
         router.push(`/order/success?id=${order.id}`)

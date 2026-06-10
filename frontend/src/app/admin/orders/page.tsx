@@ -25,12 +25,18 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState("")
+  const [search, setSearch] = useState("")
 
-  useEffect(() => {
-    getAllOrders()
+  const fetchOrders = (searchTerm?: string) => {
+    setLoading(true)
+    getAllOrders(searchTerm || undefined)
       .then(setOrders)
       .catch(() => {})
       .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    fetchOrders()
   }, [])
 
   const filtered = filter
@@ -46,22 +52,43 @@ export default function AdminOrdersPage() {
     <div>
       <h1 className="font-headline-lg text-headline-lg mb-lg">Quản lý đơn hàng</h1>
 
-      <div className="flex flex-wrap gap-sm mb-lg">
-        <button
-          onClick={() => setFilter("")}
-          className={`px-md py-sm rounded-lg text-label-sm transition-colors ${!filter ? "bg-primary text-on-primary" : "bg-surface-container-low text-on-surface-variant hover:bg-outline-variant"}`}
-        >
-          Tất cả ({orders.length})
-        </button>
-        {Object.entries(statusLabels).map(([key, label]) => (
+      <div className="flex flex-col sm:flex-row gap-md mb-lg items-start sm:items-center justify-between">
+        <div className="flex flex-wrap gap-sm">
           <button
-            key={key}
-            onClick={() => setFilter(key)}
-            className={`px-md py-sm rounded-lg text-label-sm transition-colors ${filter === key ? "bg-primary text-on-primary" : "bg-surface-container-low text-on-surface-variant hover:bg-outline-variant"}`}
+            onClick={() => setFilter("")}
+            className={`px-md py-sm rounded-lg text-label-sm transition-colors ${!filter ? "bg-primary text-on-primary" : "bg-surface-container-low text-on-surface-variant hover:bg-outline-variant"}`}
           >
-            {label} ({statusCounts[key] || 0})
+            Tất cả ({orders.length})
           </button>
-        ))}
+          {Object.entries(statusLabels).map(([key, label]) => (
+            <button
+              key={key}
+              onClick={() => setFilter(key)}
+              className={`px-md py-sm rounded-lg text-label-sm transition-colors ${filter === key ? "bg-primary text-on-primary" : "bg-surface-container-low text-on-surface-variant hover:bg-outline-variant"}`}
+            >
+              {label} ({statusCounts[key] || 0})
+            </button>
+          ))}
+        </div>
+
+        <div className="flex gap-sm w-full sm:w-auto">
+          <input
+            type="text"
+            placeholder="Tìm theo mã đơn, tên, SĐT..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") fetchOrders(search)
+            }}
+            className="w-full sm:w-64 px-md py-sm rounded-lg border border-outline-variant text-body-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+          />
+          <button
+            onClick={() => fetchOrders(search)}
+            className="px-md py-sm rounded-lg bg-primary text-on-primary text-label-sm hover:bg-primary/90 transition-colors"
+          >
+            Tìm
+          </button>
+        </div>
       </div>
 
       {loading ? (

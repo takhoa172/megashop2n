@@ -46,6 +46,7 @@ def create_payment_url(order, request):
 def verify_return(params):
     hash_secret = getattr(settings, "VNPAY_HASH_SECRET", "")
     secure_hash = params.pop("vnp_SecureHash", None)
+    params.pop("vnp_SecureHashType", None)
     if not secure_hash:
         return False
 

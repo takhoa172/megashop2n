@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
-from django.db import transaction
+from django.db import transaction, models as db_models
 from django.utils import timezone
 from django.conf import settings
 from .models import Order, OrderItem
@@ -37,13 +37,26 @@ class OrderViewSet(viewsets.GenericViewSet):
         user = self.request.user
         if not user.is_authenticated:
             return Order.objects.none()
+
+        qs = Order.objects.prefetch_related("items__product").select_related("user")
+
         if self.action == "list":
-            if self.request.query_params.get("all") == "1" and user.role in ["SUPER_ADMIN", "MANAGER", "STAFF"]:
-                return Order.objects.all()
-            return Order.objects.filter(user=user)
+            if not (self.request.query_params.get("all") == "1" and user.role in ["SUPER_ADMIN", "MANAGER", "STAFF"]):
+                qs = qs.filter(user=user)
+
+            search = self.request.query_params.get("search", "").strip()
+            if search:
+                qs = qs.filter(
+                    db_models.Q(shipping_name__icontains=search) |
+                    db_models.Q(shipping_phone__icontains=search) |
+                    db_models.Q(guest_email__icontains=search) |
+                    db_models.Q(id__icontains=search)
+                )
+            return qs
+
         if user.role not in ["SUPER_ADMIN", "MANAGER", "STAFF"]:
-            return Order.objects.filter(user=user)
-        return Order.objects.all()
+            return qs.filter(user=user)
+        return qs
 
     def create(self, request):
         serializer = OrderCreateSerializer(
@@ -123,15 +136,23 @@ class PaymentReturnView(APIView):
         params = request.query_params.dict()
         is_valid = verify_return(params)
 
+        frontend_base = request.build_absolute_uri("/").replace("/api/", "")
+        frontend_url = f"{frontend_base}order/success"
+
         if is_valid:
             txn_ref = params.get("vnp_TxnRef", "")
+            order_id = ""
             try:
                 order = Order.objects.get(vnpay_txn_ref=txn_ref)
+                order_id = str(order.id)
                 if params.get("vnp_TransactionStatus") == "00":
                     order.payment_status = Order.PaymentStatus.PAID
                     order.vnpay_paid_at = timezone.now()
                     order.save(update_fields=["payment_status", "vnpay_paid_at"])
             except Order.DoesNotExist:
                 pass
+            if order_id:
+                from django.shortcuts import redirect
+                return redirect(f"{frontend_url}?id={order_id}")
             return Response({"status": "success"})
         return Response({"status": "fail"}, status=status.HTTP_400_BAD_REQUEST)

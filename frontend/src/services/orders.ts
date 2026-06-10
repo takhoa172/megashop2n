@@ -65,8 +65,10 @@ export async function getOrder(id: string): Promise<Order> {
   return res.data
 }
 
-export async function getAllOrders(): Promise<Order[]> {
-  const res = await api.get("/orders/", { params: { all: "1" } })
+export async function getAllOrders(search?: string): Promise<Order[]> {
+  const params: Record<string, string> = { all: "1" }
+  if (search) params.search = search
+  const res = await api.get("/orders/", { params })
   return res.data.results || res.data
 }
 
