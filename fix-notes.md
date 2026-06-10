@@ -87,4 +87,5 @@
 | 2026-06-09 | Fix Django Admin prefix: /admin/ → /django-admin/ (nginx + urls.py) |
 | 2026-06-09 | Fix globals.css — thêm @source directives cho Tailwind v4 scan đúng |
 | 2026-06-09 | Xoá dead code location /admin/ → Django trong nginx/default.conf
-| 2026-06-09 | Bỏ max-w-xl khỏi Settings Site form (root cause: @theme --spacing-xl:32px làm max-w-xl=32px). Đồng thời thay max-w-3xl → max-w-[48rem] ở product detail 3 chỗ. Thêm comment cảnh báo trong globals.css. |
+| 2026-06-09 | Bỏ max-w-xl khỏi Settings Site form (root cause: @theme --spacing-xl:32px làm max-w-xl=32px). Đồng thời thay max-w-3xl → max-w-[48rem] ở product detail 3 chỗ. Thêm comment cảnh báo trong globals.css.
+| 2026-06-10 | Thêm VNPay config vars (.env), search filter cho OrderViewSet (backend), search input cho Admin Orders page (frontend). Rebuild Docker + verify HTTP 200. |

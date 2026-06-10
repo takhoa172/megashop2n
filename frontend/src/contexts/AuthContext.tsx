@@ -100,7 +100,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("access_token")
     localStorage.removeItem("refresh_token")
     localStorage.removeItem("user")
-    localStorage.removeItem("cart")
     setUser(null)
     router.push("/login")
   }, [router])
