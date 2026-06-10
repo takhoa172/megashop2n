@@ -1,6 +1,6 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   getSummary,
   getRevenue,
@@ -78,29 +78,41 @@ const inventoryCards = [
 ]
 
 export default function DashboardPage() {
+  const queryClient = useQueryClient()
+
   const { data: summary, isLoading: sumLoading } = useQuery({
     queryKey: ["dashboard", "summary"],
     queryFn: getSummary,
+    refetchInterval: 30_000,
+    staleTime: 10_000,
   })
 
   const { data: revenue, isLoading: revLoading } = useQuery({
     queryKey: ["dashboard", "revenue"],
     queryFn: getRevenue,
+    refetchInterval: 30_000,
+    staleTime: 10_000,
   })
 
   const { data: profit } = useQuery({
     queryKey: ["dashboard", "profit"],
     queryFn: getProfit,
+    refetchInterval: 30_000,
+    staleTime: 10_000,
   })
 
   const { data: inventory } = useQuery({
     queryKey: ["dashboard", "inventory"],
     queryFn: getInventory,
+    refetchInterval: 30_000,
+    staleTime: 10_000,
   })
 
   const { data: topCategories } = useQuery({
     queryKey: ["dashboard", "top-categories"],
     queryFn: getTopCategories,
+    refetchInterval: 30_000,
+    staleTime: 10_000,
   })
 
   const getStatValue = (key: string) => {
@@ -127,9 +139,18 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-        <p className="text-sm text-slate-500 mt-1">Tổng quan cửa hàng của bạn</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
+          <p className="text-sm text-slate-500 mt-1">Tổng quan cửa hàng của bạn</p>
+        </div>
+        <button
+          onClick={() => queryClient.invalidateQueries({ queryKey: ["dashboard"] })}
+          className="flex items-center gap-sm px-md py-sm rounded-lg border border-outline-variant text-label-sm hover:bg-surface-container-low transition-all"
+        >
+          <span className="material-symbols-outlined text-lg">refresh</span>
+          Làm mới
+        </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
