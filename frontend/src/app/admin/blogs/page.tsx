@@ -1,78 +1,193 @@
 "use client"
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { getBlogPosts, createBlogPost, updateBlogPost, deleteBlogPost } from "@/services/blogs"
-import { getBlogCategories, createBlogCategory } from "@/services/blogs"
+import { getBlogPosts, createBlogPost, updateBlogPost, deleteBlogPost, getBlogCategories } from "@/services/blogs"
 import { DataTable } from "@/components/tables/DataTable"
-import { Button } from "@/components/ui/button"
+import { PageHeader } from "@/components/ui/page-header"
+import { Modal } from "@/components/ui/modal"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Badge } from "@/components/ui/badge"
 import { BlogPost } from "@/types"
 import { formatDate } from "@/lib/utils"
 import { ColumnDef } from "@tanstack/react-table"
 import { useState } from "react"
-import { Plus, Pencil, Trash2 } from "lucide-react"
+import { Plus, Pencil, Trash2, FileText, CheckCircle, Clock } from "lucide-react"
+import { toast } from "sonner"
 
 export default function BlogsPage() {
   const [showForm, setShowForm] = useState(false)
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null)
+  const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [search, setSearch] = useState("")
   const queryClient = useQueryClient()
 
-  const { data: postsData } = useQuery({
+  const { data: postsData, isLoading } = useQuery({
     queryKey: ["blogs"],
     queryFn: () => getBlogPosts({ page_size: "100" }),
   })
 
-  const posts: BlogPost[] = postsData?.results || postsData || []
+  let posts: BlogPost[] = postsData?.results || postsData || []
+
+  if (search) {
+    const q = search.toLowerCase()
+    posts = posts.filter((p) => p.title.toLowerCase().includes(q) || p.category_name?.toLowerCase().includes(q))
+  }
 
   const deleteMutation = useMutation({
     mutationFn: deleteBlogPost,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["blogs"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["blogs"] })
+      toast.success("Đã xoá bài viết")
+      setDeleteId(null)
+    },
+    onError: () => toast.error("Không thể xoá bài viết"),
   })
 
+  const allPosts: BlogPost[] = postsData?.results || postsData || []
+  const summaryCards = [
+    { label: "Tổng bài viết", value: allPosts.length, icon: FileText, color: "text-blue-600 bg-blue-100" },
+    { label: "Đã xuất bản", value: allPosts.filter((p) => p.status === "published").length, icon: CheckCircle, color: "text-green-600 bg-green-100" },
+    { label: "Bản nháp", value: allPosts.filter((p) => p.status === "draft").length, icon: Clock, color: "text-amber-600 bg-amber-100" },
+  ]
+
   const columns: ColumnDef<BlogPost>[] = [
-    { header: "Title (Tiêu đề)", accessorKey: "title" },
     {
-      header: "Status (Trạng thái)",
+      header: "Tiêu đề",
+      accessorKey: "title",
+      cell: ({ row }) => (
+        <span className="font-medium text-slate-900">{row.original.title}</span>
+      ),
+    },
+    {
+      header: "Trạng thái",
       accessorKey: "status",
       cell: ({ row }) => (
         <Badge variant={row.original.status === "published" ? "success" : "warning"}>
-          {row.original.status}
+          {row.original.status === "published" ? "Đã xuất bản" : "Bản nháp"}
         </Badge>
       ),
     },
-    { header: "Category (Danh mục)", accessorKey: "category_name", cell: ({ row }) => row.original.category_name || "-" },
-    { header: "Author (Tác giả)", accessorKey: "author_name" },
     {
-      header: "Published (Ngày đăng)",
-      accessorKey: "published_at",
-      cell: ({ row }) => (row.original.published_at ? formatDate(row.original.published_at) : "-"),
+      header: "Danh mục",
+      accessorKey: "category_name",
+      cell: ({ row }) => (
+        <span className="text-sm text-slate-600">{row.original.category_name || "—"}</span>
+      ),
     },
     {
-      header: "",
+      header: "Tác giả",
+      accessorKey: "author_name",
+      cell: ({ row }) => (
+        <span className="text-sm text-slate-600">{row.original.author_name}</span>
+      ),
+    },
+    {
+      header: "Ngày đăng",
+      accessorKey: "published_at",
+      cell: ({ row }) => (
+        <span className="text-xs text-slate-500">
+          {row.original.published_at ? formatDate(row.original.published_at) : "—"}
+        </span>
+      ),
+    },
+    {
       id: "actions",
+      header: "",
       cell: ({ row }) => (
         <div className="flex gap-1">
-          <Button variant="ghost" size="icon" onClick={() => { setEditingPost(row.original); setShowForm(true) }}>
-            <Pencil size={16} className="text-blue-500" />
-          </Button>
-          <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(row.original.id)}>
-            <Trash2 size={16} className="text-red-500" />
-          </Button>
+          <button
+            onClick={() => { setEditingPost(row.original); setShowForm(true) }}
+            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-blue-600 transition-colors"
+          >
+            <Pencil size={15} />
+          </button>
+          <button
+            onClick={() => setDeleteId(row.original.id)}
+            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-red-600 transition-colors"
+          >
+            <Trash2 size={15} />
+          </button>
         </div>
       ),
+      enableSorting: false,
     },
   ]
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Blogs (Bài viết)</h1>
-        <Button onClick={() => { setEditingPost(null); setShowForm(!showForm) }}>
-          <Plus size={16} className="mr-1" /> New Post (Bài viết mới)
-        </Button>
+    <div className="space-y-6">
+      <PageHeader
+        title="Quản lý bài viết"
+        description="Viết và quản lý nội dung blog"
+        action={
+          <button
+            onClick={() => { setEditingPost(null); setShowForm(true) }}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm"
+          >
+            <Plus size={16} /> Bài viết mới
+          </button>
+        }
+      />
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {summaryCards.map((card) => {
+          const Icon = card.icon
+          return (
+            <div key={card.label} className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-slate-500">{card.label}</span>
+                <div className={`rounded-lg p-2 ${card.color}`}>
+                  <Icon size={16} />
+                </div>
+              </div>
+              <p className="text-xl font-bold text-slate-900">{card.value}</p>
+            </div>
+          )
+        })}
       </div>
-      {showForm && <BlogForm post={editingPost} onClose={() => { setShowForm(false); setEditingPost(null) }} />}
-      <DataTable columns={columns} data={posts} />
+
+      <div className="flex justify-end">
+        <input
+          type="text"
+          placeholder="Tìm bài viết..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full sm:w-64 px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 bg-white"
+        />
+      </div>
+
+      {isLoading ? (
+        <div className="bg-white rounded-xl border border-slate-200 p-4">
+          <div className="animate-pulse space-y-3">
+            {[1,2,3,4].map((i) => (
+              <div key={i} className="flex gap-4">
+                {[1,2,3,4,5].map((j) => (
+                  <div key={j} className="h-6 bg-slate-200 rounded flex-1" />
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <DataTable columns={columns} data={posts} pageSize={10} />
+      )}
+
+      <Modal
+        open={showForm}
+        onClose={() => { setShowForm(false); setEditingPost(null) }}
+        title={editingPost ? "Sửa bài viết" : "Bài viết mới"}
+        className="max-w-[42rem]"
+      >
+        <BlogForm post={editingPost} onClose={() => { setShowForm(false); setEditingPost(null) }} />
+      </Modal>
+
+      <ConfirmDialog
+        open={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={() => deleteId && deleteMutation.mutate(deleteId)}
+        title="Xoá bài viết"
+        message="Bạn có chắc muốn xoá bài viết này?"
+        loading={deleteMutation.isPending}
+      />
     </div>
   )
 }
@@ -88,16 +203,20 @@ function BlogForm({ post, onClose }: { post: BlogPost | null; onClose: () => voi
     mutationFn: createBlogPost,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] })
+      toast.success("Đã tạo bài viết")
       onClose()
     },
+    onError: () => toast.error("Không thể tạo bài viết"),
   })
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: FormData }) => updateBlogPost(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] })
+      toast.success("Đã cập nhật bài viết")
       onClose()
     },
+    onError: () => toast.error("Không thể cập nhật bài viết"),
   })
 
   const isEditing = !!post
@@ -113,50 +232,66 @@ function BlogForm({ post, onClose }: { post: BlogPost | null; onClose: () => voi
   }
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-      <h2 className="text-lg font-semibold mb-4">{isEditing ? "Edit Blog Post (Sửa bài viết)" : "New Blog Post (Thêm bài viết)"}</h2>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-1 md:col-span-2">
-          <label className="text-sm font-medium">Title (Tiêu đề) *</label>
-          <input name="title" required defaultValue={post?.title || ""} className="flex h-9 w-full rounded-md border border-slate-200 px-3 text-sm" />
-        </div>
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Category (Danh mục)</label>
-          <select name="category" defaultValue={post?.category || ""} className="flex h-9 w-full rounded-md border border-slate-200 px-3 text-sm">
-            <option value="">None (Không)</option>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-1.5">
+        <label className="text-sm font-medium text-slate-700">Tiêu đề *</label>
+        <input name="title" required defaultValue={post?.title || ""}
+          className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" />
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-1.5">
+          <label className="text-sm font-medium text-slate-700">Danh mục</label>
+          <select name="category" defaultValue={post?.category || ""}
+            className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 bg-white">
+            <option value="">Chọn danh mục</option>
             {(categories || []).map((cat: any) => (
               <option key={cat.id} value={cat.id}>{cat.name}</option>
             ))}
           </select>
         </div>
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Status (Trạng thái)</label>
-          <select name="status" defaultValue={post?.status || "draft"} className="flex h-9 w-full rounded-md border border-slate-200 px-3 text-sm">
-            <option value="draft">Draft (Bản nháp)</option>
-            <option value="published">Published (Đã xuất bản)</option>
+        <div className="space-y-1.5">
+          <label className="text-sm font-medium text-slate-700">Trạng thái</label>
+          <select name="status" defaultValue={post?.status || "draft"}
+            className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 bg-white">
+            <option value="draft">Bản nháp</option>
+            <option value="published">Đã xuất bản</option>
           </select>
         </div>
-        <div className="space-y-1 md:col-span-2">
-          <label className="text-sm font-medium">Excerpt (Mô tả ngắn)</label>
-          <textarea name="excerpt" defaultValue={post?.excerpt || ""} className="flex w-full rounded-md border border-slate-200 px-3 py-2 text-sm min-h-[60px]" />
+      </div>
+      <div className="space-y-1.5">
+        <label className="text-sm font-medium text-slate-700">Mô tả ngắn</label>
+        <textarea name="excerpt" defaultValue={post?.excerpt || ""} rows={2}
+          className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" />
+      </div>
+      <div className="space-y-1.5">
+        <label className="text-sm font-medium text-slate-700">Nội dung *</label>
+        <textarea name="content" required defaultValue={post?.content || ""} rows={8}
+          className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 font-mono" />
+        <p className="text-xs text-slate-400">Hỗ trợ HTML / Markdown</p>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-1.5">
+          <label className="text-sm font-medium text-slate-700">Ảnh đại diện URL</label>
+          <input name="featured_image" defaultValue={post?.featured_image || ""}
+            className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" placeholder="https://..." />
         </div>
-        <div className="space-y-1 md:col-span-2">
-          <label className="text-sm font-medium">Content (Nội dung) *</label>
-          <textarea name="content" required defaultValue={post?.content || ""} className="flex w-full rounded-md border border-slate-200 px-3 py-2 text-sm min-h-[200px]" />
+        <div className="space-y-1.5">
+          <label className="text-sm font-medium text-slate-700">Ngày xuất bản</label>
+          <input name="published_at" type="datetime-local"
+            defaultValue={post?.published_at ? post.published_at.slice(0, 16) : ""}
+            className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" />
         </div>
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Featured Image URL (Ảnh đại diện)</label>
-          <input name="featured_image" defaultValue={post?.featured_image || ""} className="flex h-9 w-full rounded-md border border-slate-200 px-3 text-sm" />
-        </div>
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Published At (Ngày xuất bản)</label>
-          <input name="published_at" type="datetime-local" defaultValue={post?.published_at ? post.published_at.slice(0, 16) : ""} className="flex h-9 w-full rounded-md border border-slate-200 px-3 text-sm" />
-        </div>
-        <div className="md:col-span-2 flex gap-2">
-          <Button type="submit">{isEditing ? "Update Post (Cập nhật)" : "Create Post (Tạo mới)"}</Button>
-          <Button type="button" variant="outline" onClick={onClose}>Cancel (Huỷ)</Button>
-        </div>
-      </form>
-    </div>
+      </div>
+      <div className="flex gap-3 pt-2">
+        <button type="submit" disabled={createMutation.isPending || updateMutation.isPending}
+          className="flex-1 px-4 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50">
+          {createMutation.isPending || updateMutation.isPending ? "Đang xử lý..." : isEditing ? "Cập nhật" : "Đăng bài"}
+        </button>
+        <button type="button" onClick={onClose}
+          className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+          Huỷ
+        </button>
+      </div>
+    </form>
   )
 }

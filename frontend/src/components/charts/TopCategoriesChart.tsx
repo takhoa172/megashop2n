@@ -24,20 +24,25 @@ function CustomTooltip({ active, payload, label }: any) {
 const COLORS = ["#f97316", "#06b6d4", "#10b981", "#f43f5e", "#a855f7", "#eab308", "#3b82f6", "#14b8a6"]
 
 export function TopCategoriesChart({ data, isLoading }: Props) {
+  const maxCount = Math.max(...data.map(d => d.count), 1)
   return (
     <Card className="h-full">
       <CardHeader>
         <CardTitle className="text-sm font-medium text-slate-500">Danh mục bán chạy</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
+        <div style={{ height: Math.max(160, data.length * 25 + 40) }}>
           {isLoading ? (
             <div className="w-full h-full rounded-lg bg-slate-100 animate-pulse" />
+          ) : data.length === 0 ? (
+            <div className="flex items-center justify-center h-full text-sm text-slate-400">
+              Không có dữ liệu danh mục
+            </div>
           ) : (
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data} layout="vertical" margin={{ top: 5, right: 20, left: 10, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
-                <XAxis type="number" fontSize={12} tick={{ fill: "#94a3b8" }} axisLine={false} tickLine={false} />
+                <XAxis type="number" domain={[0, Math.ceil(maxCount * 1.2)]} fontSize={12} tick={{ fill: "#94a3b8" }} axisLine={false} tickLine={false} />
                 <YAxis type="category" dataKey="name" fontSize={12} tick={{ fill: "#475569" }} width={100} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar dataKey="count" radius={[0, 6, 6, 0]} maxBarSize={20}>

@@ -1,9 +1,18 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import Link from "next/link"
 import { getAllOrders, Order } from "@/services/orders"
-import { formatCurrency } from "@/lib/utils"
+import { DataTable } from "@/components/tables/DataTable"
+import { PageHeader } from "@/components/ui/page-header"
+import { TableSkeleton } from "@/components/ui/skeleton"
+import { formatCurrency, formatDate } from "@/lib/utils"
+import { ColumnDef } from "@tanstack/react-table"
+import {
+  Package, Clock, CheckCircle, XCircle, Truck,
+  Search, ExternalLink, DollarSign,
+} from "lucide-react"
+import { toast } from "sonner"
 
 const statusLabels: Record<string, string> = {
   pending: "Chờ xác nhận",
@@ -14,11 +23,19 @@ const statusLabels: Record<string, string> = {
 }
 
 const statusColors: Record<string, string> = {
-  pending: "bg-yellow-100 text-yellow-800",
-  confirmed: "bg-blue-100 text-blue-800",
-  shipped: "bg-purple-100 text-purple-800",
-  delivered: "bg-green-100 text-green-800",
-  cancelled: "bg-red-100 text-red-800",
+  pending: "bg-amber-100 text-amber-700",
+  confirmed: "bg-blue-100 text-blue-700",
+  shipped: "bg-purple-100 text-purple-700",
+  delivered: "bg-green-100 text-green-700",
+  cancelled: "bg-red-100 text-red-700",
+}
+
+const statusIcons: Record<string, typeof Clock> = {
+  pending: Clock,
+  confirmed: Package,
+  shipped: Truck,
+  delivered: CheckCircle,
+  cancelled: XCircle,
 }
 
 export default function AdminOrdersPage() {
@@ -26,128 +43,287 @@ export default function AdminOrdersPage() {
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState("")
   const [search, setSearch] = useState("")
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
 
-  const fetchOrders = (searchTerm?: string) => {
+  const fetchOrders = useCallback((searchTerm?: string) => {
     setLoading(true)
     getAllOrders(searchTerm || undefined)
-      .then(setOrders)
-      .catch(() => {})
+      .then((data) => {
+        setOrders(data)
+        setSelectedIds(new Set())
+      })
+      .catch(() => toast.error("Không thể tải đơn hàng"))
       .finally(() => setLoading(false))
-  }
+  }, [])
 
   useEffect(() => {
     fetchOrders()
-  }, [])
+  }, [fetchOrders])
 
-  const filtered = filter
-    ? orders.filter((o) => o.status === filter)
-    : orders
+  const filtered = useMemo(() => {
+    if (!filter) return orders
+    return orders.filter((o) => o.status === filter)
+  }, [orders, filter])
 
-  const statusCounts = orders.reduce<Record<string, number>>((acc, o) => {
-    acc[o.status] = (acc[o.status] || 0) + 1
-    return acc
-  }, {})
+  const statusCounts = useMemo(() => {
+    return orders.reduce<Record<string, number>>((acc, o) => {
+      acc[o.status] = (acc[o.status] || 0) + 1
+      return acc
+    }, {})
+  }, [orders])
+
+  const totalRevenue = useMemo(() => {
+    return filtered.reduce((sum, o) => sum + Number(o.total), 0)
+  }, [filtered])
+
+  const summaryCards = [
+    {
+      label: "Tổng đơn",
+      value: filtered.length,
+      icon: Package,
+      color: "text-blue-600 bg-blue-100",
+    },
+    {
+      label: "Chờ xử lý",
+      value: statusCounts.pending || 0,
+      icon: Clock,
+      color: "text-amber-600 bg-amber-100",
+    },
+    {
+      label: "Đã giao",
+      value: statusCounts.delivered || 0,
+      icon: CheckCircle,
+      color: "text-green-600 bg-green-100",
+    },
+    {
+      label: "Doanh thu",
+      value: formatCurrency(totalRevenue),
+      icon: DollarSign,
+      color: "text-purple-600 bg-purple-100",
+    },
+  ]
+
+  const handleSelectAll = () => {
+    if (selectedIds.size === filtered.length) {
+      setSelectedIds(new Set())
+    } else {
+      setSelectedIds(new Set(filtered.map((o) => o.id)))
+    }
+  }
+
+  const handleSelectOne = (id: string) => {
+    const next = new Set(selectedIds)
+    if (next.has(id)) next.delete(id)
+    else next.add(id)
+    setSelectedIds(next)
+  }
+
+  const columns: ColumnDef<Order>[] = [
+    {
+      id: "select",
+      header: () => (
+        <input
+          type="checkbox"
+          checked={filtered.length > 0 && selectedIds.size === filtered.length}
+          onChange={handleSelectAll}
+          className="rounded border-slate-300"
+        />
+      ),
+      cell: ({ row }) => (
+        <input
+          type="checkbox"
+          checked={selectedIds.has(row.original.id)}
+          onChange={() => handleSelectOne(row.original.id)}
+          className="rounded border-slate-300"
+          onClick={(e) => e.stopPropagation()}
+        />
+      ),
+      enableSorting: false,
+      size: 40,
+    },
+    {
+      accessorKey: "id",
+      header: "Mã đơn",
+      cell: ({ row }) => (
+        <span className="font-mono text-xs font-medium text-slate-500">
+          #{row.original.id.slice(0, 8)}
+        </span>
+      ),
+    },
+    {
+      id: "customer",
+      header: "Khách hàng",
+      cell: ({ row }) => (
+        <div>
+          <p className="font-medium text-slate-900">{row.original.shipping_name}</p>
+          <p className="text-xs text-slate-500">{row.original.user_email || row.original.guest_email}</p>
+        </div>
+      ),
+      enableSorting: true,
+    },
+    {
+      accessorKey: "shipping_phone",
+      header: "SĐT",
+      cell: ({ row }) => (
+        <span className="text-sm text-slate-600">{row.original.shipping_phone}</span>
+      ),
+    },
+    {
+      accessorKey: "total",
+      header: "Tổng tiền",
+      cell: ({ row }) => (
+        <span className="font-semibold text-slate-900">{formatCurrency(Number(row.original.total))}</span>
+      ),
+      enableSorting: true,
+    },
+    {
+      accessorKey: "payment_status",
+      header: "Thanh toán",
+      cell: ({ row }) => (
+        <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium ${
+          row.original.payment_status === "paid"
+            ? "bg-green-100 text-green-700"
+            : row.original.payment_status === "refunded"
+            ? "bg-red-100 text-red-700"
+            : "bg-amber-100 text-amber-700"
+        }`}>
+          {row.original.payment_status === "paid" ? "Đã TT" :
+           row.original.payment_status === "refunded" ? "Đã hoàn" : "COD"}
+        </span>
+      ),
+    },
+    {
+      accessorKey: "status",
+      header: "Trạng thái",
+      cell: ({ row }) => {
+        const Icon = statusIcons[row.original.status] || Package
+        return (
+          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
+            statusColors[row.original.status] || "bg-slate-100 text-slate-600"
+          }`}>
+            <Icon size={12} />
+            {statusLabels[row.original.status] || row.original.status}
+          </span>
+        )
+      },
+      enableSorting: true,
+    },
+    {
+      accessorKey: "created_at",
+      header: "Ngày",
+      cell: ({ row }) => (
+        <span className="text-xs text-slate-500">{formatDate(row.original.created_at)}</span>
+      ),
+      enableSorting: true,
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <Link
+          href={`/admin/orders/${row.original.id}`}
+          className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 text-xs font-medium"
+        >
+          Chi tiết <ExternalLink size={12} />
+        </Link>
+      ),
+      enableSorting: false,
+    },
+  ]
 
   return (
-    <div>
-      <h1 className="font-headline-lg text-headline-lg mb-lg">Quản lý đơn hàng</h1>
+    <div className="space-y-6">
+      <PageHeader
+        title="Quản lý đơn hàng"
+        description="Theo dõi và quản lý tất cả đơn hàng"
+      />
 
-      <div className="flex flex-col sm:flex-row gap-md mb-lg items-start sm:items-center justify-between">
-        <div className="flex flex-wrap gap-sm">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {summaryCards.map((card) => {
+          const Icon = card.icon
+          return (
+            <div key={card.label} className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-slate-500">{card.label}</span>
+                <div className={`rounded-lg p-2 ${card.color}`}>
+                  <Icon size={16} />
+                </div>
+              </div>
+              <p className="text-xl font-bold text-slate-900">{card.value}</p>
+            </div>
+          )
+        })}
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setFilter("")}
-            className={`px-md py-sm rounded-lg text-label-sm transition-colors ${!filter ? "bg-primary text-on-primary" : "bg-surface-container-low text-on-surface-variant hover:bg-outline-variant"}`}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              !filter ? "bg-blue-600 text-white shadow-sm" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
           >
             Tất cả ({orders.length})
           </button>
-          {Object.entries(statusLabels).map(([key, label]) => (
-            <button
-              key={key}
-              onClick={() => setFilter(key)}
-              className={`px-md py-sm rounded-lg text-label-sm transition-colors ${filter === key ? "bg-primary text-on-primary" : "bg-surface-container-low text-on-surface-variant hover:bg-outline-variant"}`}
-            >
-              {label} ({statusCounts[key] || 0})
-            </button>
-          ))}
+          {Object.entries(statusLabels).map(([key, label]) => {
+            const Icon = statusIcons[key] || Package
+            const count = statusCounts[key] || 0
+            return (
+              <button
+                key={key}
+                onClick={() => setFilter(key)}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  filter === key ? "bg-blue-600 text-white shadow-sm" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                <Icon size={12} />
+                {label} ({count})
+              </button>
+            )
+          })}
         </div>
 
-        <div className="flex gap-sm w-full sm:w-auto">
-          <input
-            type="text"
-            placeholder="Tìm theo mã đơn, tên, SĐT..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") fetchOrders(search)
-            }}
-            className="w-full sm:w-64 px-md py-sm rounded-lg border border-outline-variant text-body-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
-          />
+        <div className="flex gap-2 w-full sm:w-auto">
+          <div className="relative flex-1 sm:flex-initial">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Tìm mã đơn, tên, SĐT..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") fetchOrders(search)
+              }}
+              className="w-full sm:w-64 pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all bg-white"
+            />
+          </div>
           <button
             onClick={() => fetchOrders(search)}
-            className="px-md py-sm rounded-lg bg-primary text-on-primary text-label-sm hover:bg-primary/90 transition-colors"
+            className="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm"
           >
             Tìm
           </button>
         </div>
       </div>
 
-      {loading ? (
-        <p className="text-on-surface-variant">Đang tải...</p>
-      ) : filtered.length === 0 ? (
-        <p className="text-on-surface-variant">Không có đơn hàng</p>
-      ) : (
-        <div className="bg-white rounded-xl border border-outline-variant overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="bg-surface-container-low text-label-md text-on-surface-variant">
-                  <th className="p-md">Mã đơn</th>
-                  <th className="p-md">Khách hàng</th>
-                  <th className="p-md">SĐT</th>
-                  <th className="p-md">Tổng tiền</th>
-                  <th className="p-md">Thanh toán</th>
-                  <th className="p-md">Trạng thái</th>
-                  <th className="p-md">Ngày</th>
-                  <th className="p-md"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((order) => (
-                  <tr key={order.id} className="border-t border-outline-variant hover:bg-surface-container-low/50 transition-colors">
-                    <td className="p-md font-mono text-label-sm">#{order.id.slice(0, 8)}</td>
-                    <td className="p-md">
-                      <p className="font-label-md">{order.shipping_name}</p>
-                      <p className="text-label-sm text-on-surface-variant">{order.user_email || order.guest_email}</p>
-                    </td>
-                    <td className="p-md text-body-sm">{order.shipping_phone}</td>
-                    <td className="p-md font-semibold">{formatCurrency(Number(order.total))}</td>
-                    <td className="p-md">
-                      <span className={`px-sm py-0.5 rounded-full text-label-sm ${order.payment_status === "paid" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}`}>
-                        {order.payment_status === "paid" ? "Đã thanh toán" : "COD"}
-                      </span>
-                    </td>
-                    <td className="p-md">
-                      <span className={`px-sm py-0.5 rounded-full text-label-sm ${statusColors[order.status] || ""}`}>
-                        {statusLabels[order.status] || order.status}
-                      </span>
-                    </td>
-                    <td className="p-md text-label-sm text-on-surface-variant">
-                      {new Date(order.created_at).toLocaleDateString("vi-VN")}
-                    </td>
-                    <td className="p-md">
-                      <Link
-                        href={`/admin/orders/${order.id}`}
-                        className="text-primary text-label-sm hover:underline"
-                      >
-                        Chi tiết
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+      {selectedIds.size > 0 && (
+        <div className="flex items-center gap-3 px-4 py-3 bg-blue-50 rounded-xl border border-blue-200">
+          <span className="text-sm font-medium text-blue-700">Đã chọn {selectedIds.size} đơn hàng</span>
+          <button
+            onClick={() => setSelectedIds(new Set())}
+            className="text-xs text-blue-600 hover:text-blue-700 underline"
+          >
+            Bỏ chọn
+          </button>
         </div>
+      )}
+
+      {loading ? (
+        <div className="bg-white rounded-xl border border-slate-200 p-4">
+          <TableSkeleton rows={5} cols={8} />
+        </div>
+      ) : (
+        <DataTable columns={columns} data={filtered} pageSize={10} />
       )}
     </div>
   )

@@ -36,9 +36,9 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen flex bg-slate-50">
+    <div className="h-screen flex overflow-hidden bg-slate-50">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} role={user.role} />
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         <Header onMenuClick={() => setSidebarOpen(true)} />
         <main className="flex-1 p-4 lg:p-6">{children}</main>
       </div>

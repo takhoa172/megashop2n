@@ -4,7 +4,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
-from datetime import timedelta
 from apps.products.models import Product
 from apps.sales.models import Sale
 from apps.purchases.models import Purchase
@@ -23,9 +22,7 @@ class DashboardSummaryView(APIView):
         )
 
         today_sales = Sale.objects.filter(sold_at__range=(today_start, today_end))
-        today_products = Sale.objects.filter(
-            sold_at__range=(today_start, today_end)
-        ).count()
+        today_products = today_sales.count()
 
         today_revenue = today_sales.aggregate(total=Sum("sale_price"))["total"] or 0
 
@@ -41,17 +38,63 @@ class DashboardSummaryView(APIView):
         pending_price = Product.objects.filter(status="pending_price").count()
 
         now = timezone.now()
-        month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+        month_param = request.query_params.get("month")
+        year_param = request.query_params.get("year")
+
+        if month_param and year_param:
+            try:
+                y = int(year_param)
+                m = int(month_param)
+                month_start = timezone.make_aware(timezone.datetime(y, m, 1))
+                if m == 12:
+                    month_end = timezone.make_aware(timezone.datetime(y + 1, 1, 1))
+                else:
+                    month_end = timezone.make_aware(timezone.datetime(y, m + 1, 1))
+                monthly_label = f"Tháng {m}/{y}"
+            except (ValueError, TypeError):
+                month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+                month_end = None
+                monthly_label = "Tháng này"
+        else:
+            month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            month_end = None
+            monthly_label = "Tháng này"
+
+        if year_param:
+            try:
+                y = int(year_param)
+                year_start = timezone.make_aware(timezone.datetime(y, 1, 1))
+                year_end = timezone.make_aware(timezone.datetime(y + 1, 1, 1))
+                yearly_label = f"Năm {y}"
+            except (ValueError, TypeError):
+                year_start = now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+                year_end = None
+                yearly_label = "Năm nay"
+        else:
+            year_start = now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+            year_end = None
+            yearly_label = "Năm nay"
+
         monthly_sales = Sale.objects.filter(sold_at__gte=month_start)
+        if month_end:
+            monthly_sales = monthly_sales.filter(sold_at__lt=month_end)
         monthly_revenue = monthly_sales.aggregate(total=Sum("sale_price"))["total"] or 0
+
         monthly_purchases = Purchase.objects.filter(purchased_at__gte=month_start)
+        if month_end:
+            monthly_purchases = monthly_purchases.filter(purchased_at__lt=month_end)
         monthly_cost = monthly_purchases.aggregate(total=Sum("purchase_price"))["total"] or 0
         monthly_profit = monthly_revenue - monthly_cost
 
-        year_start = now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
         yearly_sales = Sale.objects.filter(sold_at__gte=year_start)
+        if year_end:
+            yearly_sales = yearly_sales.filter(sold_at__lt=year_end)
         yearly_revenue = yearly_sales.aggregate(total=Sum("sale_price"))["total"] or 0
+
         yearly_purchases = Purchase.objects.filter(purchased_at__gte=year_start)
+        if year_end:
+            yearly_purchases = yearly_purchases.filter(purchased_at__lt=year_end)
         yearly_cost = yearly_purchases.aggregate(total=Sum("purchase_price"))["total"] or 0
         yearly_profit = yearly_revenue - yearly_cost
 
@@ -66,11 +109,13 @@ class DashboardSummaryView(APIView):
                 "revenue": float(monthly_revenue),
                 "cost": float(monthly_cost),
                 "profit": float(monthly_profit),
+                "label": monthly_label,
             },
             "yearly": {
                 "revenue": float(yearly_revenue),
                 "cost": float(yearly_cost),
                 "profit": float(yearly_profit),
+                "label": yearly_label,
             },
             "inventory": {
                 "total_products": total_products,
@@ -85,11 +130,17 @@ class RevenueChartView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        year_param = request.query_params.get("year")
         now = timezone.now()
-        year_start = now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+        try:
+            year = int(year_param) if year_param else now.year
+        except (ValueError, TypeError):
+            year = now.year
+        year_start = timezone.make_aware(timezone.datetime(year, 1, 1))
+        year_end = timezone.make_aware(timezone.datetime(year + 1, 1, 1))
         revenue_by_month = (
             Sale.objects
-            .filter(sold_at__gte=year_start)
+            .filter(sold_at__gte=year_start, sold_at__lt=year_end)
             .annotate(month=TruncMonth("sold_at"))
             .values("month")
             .annotate(revenue=Sum("sale_price"))
@@ -109,12 +160,18 @@ class ProfitChartView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        year_param = request.query_params.get("year")
         now = timezone.now()
-        year_start = now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+        try:
+            year = int(year_param) if year_param else now.year
+        except (ValueError, TypeError):
+            year = now.year
+        year_start = timezone.make_aware(timezone.datetime(year, 1, 1))
+        year_end = timezone.make_aware(timezone.datetime(year + 1, 1, 1))
 
         revenue_by_month = dict(
             Sale.objects
-            .filter(sold_at__gte=year_start)
+            .filter(sold_at__gte=year_start, sold_at__lt=year_end)
             .annotate(month=TruncMonth("sold_at"))
             .values("month")
             .annotate(revenue=Sum("sale_price"))
@@ -123,7 +180,7 @@ class ProfitChartView(APIView):
 
         cost_by_month = dict(
             Purchase.objects
-            .filter(purchased_at__gte=year_start)
+            .filter(purchased_at__gte=year_start, purchased_at__lt=year_end)
             .annotate(month=TruncMonth("purchased_at"))
             .values("month")
             .annotate(cost=Sum("purchase_price"))
