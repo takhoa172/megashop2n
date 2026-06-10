@@ -6,18 +6,25 @@ import {
   TopCategory,
 } from "@/types"
 
-export async function getSummary(): Promise<DashboardSummary> {
-  const { data } = await api.get("/dashboard/summary")
+export async function getSummary(month?: string, year?: string): Promise<DashboardSummary> {
+  const params: Record<string, string> = {}
+  if (month) params.month = month
+  if (year) params.year = year
+  const { data } = await api.get("/dashboard/summary", { params })
   return data
 }
 
-export async function getRevenue(): Promise<ChartDataPoint[]> {
-  const { data } = await api.get("/dashboard/revenue")
+export async function getRevenue(year?: string): Promise<ChartDataPoint[]> {
+  const params: Record<string, string> = {}
+  if (year) params.year = year
+  const { data } = await api.get("/dashboard/revenue", { params })
   return data
 }
 
-export async function getProfit(): Promise<ChartDataPoint[]> {
-  const { data } = await api.get("/dashboard/profit")
+export async function getProfit(year?: string): Promise<ChartDataPoint[]> {
+  const params: Record<string, string> = {}
+  if (year) params.year = year
+  const { data } = await api.get("/dashboard/profit", { params })
   return data
 }
 

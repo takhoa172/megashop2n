@@ -81,11 +81,13 @@ export interface DashboardSummary {
     revenue: number
     cost: number
     profit: number
+    label?: string
   }
   yearly: {
     revenue: number
     cost: number
     profit: number
+    label?: string
   }
   inventory: {
     total_products: number
