@@ -71,7 +71,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("refresh_token", data.refresh)
       localStorage.setItem("user", JSON.stringify(data.user))
       setUser(data.user)
-      if (data.user.role === "CUSTOMER") {
+      if (data.user.role === "SUPER_ADMIN") {
+        window.location.href = "/django-admin/"
+      } else if (data.user.role === "CUSTOMER") {
         router.push("/")
       } else {
         router.push("/admin/dashboard")
@@ -87,7 +89,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("refresh_token", data.refresh)
       localStorage.setItem("user", JSON.stringify(data.user))
       setUser(data.user)
-      if (data.user.role === "CUSTOMER") {
+      if (data.user.role === "SUPER_ADMIN") {
+        window.location.href = "/django-admin/"
+      } else if (data.user.role === "CUSTOMER") {
         router.push("/")
       } else {
         router.push("/admin/dashboard")

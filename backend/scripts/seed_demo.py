@@ -65,31 +65,35 @@ def seed_demo():
 
     for i, p in enumerate(products_data):
         category = Category.objects.filter(name=p["category"]).first()
-        existing = Product.objects.filter(name=p["name"]).first()
-        if existing:
-            if not existing.description and p.get("description"):
-                existing.description = p["description"]
-                existing.save()
-                print(f"  Updated description: {existing.name}")
-            continue
-        prod = Product.objects.create(
-            sku=f"SP{i+1:04d}",
-            category=category,
-            name=p["name"],
-            purchase_price=p["purchase_price"],
-            sale_price=p["sale_price"],
-            status=p["status"],
-            is_suggested=p["is_suggested"],
-            description=p.get("description", ""),
-            created_by=admin,
+        sku = f"SP-{slugify(p['name'])[:12].upper()}"
+        product, created = Product.objects.update_or_create(
+            sku=sku,
+            defaults={
+                "category": category,
+                "name": p["name"],
+                "purchase_price": p["purchase_price"],
+                "sale_price": p["sale_price"],
+                "status": p["status"],
+                "is_suggested": p["is_suggested"],
+                "description": p.get("description", ""),
+                "is_visible": True,
+                "created_by": admin,
+            },
         )
-        ProductImage.objects.create(
-            product=prod,
-            image_url=p["image"],
-            public_id=f"demo/{prod.id}",
-            is_primary=True,
-        )
-        print(f"  Created product: {prod.name}")
+        if created:
+            ProductImage.objects.create(
+                product=product,
+                image_url=p["image"],
+                public_id=f"demo/{product.id}",
+                is_primary=True,
+            )
+            print(f"  Created product: {product.name}")
+        else:
+            first_img = product.images.first()
+            if first_img and p.get("image"):
+                first_img.image_url = p["image"]
+                first_img.save()
+            print(f"  Updated product: {product.name}")
 
     # Sliders
     slider_data = [

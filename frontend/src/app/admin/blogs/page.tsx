@@ -1,16 +1,17 @@
 "use client"
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { getBlogPosts, createBlogPost, updateBlogPost, deleteBlogPost, getBlogCategories } from "@/services/blogs"
+import { getBlogPosts, createBlogPost, updateBlogPost, deleteBlogPost, getBlogCategories, uploadBlogImage, updateBlogPostVisibility } from "@/services/blogs"
 import { DataTable } from "@/components/tables/DataTable"
 import { PageHeader } from "@/components/ui/page-header"
+import { Toggle } from "@/components/ui/toggle"
 import { Modal } from "@/components/ui/modal"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Badge } from "@/components/ui/badge"
 import { BlogPost } from "@/types"
 import { formatDate } from "@/lib/utils"
 import { ColumnDef } from "@tanstack/react-table"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Plus, Pencil, Trash2, FileText, CheckCircle, Clock } from "lucide-react"
 import { toast } from "sonner"
 
@@ -32,6 +33,16 @@ export default function BlogsPage() {
     const q = search.toLowerCase()
     posts = posts.filter((p) => p.title.toLowerCase().includes(q) || p.category_name?.toLowerCase().includes(q))
   }
+
+  const visibilityMutation = useMutation({
+    mutationFn: ({ id, is_visible }: { id: string; is_visible: boolean }) => updateBlogPostVisibility(id, is_visible),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["blogs"] })
+      queryClient.invalidateQueries({ queryKey: ["public-blogs"] })
+      toast.success("Đã cập nhật hiển thị")
+    },
+    onError: () => toast.error("Không thể cập nhật hiển thị"),
+  })
 
   const deleteMutation = useMutation({
     mutationFn: deleteBlogPost,
@@ -80,6 +91,18 @@ export default function BlogsPage() {
       cell: ({ row }) => (
         <span className="text-sm text-slate-600">{row.original.author_name}</span>
       ),
+    },
+    {
+      id: "visibility",
+      header: "Hiển thị",
+      cell: ({ row }) => (
+        <Toggle
+          checked={row.original.is_visible ?? true}
+          onChange={() => visibilityMutation.mutate({ id: row.original.id, is_visible: !row.original.is_visible })}
+          disabled={visibilityMutation.isPending}
+        />
+      ),
+      enableSorting: false,
     },
     {
       header: "Ngày đăng",
@@ -221,15 +244,62 @@ function BlogForm({ post, onClose }: { post: BlogPost | null; onClose: () => voi
 
   const isEditing = !!post
 
+  const [publishMode, setPublishMode] = useState<"publish_now" | "schedule" | "draft">(
+    post?.status === "published" && post?.published_at ? "schedule" :
+    post?.status === "published" ? "publish_now" : "draft"
+  )
+
+  const [imageMode, setImageMode] = useState<"upload" | "url" | "none">(
+    post?.featured_image ? "url" : "none"
+  )
+  const [imageUrl, setImageUrl] = useState(post?.featured_image || "")
+  const [uploading, setUploading] = useState(false)
+  const [fileName, setFileName] = useState("")
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !post) return
+    setFileName(file.name)
+    setUploading(true)
+    try {
+      const result = await uploadBlogImage(post.slug, file)
+      setImageUrl(result.url)
+      setImageMode("url")
+      toast.success("Đã tải ảnh lên")
+    } catch {
+      toast.error("Không thể tải ảnh lên")
+    } finally {
+      setUploading(false)
+    }
+  }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const form = new FormData(e.currentTarget)
+    if (imageMode === "none") {
+      form.set("featured_image", "")
+    } else {
+      form.set("featured_image", imageUrl)
+    }
+    form.set("is_visible", "true")
+    if (publishMode === "publish_now") {
+      form.set("status", "published")
+      form.set("published_at", new Date().toISOString())
+    } else if (publishMode === "schedule") {
+      form.set("status", "published")
+    } else {
+      form.set("status", "draft")
+      form.delete("published_at")
+    }
     if (isEditing) {
       updateMutation.mutate({ id: post.id, data: form })
     } else {
       createMutation.mutate(form)
     }
   }
+
+  const imagePreview = imageMode === "url" && imageUrl ? imageUrl : post?.featured_image || null
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -238,26 +308,51 @@ function BlogForm({ post, onClose }: { post: BlogPost | null; onClose: () => voi
         <input name="title" required defaultValue={post?.title || ""}
           className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" />
       </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-1.5">
-          <label className="text-sm font-medium text-slate-700">Danh mục</label>
-          <select name="category" defaultValue={post?.category || ""}
-            className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 bg-white">
-            <option value="">Chọn danh mục</option>
-            {(categories || []).map((cat: any) => (
-              <option key={cat.id} value={cat.id}>{cat.name}</option>
-            ))}
-          </select>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-slate-700">Danh mục</label>
+            <select name="category" defaultValue={post?.category || ""}
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 bg-white">
+              <option value="">Chọn danh mục</option>
+              {(categories || []).map((cat: any) => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-slate-700">Chế độ đăng</label>
+            <div className="flex gap-2 pt-1">
+              {[
+                { key: "publish_now" as const, label: "Đăng ngay", desc: "Xuất bản ngay lập tức" },
+                { key: "schedule" as const, label: "Lên lịch", desc: "Hẹn giờ xuất bản" },
+                { key: "draft" as const, label: "Lưu nháp", desc: "Chưa xuất bản" },
+              ].map((opt) => (
+                <button
+                  key={opt.key}
+                  type="button"
+                  onClick={() => setPublishMode(opt.key)}
+                  className={`flex-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                    publishMode === opt.key
+                      ? "bg-blue-600 text-white shadow-sm"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  }`}
+                  title={opt.desc}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+            <input type="hidden" name="status" value={publishMode === "draft" ? "draft" : "published"} />
+          </div>
         </div>
-        <div className="space-y-1.5">
-          <label className="text-sm font-medium text-slate-700">Trạng thái</label>
-          <select name="status" defaultValue={post?.status || "draft"}
-            className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 bg-white">
-            <option value="draft">Bản nháp</option>
-            <option value="published">Đã xuất bản</option>
-          </select>
-        </div>
-      </div>
+        {publishMode === "schedule" && (
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-slate-700">Lịch xuất bản</label>
+            <input name="published_at" type="datetime-local"
+              defaultValue={post?.published_at ? post.published_at.slice(0, 16) : ""}
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" />
+          </div>
+        )}
       <div className="space-y-1.5">
         <label className="text-sm font-medium text-slate-700">Mô tả ngắn</label>
         <textarea name="excerpt" defaultValue={post?.excerpt || ""} rows={2}
@@ -269,19 +364,63 @@ function BlogForm({ post, onClose }: { post: BlogPost | null; onClose: () => voi
           className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 font-mono" />
         <p className="text-xs text-slate-400">Hỗ trợ HTML / Markdown</p>
       </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-1.5">
-          <label className="text-sm font-medium text-slate-700">Ảnh đại diện URL</label>
-          <input name="featured_image" defaultValue={post?.featured_image || ""}
-            className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" placeholder="https://..." />
+
+      <div className="space-y-3">
+        <label className="text-sm font-medium text-slate-700">Ảnh đại diện</label>
+        <div className="flex gap-2">
+          {[
+            { key: "upload", label: "Tải ảnh lên" },
+            { key: "url", label: "Dùng URL" },
+            { key: "none", label: "Không có ảnh" },
+          ].map((opt) => (
+            <button
+              key={opt.key}
+              type="button"
+              onClick={() => setImageMode(opt.key as typeof imageMode)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                imageMode === opt.key
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
-        <div className="space-y-1.5">
-          <label className="text-sm font-medium text-slate-700">Ngày xuất bản</label>
-          <input name="published_at" type="datetime-local"
-            defaultValue={post?.published_at ? post.published_at.slice(0, 16) : ""}
-            className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" />
-        </div>
+
+        {imageMode === "upload" && (
+          <div className="space-y-1.5">
+            {isEditing ? (
+              <div className="flex items-center gap-3 flex-wrap">
+                <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-50">
+                  <span className="material-symbols-outlined text-lg">upload</span>
+                  {uploading ? "Đang tải..." : "Chọn file ảnh"}
+                </button>
+                <span className="text-slate-400 text-xs">{fileName || "Chưa chọn file"}</span>
+                <input ref={fileInputRef} type="file" hidden accept="image/*" onChange={handleImageUpload} disabled={uploading} />
+              </div>
+            ) : (
+              <p className="text-xs text-slate-400">Lưu bài viết trước, sau đó upload ảnh trong chế độ sửa.</p>
+            )}
+          </div>
+        )}
+
+        {imageMode === "url" && (
+          <div className="space-y-1.5">
+            <input
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
+              placeholder="https://..." />
+          </div>
+        )}
+
+        {imagePreview && imageMode !== "none" && (
+          <img src={imagePreview} alt="" className="w-32 h-20 object-cover rounded-lg border border-slate-200" />
+        )}
       </div>
+
       <div className="flex gap-3 pt-2">
         <button type="submit" disabled={createMutation.isPending || updateMutation.isPending}
           className="flex-1 px-4 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50">

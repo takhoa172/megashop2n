@@ -8,5 +8,5 @@ detail_view = SliderViewSet.as_view(
 
 urlpatterns = [
     path("", list_view, name="sliders-list"),
-    path("<uuid:pk>", detail_view, name="sliders-detail"),
+    path("<uuid:pk>/", detail_view, name="sliders-detail"),
 ]

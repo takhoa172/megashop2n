@@ -8,6 +8,7 @@ class BlogCategory(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255, unique=True)
     slug = models.SlugField(max_length=255, unique=True)
+    is_visible = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -41,6 +42,7 @@ class BlogPost(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name="blog_posts"
     )
+    is_visible = models.BooleanField(default=True)
     status = models.CharField(
         max_length=30, choices=Status.choices, default=Status.DRAFT
     )

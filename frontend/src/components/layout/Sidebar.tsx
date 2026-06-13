@@ -24,13 +24,13 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ["SUPER_ADMIN", "MANAGER", "STAFF"] },
-  { href: "/admin/products", label: "Sản phẩm", icon: Package, roles: ["SUPER_ADMIN", "MANAGER", "STAFF"] },
-  { href: "/admin/purchases", label: "Nhập hàng", icon: ShoppingCart, roles: ["SUPER_ADMIN", "MANAGER"] },
-  { href: "/admin/sales", label: "Bán hàng", icon: DollarSign, roles: ["SUPER_ADMIN", "MANAGER", "STAFF"] },
-  { href: "/admin/orders", label: "Đơn hàng", icon: ClipboardList, roles: ["SUPER_ADMIN", "MANAGER", "STAFF"] },
-  { href: "/admin/blogs", label: "Bài viết", icon: FileText, roles: ["SUPER_ADMIN", "MANAGER"] },
-  { href: "/admin/reports", label: "Báo cáo", icon: BarChart3, roles: ["SUPER_ADMIN", "MANAGER"] },
+  { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ["MANAGER", "STAFF"] },
+  { href: "/admin/products", label: "Sản phẩm", icon: Package, roles: ["MANAGER", "STAFF"] },
+  { href: "/admin/purchases", label: "Nhập hàng", icon: ShoppingCart, roles: ["MANAGER"] },
+  { href: "/admin/sales", label: "Bán hàng", icon: DollarSign, roles: ["MANAGER", "STAFF"] },
+  { href: "/admin/orders", label: "Đơn hàng", icon: ClipboardList, roles: ["MANAGER", "STAFF"] },
+  { href: "/admin/blogs", label: "Bài viết", icon: FileText, roles: ["MANAGER"] },
+  { href: "/admin/reports", label: "Báo cáo", icon: BarChart3, roles: ["MANAGER"] },
   { href: "/admin/settings", label: "Cài đặt", icon: Settings, roles: ["SUPER_ADMIN"] },
 ]
 

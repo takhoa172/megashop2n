@@ -45,3 +45,10 @@ export async function updateSiteSettings(
   const { data } = await api.put("/settings/site", siteData)
   return data
 }
+
+export async function uploadSiteLogo(file: File) {
+  const formData = new FormData()
+  formData.append("file", file)
+  const { data } = await api.post("/settings/site/upload-logo", formData)
+  return data as { url: string }
+}

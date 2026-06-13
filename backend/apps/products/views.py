@@ -37,6 +37,15 @@ class ProductViewSet(viewsets.ModelViewSet):
             ProductView.objects.create(product_id=product["id"], ip_address=ip)
         return response
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        user = self.request.user
+        show_hidden = self.request.query_params.get("show_hidden") == "1"
+        if self.action in ["list", "retrieve"] and not show_hidden:
+            if not (user.is_authenticated and user.role in ["SUPER_ADMIN", "MANAGER", "STAFF"]):
+                qs = qs.filter(is_visible=True)
+        return qs
+
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
 
@@ -78,15 +87,103 @@ class ProductViewSet(viewsets.ModelViewSet):
                 {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-    @action(detail=True, methods=["delete"])
+    @action(detail=True, methods=["post"])
+    def add_image_url(self, request, id=None):
+        try:
+            product = self.get_object()
+            image_url = request.data.get("image_url")
+            if not image_url:
+                return Response(
+                    {"message": "No image_url provided"}, status=status.HTTP_400_BAD_REQUEST
+                )
+            raw = request.data.get("is_primary", "true")
+            is_primary = str(raw).lower() == "true"
+            if is_primary:
+                ProductImage.objects.filter(product=product, is_primary=True).update(
+                    is_primary=False
+                )
+            image = ProductImage.objects.create(
+                product=product,
+                image_url=image_url,
+                public_id="",
+                is_primary=is_primary,
+            )
+            return Response(
+                ProductImageSerializer(image).data, status=status.HTTP_201_CREATED
+            )
+        except Exception as e:
+            return Response(
+                {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+    @action(detail=True, methods=["post"])
     def remove_image(self, request, id=None):
         product = self.get_object()
         image_id = request.data.get("image_id")
         try:
             image = ProductImage.objects.get(id=image_id, product=product)
-            delete_from_cloudinary(image.public_id)
+            if image.public_id:
+                try:
+                    delete_from_cloudinary(image.public_id)
+                except Exception:
+                    pass
             image.delete()
             return Response({"message": "Image removed"}, status=status.HTTP_200_OK)
+        except ProductImage.DoesNotExist:
+            return Response(
+                {"message": "Image not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+    @action(detail=True, methods=["post"])
+    def replace_image(self, request, id=None):
+        product = self.get_object()
+        image_id = request.data.get("image_id")
+        file = request.FILES.get("file")
+        if not image_id or not file:
+            return Response(
+                {"message": "image_id and file are required"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            image = ProductImage.objects.get(id=image_id, product=product)
+            if image.public_id:
+                try:
+                    delete_from_cloudinary(image.public_id)
+                except Exception:
+                    pass
+            result = upload_to_cloudinary(file)
+            image.image_url = result["url"]
+            image.public_id = result["public_id"]
+            image.save()
+            return Response(
+                ProductImageSerializer(image).data, status=status.HTTP_200_OK
+            )
+        except ProductImage.DoesNotExist:
+            return Response(
+                {"message": "Image not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+    @action(detail=True, methods=["post"])
+    def set_primary_image(self, request, id=None):
+        product = self.get_object()
+        image_id = request.data.get("image_id")
+        if not image_id:
+            return Response(
+                {"message": "image_id is required"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            image = ProductImage.objects.get(id=image_id, product=product)
+            ProductImage.objects.filter(product=product, is_primary=True).update(
+                is_primary=False
+            )
+            image.is_primary = True
+            image.save()
+            return Response(
+                ProductImageSerializer(image).data, status=status.HTTP_200_OK
+            )
         except ProductImage.DoesNotExist:
             return Response(
                 {"message": "Image not found"}, status=status.HTTP_404_NOT_FOUND

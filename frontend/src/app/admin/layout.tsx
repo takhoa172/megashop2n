@@ -22,6 +22,10 @@ export default function DashboardLayout({
       router.push("/login")
       return
     }
+    if (user.role === "SUPER_ADMIN") {
+      window.location.href = "/django-admin/"
+      return
+    }
     if (user.role === "CUSTOMER") {
       router.push("/")
     }

@@ -32,7 +32,7 @@ export function ConfirmDialog({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-[24rem]">
         <div className="px-6 py-6 text-center">
           <div className={`mx-auto w-12 h-12 rounded-full flex items-center justify-center mb-4 ${
             variant === "danger" ? "bg-red-100" : "bg-amber-100"

@@ -1,7 +1,7 @@
 "use client"
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { getPurchases, createPurchase } from "@/services/purchases"
+import { getPurchases, createPurchase, updatePurchase } from "@/services/purchases"
 import { getProducts } from "@/services/products"
 import { getUsers } from "@/services/auth"
 import { DataTable } from "@/components/tables/DataTable"
@@ -11,11 +11,12 @@ import { Purchase, User } from "@/types"
 import { formatCurrency, formatDate } from "@/lib/utils"
 import { ColumnDef } from "@tanstack/react-table"
 import { useState } from "react"
-import { Plus, DollarSign, Package, Receipt } from "lucide-react"
+import { Plus, Pencil, DollarSign, Package, Receipt } from "lucide-react"
 import { toast } from "sonner"
 
 export default function PurchasesPage() {
   const [showForm, setShowForm] = useState(false)
+  const [editingPurchase, setEditingPurchase] = useState<Purchase | null>(null)
   const queryClient = useQueryClient()
 
   const { data: purchasesData, isLoading } = useQuery({
@@ -70,6 +71,20 @@ export default function PurchasesPage() {
         <span className="text-sm text-slate-500">{row.original.note || "—"}</span>
       ),
     },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <div className="flex gap-1">
+          <button
+            onClick={() => { setEditingPurchase(row.original); setShowForm(true) }}
+            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-blue-600 transition-colors"
+          >
+            <Pencil size={15} />
+          </button>
+        </div>
+      ),
+    },
   ]
 
   return (
@@ -120,14 +135,14 @@ export default function PurchasesPage() {
         <DataTable columns={columns} data={purchases} pageSize={10} />
       )}
 
-      <Modal open={showForm} onClose={() => setShowForm(false)} title="Nhập hàng mới">
-        <PurchaseForm onClose={() => setShowForm(false)} />
+      <Modal open={showForm} onClose={() => { setShowForm(false); setEditingPurchase(null) }} title={editingPurchase ? "Sửa giao dịch nhập hàng" : "Nhập hàng mới"}>
+        <PurchaseForm purchase={editingPurchase} onClose={() => { setShowForm(false); setEditingPurchase(null) }} />
       </Modal>
     </div>
   )
 }
 
-function PurchaseForm({ onClose }: { onClose: () => void }) {
+function PurchaseForm({ purchase, onClose }: { purchase: Purchase | null; onClose: () => void }) {
   const queryClient = useQueryClient()
   const { data: products } = useQuery({
     queryKey: ["products"],
@@ -135,7 +150,9 @@ function PurchaseForm({ onClose }: { onClose: () => void }) {
   })
   const { data: users } = useQuery({ queryKey: ["users"], queryFn: getUsers })
 
-  const mutation = useMutation({
+  const isEditing = !!purchase
+
+  const createMutation = useMutation({
     mutationFn: createPurchase,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["purchases"] })
@@ -146,27 +163,46 @@ function PurchaseForm({ onClose }: { onClose: () => void }) {
     onError: () => toast.error("Không thể thêm giao dịch"),
   })
 
-  const [purchasedAt, setPurchasedAt] = useState(new Date().toISOString().slice(0, 16))
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<Purchase> }) => updatePurchase(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["purchases"] })
+      queryClient.invalidateQueries({ queryKey: ["products"] })
+      toast.success("Đã cập nhật giao dịch nhập hàng")
+      onClose()
+    },
+    onError: () => toast.error("Không thể cập nhật giao dịch"),
+  })
+
+  const [purchasedAt, setPurchasedAt] = useState(
+    purchase?.purchased_at ? new Date(purchase.purchased_at).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16)
+  )
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const form = new FormData(e.currentTarget)
-    mutation.mutate({
+    const payload = {
       product: form.get("product") as string,
       payer: form.get("payer") as string,
       purchase_price: parseFloat(form.get("purchase_price") as string),
       purchased_at: new Date(purchasedAt).toISOString(),
       note: form.get("note") as string,
-    })
+    }
+    if (isEditing && purchase) {
+      updateMutation.mutate({ id: purchase.id, data: payload })
+    } else {
+      createMutation.mutate(payload)
+    }
   }
 
   const productList = products?.results || products || []
+  const isPending = createMutation.isPending || updateMutation.isPending
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-1.5">
         <label className="text-sm font-medium text-slate-700">Sản phẩm *</label>
-        <select name="product" required
+        <select name="product" required defaultValue={purchase?.product || ""}
           className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 bg-white">
           <option value="">Chọn sản phẩm</option>
           {productList.map((p: any) => (
@@ -176,7 +212,7 @@ function PurchaseForm({ onClose }: { onClose: () => void }) {
       </div>
       <div className="space-y-1.5">
         <label className="text-sm font-medium text-slate-700">Người mua *</label>
-        <select name="payer" required
+        <select name="payer" required defaultValue={purchase?.payer || ""}
           className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 bg-white">
           <option value="">Chọn người mua</option>
           {(users || []).map((u: User) => (
@@ -187,7 +223,7 @@ function PurchaseForm({ onClose }: { onClose: () => void }) {
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
           <label className="text-sm font-medium text-slate-700">Giá nhập *</label>
-          <input name="purchase_price" type="number" step="0.01" required
+          <input name="purchase_price" type="number" step="0.01" required defaultValue={purchase?.purchase_price || ""}
             className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" />
         </div>
         <div className="space-y-1.5">
@@ -198,13 +234,13 @@ function PurchaseForm({ onClose }: { onClose: () => void }) {
       </div>
       <div className="space-y-1.5">
         <label className="text-sm font-medium text-slate-700">Ghi chú</label>
-        <input name="note"
+        <input name="note" defaultValue={purchase?.note || ""}
           className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" />
       </div>
       <div className="flex gap-3 pt-2">
-        <button type="submit" disabled={mutation.isPending}
+        <button type="submit" disabled={isPending}
           className="flex-1 px-4 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50">
-          {mutation.isPending ? "Đang xử lý..." : "Thêm giao dịch"}
+          {isPending ? "Đang xử lý..." : isEditing ? "Cập nhật" : "Thêm giao dịch"}
         </button>
         <button type="button" onClick={onClose}
           className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">

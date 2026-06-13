@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useAuth } from "@/contexts/AuthContext"
 import {
   getSummary,
   getRevenue,
@@ -73,6 +74,8 @@ const statusLabels: Record<string, string> = {
 }
 
 export default function DashboardPage() {
+  const { user } = useAuth()
+  const isManager = user?.role === "MANAGER"
   const queryClient = useQueryClient()
   const now = new Date()
   const [selectedMonth, setSelectedMonth] = useState(String(now.getMonth() + 1))
@@ -171,34 +174,36 @@ export default function DashboardPage() {
         }
       />
 
-      <div className="flex flex-wrap items-center gap-3 p-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
-        <span className="text-sm font-medium text-slate-700">Lọc theo:</span>
-        <select
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(e.target.value)}
-          className="px-3 py-2 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-        >
-          {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
-            <option key={m} value={String(m)}>Tháng {m}</option>
-          ))}
-        </select>
-        <select
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(e.target.value)}
-          className="px-3 py-2 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-        >
-          {Array.from({ length: 7 }, (_, i) => now.getFullYear() - 6 + i).map((y) => (
-            <option key={y} value={String(y)}>Năm {y}</option>
-          ))}
-        </select>
-        <button
-          onClick={() => queryClient.invalidateQueries({ queryKey: ["dashboard"] })}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
-        >
-          <span className="text-lg">↻</span>
-          Áp dụng
-        </button>
-      </div>
+      {isManager && (
+        <div className="flex flex-wrap items-center gap-3 p-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
+          <span className="text-sm font-medium text-slate-700">Lọc theo:</span>
+          <select
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            className="px-3 py-2 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+          >
+            {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+              <option key={m} value={String(m)}>Tháng {m}</option>
+            ))}
+          </select>
+          <select
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(e.target.value)}
+            className="px-3 py-2 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+          >
+            {Array.from({ length: 7 }, (_, i) => now.getFullYear() - 6 + i).map((y) => (
+              <option key={y} value={String(y)}>Năm {y}</option>
+            ))}
+          </select>
+          <button
+            onClick={() => queryClient.invalidateQueries({ queryKey: ["dashboard"] })}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
+          >
+            <span className="text-lg">↻</span>
+            Áp dụng
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <Link href="/admin/products"
@@ -234,17 +239,19 @@ export default function DashboardPage() {
             <p className="text-xs text-slate-500">Ghi nhận bán</p>
           </div>
         </Link>
-        <Link href="/admin/reports"
-          className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-amber-300 transition-all group"
-        >
-          <div className="rounded-xl p-2.5 bg-amber-100 text-amber-600 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-            <FileBarChart size={20} />
-          </div>
-          <div>
-            <p className="text-sm font-medium text-slate-900">Báo cáo</p>
-            <p className="text-xs text-slate-500">Phân tích chi tiết</p>
-          </div>
-        </Link>
+        {isManager && (
+          <Link href="/admin/reports"
+            className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-amber-300 transition-all group"
+          >
+            <div className="rounded-xl p-2.5 bg-amber-100 text-amber-600 group-hover:bg-amber-600 group-hover:text-white transition-colors">
+              <FileBarChart size={20} />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-slate-900">Báo cáo</p>
+              <p className="text-xs text-slate-500">Phân tích chi tiết</p>
+            </div>
+          </Link>
+        )}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -281,132 +288,136 @@ export default function DashboardPage() {
         })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <RevenueChart data={revenue || []} isLoading={revLoading} />
-        <ProfitChart data={profit || []} isLoading={revLoading} />
-      </div>
+      {isManager && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <RevenueChart data={revenue || []} isLoading={revLoading} />
+          <ProfitChart data={profit || []} isLoading={revLoading} />
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1 space-y-6">
-          <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-            <h3 className="font-semibold text-slate-900 mb-4">Tồn kho</h3>
-            <div className="space-y-3 mb-4">
-              {[
-                { key: "inStock", title: "Còn hàng", icon: CheckCircle, color: "text-green-600 bg-green-100" },
-                { key: "sold", title: "Đã bán", icon: Package, color: "text-blue-600 bg-blue-100" },
-                { key: "pendingPrice", title: "Chờ định giá", icon: Clock, color: "text-yellow-600 bg-yellow-100" },
-              ].map((card) => {
-                const Icon = card.icon
-                const val = summary?.[card.key === "pendingPrice" ? "inventory" : "inventory"]?.[
-                  card.key === "inStock" ? "in_stock" :
-                  card.key === "sold" ? "sold" :
-                  "pending_price"
-                ]
-                return (
-                  <div key={card.key} className="flex items-center justify-between p-3 rounded-xl bg-slate-50">
-                    <div className="flex items-center gap-3">
-                      <div className={`rounded-lg p-2 ${card.color}`}>
-                        <Icon size={16} />
+        {isManager && (
+          <div className="lg:col-span-1 space-y-6">
+            <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+              <h3 className="font-semibold text-slate-900 mb-4">Tồn kho</h3>
+              <div className="space-y-3 mb-4">
+                {[
+                  { key: "inStock", title: "Còn hàng", icon: CheckCircle, color: "text-green-600 bg-green-100" },
+                  { key: "sold", title: "Đã bán", icon: Package, color: "text-blue-600 bg-blue-100" },
+                  { key: "pendingPrice", title: "Chờ định giá", icon: Clock, color: "text-yellow-600 bg-yellow-100" },
+                ].map((card) => {
+                  const Icon = card.icon
+                  const val = summary?.[card.key === "pendingPrice" ? "inventory" : "inventory"]?.[
+                    card.key === "inStock" ? "in_stock" :
+                    card.key === "sold" ? "sold" :
+                    "pending_price"
+                  ]
+                  return (
+                    <div key={card.key} className="flex items-center justify-between p-3 rounded-xl bg-slate-50">
+                      <div className="flex items-center gap-3">
+                        <div className={`rounded-lg p-2 ${card.color}`}>
+                          <Icon size={16} />
+                        </div>
+                        <span className="text-sm font-medium text-slate-700">{card.title}</span>
                       </div>
-                      <span className="text-sm font-medium text-slate-700">{card.title}</span>
+                      <span className="text-lg font-bold text-slate-900">
+                        {sumLoading ? (
+                          <span className="inline-block w-10 h-5 rounded bg-slate-200 animate-pulse" />
+                        ) : (
+                          val ?? "..."
+                        )}
+                      </span>
                     </div>
-                    <span className="text-lg font-bold text-slate-900">
-                      {sumLoading ? (
-                        <span className="inline-block w-10 h-5 rounded bg-slate-200 animate-pulse" />
-                      ) : (
-                        val ?? "..."
-                      )}
-                    </span>
-                  </div>
-                )
-              })}
+                  )
+                })}
+              </div>
+              <InventoryPieChart data={inventory || []} />
             </div>
-            <InventoryPieChart data={inventory || []} />
+
+            {lowStockProducts.length > 0 && (
+              <div className="bg-white rounded-2xl border border-amber-200 p-5 shadow-sm">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="rounded-lg p-2 bg-amber-100 text-amber-600">
+                    <AlertTriangle size={16} />
+                  </div>
+                  <h3 className="font-semibold text-slate-900">Hàng sắp hết</h3>
+                  <span className="ml-auto text-xs text-amber-600 font-medium">{lowStockProducts.length} sản phẩm</span>
+                </div>
+                <div className="space-y-2">
+                  {lowStockProducts.map((p: { id: string; name: string; quantity?: number }) => (
+                    <Link key={p.id} href={`/admin/products`}
+                      className="flex items-center justify-between p-2.5 rounded-xl hover:bg-amber-50 transition-colors"
+                    >
+                      <span className="text-sm text-slate-700 truncate">{p.name}</span>
+                      <span className={`text-sm font-bold shrink-0 ml-2 ${
+                        (p.quantity ?? 0) <= 2 ? "text-red-600" : "text-amber-600"
+                      }`}>
+                        {p.quantity ?? 0}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {(() => {
+              const m = summary?.monthly as { revenue: number; cost: number; profit: number; label?: string } | undefined
+              if (!m) return null
+              return (
+                <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+                  <h3 className="font-semibold text-slate-900 mb-1">Tổng kết tháng</h3>
+                  <p className="text-sm text-slate-500 mb-3">{m.label || "Tháng này"}</p>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-500">Doanh thu</span>
+                      <span className="font-semibold text-slate-900">{formatCurrency(m.revenue)}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-500">Chi phí</span>
+                      <span className="font-semibold text-red-600">{formatCurrency(m.cost)}</span>
+                    </div>
+                    <div className="flex justify-between items-center pt-2 border-t border-slate-100">
+                      <span className="text-sm font-medium text-slate-700">Lợi nhuận</span>
+                      <span className={`font-bold ${m.profit >= 0 ? "text-green-600" : "text-red-600"}`}>
+                        {formatCurrency(m.profit)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )
+            })()}
+
+            {(() => {
+              const y = summary?.yearly as { revenue: number; cost: number; profit: number; label?: string } | undefined
+              if (!y) return null
+              return (
+                <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+                  <h3 className="font-semibold text-slate-900 mb-1">Tổng kết năm</h3>
+                  <p className="text-sm text-slate-500 mb-3">{y.label || "Năm nay"}</p>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-500">Doanh thu</span>
+                      <span className="font-semibold text-slate-900">{formatCurrency(y.revenue)}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-500">Chi phí</span>
+                      <span className="font-semibold text-red-600">{formatCurrency(y.cost)}</span>
+                    </div>
+                    <div className="flex justify-between items-center pt-2 border-t border-slate-100">
+                      <span className="text-sm font-medium text-slate-700">Lợi nhuận</span>
+                      <span className={`font-bold ${y.profit >= 0 ? "text-green-600" : "text-red-600"}`}>
+                        {formatCurrency(y.profit)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )
+            })()}
           </div>
+        )}
 
-          {lowStockProducts.length > 0 && (
-            <div className="bg-white rounded-2xl border border-amber-200 p-5 shadow-sm">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="rounded-lg p-2 bg-amber-100 text-amber-600">
-                  <AlertTriangle size={16} />
-                </div>
-                <h3 className="font-semibold text-slate-900">Hàng sắp hết</h3>
-                <span className="ml-auto text-xs text-amber-600 font-medium">{lowStockProducts.length} sản phẩm</span>
-              </div>
-              <div className="space-y-2">
-                {lowStockProducts.map((p: { id: string; name: string; quantity?: number }) => (
-                  <Link key={p.id} href={`/admin/products`}
-                    className="flex items-center justify-between p-2.5 rounded-xl hover:bg-amber-50 transition-colors"
-                  >
-                    <span className="text-sm text-slate-700 truncate">{p.name}</span>
-                    <span className={`text-sm font-bold shrink-0 ml-2 ${
-                      (p.quantity ?? 0) <= 2 ? "text-red-600" : "text-amber-600"
-                    }`}>
-                      {p.quantity ?? 0}
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {(() => {
-            const m = summary?.monthly as { revenue: number; cost: number; profit: number; label?: string } | undefined
-            if (!m) return null
-            return (
-              <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-                <h3 className="font-semibold text-slate-900 mb-1">Tổng kết tháng</h3>
-                <p className="text-sm text-slate-500 mb-3">{m.label || "Tháng này"}</p>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-500">Doanh thu</span>
-                    <span className="font-semibold text-slate-900">{formatCurrency(m.revenue)}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-500">Chi phí</span>
-                    <span className="font-semibold text-red-600">{formatCurrency(m.cost)}</span>
-                  </div>
-                  <div className="flex justify-between items-center pt-2 border-t border-slate-100">
-                    <span className="text-sm font-medium text-slate-700">Lợi nhuận</span>
-                    <span className={`font-bold ${m.profit >= 0 ? "text-green-600" : "text-red-600"}`}>
-                      {formatCurrency(m.profit)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )
-          })()}
-
-          {(() => {
-            const y = summary?.yearly as { revenue: number; cost: number; profit: number; label?: string } | undefined
-            if (!y) return null
-            return (
-              <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-                <h3 className="font-semibold text-slate-900 mb-1">Tổng kết năm</h3>
-                <p className="text-sm text-slate-500 mb-3">{y.label || "Năm nay"}</p>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-500">Doanh thu</span>
-                    <span className="font-semibold text-slate-900">{formatCurrency(y.revenue)}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-500">Chi phí</span>
-                    <span className="font-semibold text-red-600">{formatCurrency(y.cost)}</span>
-                  </div>
-                  <div className="flex justify-between items-center pt-2 border-t border-slate-100">
-                    <span className="text-sm font-medium text-slate-700">Lợi nhuận</span>
-                    <span className={`font-bold ${y.profit >= 0 ? "text-green-600" : "text-red-600"}`}>
-                      {formatCurrency(y.profit)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )
-          })()}
-        </div>
-
-        <div className="lg:col-span-2 space-y-6">
-          <TopCategoriesChart data={topCategories || []} />
+        <div className={isManager ? "lg:col-span-2 space-y-6" : "lg:col-span-3 space-y-6"}>
+          {isManager && <TopCategoriesChart data={topCategories || []} />}
 
           <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
             <div className="flex items-center justify-between mb-4">

@@ -49,7 +49,7 @@ function OrderSuccessContent() {
 
   return (
     <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-3xl text-center">
-      <div className="max-w-lg mx-auto">
+      <div className="max-w-[32rem] mx-auto">
         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-lg">
           <span className="material-symbols-outlined text-green-600 text-4xl">check_circle</span>
         </div>

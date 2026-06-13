@@ -4,14 +4,15 @@ from rest_framework.permissions import AllowAny
 from rest_framework import status
 from .models import SiteSettings, FooterSettings
 from .serializers import SiteSettingsSerializer, FooterSettingsSerializer
-from core.permissions import IsAdminOrReadOnly
+from core.permissions import IsSuperAdmin
+from apps.products.cloudinary_utils import upload_to_cloudinary
 
 
 class SiteSettingsView(APIView):
     def get_permissions(self):
         if self.request.method == "GET":
             return [AllowAny()]
-        return [IsAdminOrReadOnly()]
+        return [IsSuperAdmin()]
 
     def get(self, request):
         instance = SiteSettings.get_instance()
@@ -30,7 +31,7 @@ class FooterView(APIView):
     def get_permissions(self):
         if self.request.method == "GET":
             return [AllowAny()]
-        return [IsAdminOrReadOnly()]
+        return [IsSuperAdmin()]
 
     def get(self, request):
         instance = FooterSettings.get_instance()
@@ -43,6 +44,27 @@ class FooterView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+
+class UploadLogoView(APIView):
+    permission_classes = [IsSuperAdmin]
+
+    def post(self, request):
+        file = request.FILES.get("file")
+        if not file:
+            return Response(
+                {"message": "No file provided"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            result = upload_to_cloudinary(file)
+            instance = SiteSettings.get_instance()
+            instance.site_logo_url = result["url"]
+            instance.save(update_fields=["site_logo_url"])
+            return Response({"url": result["url"]}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class ContactView(APIView):

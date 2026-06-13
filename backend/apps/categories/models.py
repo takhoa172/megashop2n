@@ -8,6 +8,7 @@ class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
     slug = models.SlugField(max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)
+    is_visible = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

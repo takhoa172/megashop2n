@@ -10,3 +10,8 @@ export async function createPurchase(purchaseData: Partial<Purchase>) {
   const { data } = await api.post("/purchases/", purchaseData)
   return data
 }
+
+export async function updatePurchase(id: string, purchaseData: Partial<Purchase>) {
+  const { data } = await api.put(`/purchases/${id}/`, purchaseData)
+  return data
+}

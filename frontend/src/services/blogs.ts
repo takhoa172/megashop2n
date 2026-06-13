@@ -25,6 +25,11 @@ export async function updateBlogPost(id: string, formData: FormData) {
   return data
 }
 
+export async function updateBlogPostVisibility(id: string, is_visible: boolean) {
+  const { data } = await api.patch(`/blogs/${id}`, { is_visible })
+  return data
+}
+
 export async function deleteBlogPost(id: string) {
   await api.delete(`/blogs/${id}`)
 }
@@ -36,5 +41,12 @@ export async function getBlogCategories() {
 
 export async function createBlogCategory(name: string) {
   const { data } = await api.post("/blogs/categories", { name })
+  return data
+}
+
+export async function uploadBlogImage(slug: string, file: File) {
+  const formData = new FormData()
+  formData.append("file", file)
+  const { data } = await api.post(`/blogs/${slug}/upload-image`, formData)
   return data
 }
