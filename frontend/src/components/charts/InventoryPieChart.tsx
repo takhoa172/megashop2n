@@ -21,19 +21,20 @@ function CustomTooltip({ active, payload }: any) {
 }
 
 export function InventoryPieChart({ data }: Props) {
-  if (!data?.length) return null
-  const total = data.reduce((sum, item) => sum + item.value, 0)
+  const filteredData = data.filter(item => item.value > 0)
+  if (!filteredData?.length) return null
+  const total = filteredData.reduce((sum, item) => sum + item.value, 0)
   return (
     <div className="mt-4">
       <div className="h-[200px]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
-              data={data} cx="50%" cy="50%"
+              data={filteredData} cx="50%" cy="50%"
               innerRadius={50} outerRadius={80}
               paddingAngle={4} dataKey="value"
             >
-              {data.map((entry, index) => (
+              {filteredData.map((entry, index) => (
                 <Cell key={index} fill={entry.color} />
               ))}
             </Pie>
@@ -42,7 +43,7 @@ export function InventoryPieChart({ data }: Props) {
         </ResponsiveContainer>
       </div>
       <div className="flex flex-wrap gap-3 justify-center mt-2">
-        {data.map((item, idx) => (
+        {filteredData.map((item, idx) => (
           <div key={idx} className="flex items-center gap-1.5 text-xs text-slate-500">
             <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
             <span>{item.name}</span>

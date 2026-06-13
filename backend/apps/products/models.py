@@ -28,6 +28,7 @@ class Product(models.Model):
     )
     quantity = models.IntegerField(default=1)
     is_suggested = models.BooleanField(default=False)
+    is_visible = models.BooleanField(default=True)
     notes = models.TextField(blank=True, null=True)
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name="created_products"

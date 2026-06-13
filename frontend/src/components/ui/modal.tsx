@@ -37,7 +37,7 @@ export function Modal({ open, onClose, title, children, className = "" }: ModalP
       onClick={(e) => { if (e.target === overlayRef.current) onClose() }}
     >
       <div
-        className={`bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 ${className}`}
+        className={`bg-white rounded-2xl shadow-xl w-full max-w-[32rem] max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 ${className}`}
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
           <h2 className="text-lg font-semibold text-slate-900">{title}</h2>

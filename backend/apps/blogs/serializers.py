@@ -5,7 +5,7 @@ from .models import BlogPost, BlogCategory
 class BlogCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = BlogCategory
-        fields = ["id", "name", "slug", "created_at"]
+        fields = ["id", "name", "slug", "is_visible", "created_at"]
         read_only_fields = ["id", "slug", "created_at"]
 
 
@@ -18,7 +18,7 @@ class BlogPostSerializer(serializers.ModelSerializer):
         fields = [
             "id", "title", "slug", "category", "category_name",
             "content", "excerpt", "featured_image", "featured_image_public_id",
-            "author", "author_name", "status", "published_at",
+            "author", "author_name", "status", "is_visible", "published_at",
             "created_at", "updated_at",
         ]
         read_only_fields = ["id", "slug", "author", "created_at", "updated_at"]
@@ -30,5 +30,5 @@ class BlogPostCreateSerializer(serializers.ModelSerializer):
         fields = [
             "title", "category", "content", "excerpt",
             "featured_image", "featured_image_public_id",
-            "status", "published_at",
+            "status", "is_visible", "published_at",
         ]

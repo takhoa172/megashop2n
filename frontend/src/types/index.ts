@@ -15,6 +15,7 @@ export interface Category {
   name: string
   slug: string
   description: string | null
+  is_visible?: boolean
   created_at: string
 }
 
@@ -37,6 +38,7 @@ export interface Product {
   sale_price: number | null
   status: "pending_price" | "in_stock" | "sold" | "cancelled"
   quantity: number
+  is_visible?: boolean
   notes: string | null
   created_by: string | null
   created_by_name: string
@@ -128,6 +130,7 @@ export interface BlogPost {
   author: string | null
   author_name: string
   status: "draft" | "published"
+  is_visible?: boolean
   published_at: string | null
   created_at: string
   updated_at: string
@@ -137,5 +140,6 @@ export interface BlogCategory {
   id: string
   name: string
   slug: string
+  is_visible?: boolean
   created_at: string
 }

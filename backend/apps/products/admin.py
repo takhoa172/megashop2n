@@ -1,13 +1,21 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from .models import Product, ProductImage
-from apps.common.admin_mixins import cloudinary_image_admin
+from apps.common.admin_mixins import cloudinary_image_admin, CloudinaryImageFormMixin
+
+
+class ProductImageInlineForm(CloudinaryImageFormMixin):
+    url_field = "image_url"
+    public_id_field = "public_id"
+    folder = "products"
 
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
+    form = ProductImageInlineForm
     extra = 1
     readonly_fields = ["image_preview"]
+    fields = ["image_file", "clear_image", "aspect_ratio", "image_preview", "is_primary"]
 
     def image_preview(self, obj):
         if obj.pk and obj.image_url:

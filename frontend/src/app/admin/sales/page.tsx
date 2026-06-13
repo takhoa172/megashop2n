@@ -1,7 +1,7 @@
 "use client"
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { getSales, createSale } from "@/services/sales"
+import { getSales, createSale, updateSale } from "@/services/sales"
 import { getProducts } from "@/services/products"
 import { DataTable } from "@/components/tables/DataTable"
 import { PageHeader } from "@/components/ui/page-header"
@@ -10,11 +10,12 @@ import { Sale } from "@/types"
 import { formatCurrency, formatDate } from "@/lib/utils"
 import { ColumnDef } from "@tanstack/react-table"
 import { useState } from "react"
-import { Plus, DollarSign, ShoppingCart, TrendingUp } from "lucide-react"
+import { Plus, Pencil, DollarSign, ShoppingCart, TrendingUp } from "lucide-react"
 import { toast } from "sonner"
 
 export default function SalesPage() {
   const [showForm, setShowForm] = useState(false)
+  const [editingSale, setEditingSale] = useState<Sale | null>(null)
   const queryClient = useQueryClient()
 
   const { data: salesData, isLoading } = useQuery({
@@ -77,6 +78,20 @@ export default function SalesPage() {
         <span className="text-sm text-slate-500">{row.original.note || "—"}</span>
       ),
     },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <div className="flex gap-1">
+          <button
+            onClick={() => { setEditingSale(row.original); setShowForm(true) }}
+            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-blue-600 transition-colors"
+          >
+            <Pencil size={15} />
+          </button>
+        </div>
+      ),
+    },
   ]
 
   return (
@@ -127,21 +142,23 @@ export default function SalesPage() {
         <DataTable columns={columns} data={sales} pageSize={10} />
       )}
 
-      <Modal open={showForm} onClose={() => setShowForm(false)} title="Bán hàng mới">
-        <SaleForm onClose={() => setShowForm(false)} />
+      <Modal open={showForm} onClose={() => { setShowForm(false); setEditingSale(null) }} title={editingSale ? "Sửa giao dịch bán hàng" : "Bán hàng mới"}>
+        <SaleForm sale={editingSale} onClose={() => { setShowForm(false); setEditingSale(null) }} />
       </Modal>
     </div>
   )
 }
 
-function SaleForm({ onClose }: { onClose: () => void }) {
+function SaleForm({ sale, onClose }: { sale: Sale | null; onClose: () => void }) {
   const queryClient = useQueryClient()
   const { data: products } = useQuery({
     queryKey: ["products", "unsold"],
     queryFn: () => getProducts({ page_size: "100", status: "in_stock,pending_price" }),
   })
 
-  const mutation = useMutation({
+  const isEditing = !!sale
+
+  const createMutation = useMutation({
     mutationFn: createSale,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sales"] })
@@ -152,27 +169,46 @@ function SaleForm({ onClose }: { onClose: () => void }) {
     onError: () => toast.error("Không thể thêm giao dịch"),
   })
 
-  const [soldAt, setSoldAt] = useState(new Date().toISOString().slice(0, 16))
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<Sale> }) => updateSale(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["sales"] })
+      queryClient.invalidateQueries({ queryKey: ["products"] })
+      toast.success("Đã cập nhật giao dịch bán hàng")
+      onClose()
+    },
+    onError: () => toast.error("Không thể cập nhật giao dịch"),
+  })
+
+  const [soldAt, setSoldAt] = useState(
+    sale?.sold_at ? new Date(sale.sold_at).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16)
+  )
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const form = new FormData(e.currentTarget)
-    mutation.mutate({
+    const payload = {
       product: form.get("product") as string,
       sale_price: parseFloat(form.get("sale_price") as string),
       customer_name: form.get("customer_name") as string,
       sold_at: new Date(soldAt).toISOString(),
       note: form.get("note") as string,
-    })
+    }
+    if (isEditing && sale) {
+      updateMutation.mutate({ id: sale.id, data: payload })
+    } else {
+      createMutation.mutate(payload)
+    }
   }
 
   const productList = products?.results || products || []
+  const isPending = createMutation.isPending || updateMutation.isPending
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-1.5">
         <label className="text-sm font-medium text-slate-700">Sản phẩm *</label>
-        <select name="product" required
+        <select name="product" required defaultValue={sale?.product || ""}
           className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 bg-white">
           <option value="">Chọn sản phẩm</option>
           {productList.map((p: any) => (
@@ -183,7 +219,7 @@ function SaleForm({ onClose }: { onClose: () => void }) {
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
           <label className="text-sm font-medium text-slate-700">Giá bán *</label>
-          <input name="sale_price" type="number" step="0.01" required
+          <input name="sale_price" type="number" step="0.01" required defaultValue={sale?.sale_price || ""}
             className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" />
         </div>
         <div className="space-y-1.5">
@@ -194,18 +230,18 @@ function SaleForm({ onClose }: { onClose: () => void }) {
       </div>
       <div className="space-y-1.5">
         <label className="text-sm font-medium text-slate-700">Tên khách hàng *</label>
-        <input name="customer_name" required
+        <input name="customer_name" required defaultValue={sale?.customer_name || ""}
           className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" />
       </div>
       <div className="space-y-1.5">
         <label className="text-sm font-medium text-slate-700">Ghi chú</label>
-        <input name="note"
+        <input name="note" defaultValue={sale?.note || ""}
           className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" />
       </div>
       <div className="flex gap-3 pt-2">
-        <button type="submit" disabled={mutation.isPending}
+        <button type="submit" disabled={isPending}
           className="flex-1 px-4 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50">
-          {mutation.isPending ? "Đang xử lý..." : "Xác nhận bán"}
+          {isPending ? "Đang xử lý..." : isEditing ? "Cập nhật" : "Xác nhận bán"}
         </button>
         <button type="button" onClick={onClose}
           className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">

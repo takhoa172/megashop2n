@@ -99,7 +99,7 @@ export default function AboutPage() {
                     <span className="material-symbols-outlined text-primary text-[32px]">check_circle</span>
                   </div>
                   <h3 className="font-title-lg text-title-lg text-on-background mb-sm">Gửi yêu cầu thành công!</h3>
-                  <p className="font-body-md text-body-md text-on-surface-variant max-w-md mx-auto">
+                  <p className="font-body-md text-body-md text-on-surface-variant max-w-[28rem] mx-auto">
                     Cảm ơn bạn đã liên hệ với VIETSHOP. Chúng tôi sẽ phản hồi trong thời gian sớm nhất.
                   </p>
                 </div>

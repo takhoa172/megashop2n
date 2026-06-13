@@ -8,5 +8,5 @@ detail_view = CategoryViewSet.as_view(
 
 urlpatterns = [
     path("", list_view, name="categories-list"),
-    path("<uuid:id>", detail_view, name="categories-detail"),
+    path("<uuid:id>/", detail_view, name="categories-detail"),
 ]

@@ -1,13 +1,15 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useAuth } from "@/contexts/AuthContext"
 import {
   getFooter,
   updateFooter,
   FooterSettings,
   getSiteSettings,
   updateSiteSettings,
+  uploadSiteLogo,
   SiteSettings,
 } from "@/services/settings"
 import { getSliders, createSlider, deleteSlider, Slider } from "@/services/sliders"
@@ -18,9 +20,10 @@ import {
   Notification,
 } from "@/services/notifications"
 import { getUsers, createUser } from "@/services/auth"
-import { getCategories, createCategory } from "@/services/categories"
+import { getCategories, createCategory, updateCategory, deleteCategory } from "@/services/categories"
 import { DataTable } from "@/components/tables/DataTable"
 import { PageHeader } from "@/components/ui/page-header"
+import { Toggle } from "@/components/ui/toggle"
 import { Modal } from "@/components/ui/modal"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Input } from "@/components/ui/input"
@@ -39,6 +42,8 @@ const tabs = [
 ]
 
 export default function SettingsPage() {
+  const { user } = useAuth()
+  if (user && user.role !== "SUPER_ADMIN") return null
   const [activeTab, setActiveTab] = useState("Footer")
 
   return (
@@ -96,6 +101,9 @@ function SiteSettingsTab() {
     ["site-settings"], getSiteSettings, updateSiteSettings
   )
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
+  const [logoFileName, setLogoFileName] = useState("")
+  const [logoUploading, setLogoUploading] = useState(false)
+  const logoFileRef = useRef<HTMLInputElement>(null)
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -107,12 +115,22 @@ function SiteSettingsTab() {
     })
   }
 
-  const handleLogoFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLogoFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    const reader = new FileReader()
-    reader.onload = (ev) => setLogoPreview(ev.target?.result as string)
-    reader.readAsDataURL(file)
+    setLogoFileName(file.name)
+    setLogoUploading(true)
+    try {
+      const result = await uploadSiteLogo(file)
+      setLogoPreview(result.url)
+      const input = document.querySelector<HTMLInputElement>("input[name='site_logo_url']")
+      if (input) input.value = result.url
+      toast.success("Đã tải logo lên")
+    } catch {
+      toast.error("Không thể tải logo")
+    } finally {
+      setLogoUploading(false)
+    }
   }
 
   if (!data) return <p className="text-sm text-slate-400">Đang tải...</p>
@@ -124,10 +142,17 @@ function SiteSettingsTab() {
         <Input name="site_name" defaultValue={data.site_name} required />
       </div>
       <div className="space-y-1.5">
-        <label className="text-sm font-medium text-slate-700">Logo</label>
+        <label className="text-sm font-medium text-slate-700">Logo URL</label>
         <Input name="site_logo_url" defaultValue={data.site_logo_url || ""} placeholder="https://..." />
-        <input type="file" accept="image/*" onChange={handleLogoFile}
-          className="mt-2 w-full px-3 py-2 rounded-xl border border-slate-200 text-sm file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+        <div className="flex items-center gap-3 flex-wrap mt-2">
+          <button type="button" onClick={() => logoFileRef.current?.click()} disabled={logoUploading}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-50">
+            <span className="material-symbols-outlined text-lg">upload</span>
+            {logoUploading ? "Đang tải..." : "Chọn file"}
+          </button>
+          <span className="text-slate-400 text-xs">{logoUploading ? "Đang tải..." : logoFileName || "Chưa chọn file"}</span>
+          <input ref={logoFileRef} type="file" hidden accept="image/*" onChange={handleLogoFile} disabled={logoUploading} />
+        </div>
         {(logoPreview || data.site_logo_url) && (
           <img src={logoPreview || data.site_logo_url} alt=""
             className="w-32 h-16 object-contain rounded-lg border border-slate-200 mt-2" />
@@ -321,6 +346,8 @@ function SlidersTab() {
 function SliderForm({ onSubmit, loading }: { onSubmit: (data: FormData) => void; loading: boolean }) {
   const [preview, setPreview] = useState<string | null>(null)
   const [url, setUrl] = useState("")
+  const [sliderFileName, setSliderFileName] = useState("")
+  const sliderFileRef = useRef<HTMLInputElement>(null)
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -343,11 +370,21 @@ function SliderForm({ onSubmit, loading }: { onSubmit: (data: FormData) => void;
         <label className="text-sm font-medium text-slate-700">Image URL</label>
         <input name="image_url" value={url} onChange={(e) => setUrl(e.target.value)}
           className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" placeholder="https://..." />
-        <input type="file" accept="image/*" onChange={(e) => {
-          const file = e.target.files?.[0]
-          if (file) { const r = new FileReader(); r.onload = (ev) => setPreview(ev.target?.result as string); r.readAsDataURL(file) }
-        }}
-          className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+        <div className="flex items-center gap-3 flex-wrap mt-2">
+          <button type="button" onClick={() => sliderFileRef.current?.click()}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+            <span className="material-symbols-outlined text-lg">upload</span>
+            Chọn file
+          </button>
+          <span className="text-slate-400 text-xs">{sliderFileName || "Chưa chọn file"}</span>
+          <input ref={sliderFileRef} type="file" hidden accept="image/*" onChange={(e) => {
+            const file = e.target.files?.[0]
+            if (file) {
+              setSliderFileName(file.name)
+              const r = new FileReader(); r.onload = (ev) => setPreview(ev.target?.result as string); r.readAsDataURL(file)
+            }
+          }} />
+        </div>
         {preview && <img src={preview} alt="" className="w-32 h-20 object-cover rounded-lg border mt-2" />}
       </div>
       <div className="grid grid-cols-2 gap-4">
@@ -583,6 +620,7 @@ function CategoriesTab() {
   const queryClient = useQueryClient()
   const { data: categories } = useQuery({ queryKey: ["categories"], queryFn: getCategories })
   const [showForm, setShowForm] = useState(false)
+  const [deleteCategoryId, setDeleteCategoryId] = useState<string | null>(null)
 
   const mutation = useMutation({
     mutationFn: ({ name }: { name: string }) => createCategory(name),
@@ -594,9 +632,55 @@ function CategoriesTab() {
     onError: () => toast.error("Không thể thêm danh mục"),
   })
 
+  const visibilityMutation = useMutation({
+    mutationFn: ({ id, is_visible }: { id: string; is_visible: boolean }) => updateCategory(id, { is_visible }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] })
+      toast.success("Đã cập nhật hiển thị")
+    },
+    onError: () => toast.error("Không thể cập nhật hiển thị"),
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteCategory,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] })
+      toast.success("Đã xoá danh mục")
+      setDeleteCategoryId(null)
+    },
+    onError: () => toast.error("Không thể xoá danh mục"),
+  })
+
   const columns: ColumnDef<Category>[] = [
     { header: "Tên danh mục", accessorKey: "name" },
     { header: "Đường dẫn (Slug)", accessorKey: "slug" },
+    {
+      id: "visibility",
+      header: "Hiển thị",
+      cell: ({ row }) => (
+        <Toggle
+          checked={row.original.is_visible ?? true}
+          onChange={() => visibilityMutation.mutate({ id: row.original.id, is_visible: !row.original.is_visible })}
+          disabled={visibilityMutation.isPending}
+        />
+      ),
+      enableSorting: false,
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <div className="flex justify-end">
+          <button
+            onClick={() => setDeleteCategoryId(row.original.id)}
+            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-red-600 transition-colors"
+          >
+            <Trash2 size={15} />
+          </button>
+        </div>
+      ),
+      enableSorting: false,
+    },
   ]
 
   return (
@@ -627,6 +711,16 @@ function CategoriesTab() {
           </button>
         </form>
       </Modal>
+
+      <ConfirmDialog
+        open={!!deleteCategoryId}
+        onClose={() => setDeleteCategoryId(null)}
+        onConfirm={() => deleteCategoryId && deleteMutation.mutate(deleteCategoryId)}
+        title="Xoá danh mục"
+        message="Bạn có chắc muốn xoá danh mục này?"
+        confirmText="Xoá"
+        loading={deleteMutation.isPending}
+      />
     </div>
   )
 }

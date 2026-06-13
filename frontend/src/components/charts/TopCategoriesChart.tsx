@@ -31,7 +31,7 @@ export function TopCategoriesChart({ data, isLoading }: Props) {
         <CardTitle className="text-sm font-medium text-slate-500">Danh mục bán chạy</CardTitle>
       </CardHeader>
       <CardContent>
-        <div style={{ height: Math.max(160, data.length * 25 + 40) }}>
+        <div style={{ height: Math.max(120, data.length * 20 + 20) }}>
           {isLoading ? (
             <div className="w-full h-full rounded-lg bg-slate-100 animate-pulse" />
           ) : data.length === 0 ? (
@@ -45,7 +45,7 @@ export function TopCategoriesChart({ data, isLoading }: Props) {
                 <XAxis type="number" domain={[0, Math.ceil(maxCount * 1.2)]} fontSize={12} tick={{ fill: "#94a3b8" }} axisLine={false} tickLine={false} />
                 <YAxis type="category" dataKey="name" fontSize={12} tick={{ fill: "#475569" }} width={100} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="count" radius={[0, 6, 6, 0]} maxBarSize={20}>
+                <Bar dataKey="count" radius={[0, 6, 6, 0]}>
                   {data.map((_, index) => (
                     <Cell key={index} fill={COLORS[index % COLORS.length]} />
                   ))}

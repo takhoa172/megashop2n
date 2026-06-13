@@ -28,6 +28,11 @@ export async function updateProduct(
   return data
 }
 
+export async function updateProductVisibility(id: string, is_visible: boolean) {
+  const { data } = await api.patch(`/products/${id}`, { is_visible })
+  return data
+}
+
 export async function deleteProduct(id: string) {
   await api.delete(`/products/${id}`)
 }
@@ -43,8 +48,28 @@ export async function uploadImage(productId: string, file: File, isPrimary = fal
   return data
 }
 
+export async function addProductImageUrl(productId: string, imageUrl: string, isPrimary = true) {
+  const { data } = await api.post(`/products/${productId}/add-image-url`, { image_url: imageUrl, is_primary: isPrimary })
+  return data
+}
+
 export async function removeImage(productId: string, imageId: string) {
-  await api.delete(`/products/${productId}/remove-image`, {
-    data: { image_id: imageId },
+  await api.post(`/products/${productId}/remove-image`, {
+    image_id: imageId,
   })
+}
+
+export async function replaceImage(productId: string, imageId: string, file: File) {
+  const formData = new FormData()
+  formData.append("image_id", imageId)
+  formData.append("file", file)
+  const { data } = await api.post(`/products/${productId}/replace-image`, formData)
+  return data
+}
+
+export async function setPrimaryImage(productId: string, imageId: string) {
+  const { data } = await api.post(`/products/${productId}/set-primary-image`, {
+    image_id: imageId,
+  })
+  return data
 }

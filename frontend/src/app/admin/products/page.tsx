@@ -1,17 +1,18 @@
 "use client"
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { getProducts, createProduct, updateProduct, deleteProduct, uploadImage } from "@/services/products"
+import { getProducts, createProduct, updateProduct, deleteProduct, uploadImage, addProductImageUrl, removeImage, replaceImage, setPrimaryImage, updateProductVisibility } from "@/services/products"
 import { getCategories } from "@/services/categories"
 import { DataTable } from "@/components/tables/DataTable"
 import { PageHeader } from "@/components/ui/page-header"
+import { Toggle } from "@/components/ui/toggle"
 import { Modal } from "@/components/ui/modal"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Product } from "@/types"
 import { formatCurrency, formatDate } from "@/lib/utils"
 import { ColumnDef } from "@tanstack/react-table"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Plus, Pencil, Trash2, Package, CheckCircle, Clock, XCircle } from "lucide-react"
 import { toast } from "sonner"
 
@@ -54,6 +55,19 @@ export default function ProductsPage() {
       (p) => p.name.toLowerCase().includes(q) || (p.sku && p.sku.toLowerCase().includes(q))
     )
   }
+
+  const visibilityMutation = useMutation({
+    mutationFn: ({ id, is_visible }: { id: string; is_visible: boolean }) => updateProductVisibility(id, is_visible),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] })
+      queryClient.invalidateQueries({ queryKey: ["suggested"] })
+      queryClient.invalidateQueries({ queryKey: ["most-viewed"] })
+      queryClient.invalidateQueries({ queryKey: ["price-zero"] })
+      queryClient.invalidateQueries({ queryKey: ["public-products"] })
+      toast.success("Đã cập nhật hiển thị")
+    },
+    onError: () => toast.error("Không thể cập nhật hiển thị"),
+  })
 
   const deleteMutation = useMutation({
     mutationFn: deleteProduct,
@@ -131,6 +145,18 @@ export default function ProductsPage() {
           {statusLabels[row.original.status] || row.original.status}
         </Badge>
       ),
+    },
+    {
+      id: "visibility",
+      header: "Hiển thị",
+      cell: ({ row }) => (
+        <Toggle
+          checked={row.original.is_visible ?? true}
+          onChange={() => visibilityMutation.mutate({ id: row.original.id, is_visible: !row.original.is_visible })}
+          disabled={visibilityMutation.isPending}
+        />
+      ),
+      enableSorting: false,
     },
     {
       header: "Ngày tạo",
@@ -275,11 +301,41 @@ function ProductForm({ product, onClose }: { product: Product | null; onClose: (
   })
   const [uploading, setUploading] = useState(false)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [fileName, setFileName] = useState("")
+  const [imageMode, setImageMode] = useState<"upload" | "url" | "none">(
+    product?.images?.length ? "url" : "none"
+  )
+  const [imageUrl, setImageUrl] = useState(product?.images?.[0]?.image_url || "")
+  const [clearingImages, setClearingImages] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const replaceFileInputRef = useRef<HTMLInputElement>(null)
+  const [replacingId, setReplacingId] = useState<string | null>(null)
 
   const createMutation = useMutation({
     mutationFn: createProduct,
-    onSuccess: () => {
+    onSuccess: async (newProduct) => {
       queryClient.invalidateQueries({ queryKey: ["products"] })
+      if (imageMode === "upload" && fileName) {
+        const fileInput = fileInputRef.current
+        const file = fileInput?.files?.[0]
+        if (file) {
+          try {
+            await uploadImage(newProduct.id, file, true)
+            queryClient.invalidateQueries({ queryKey: ["products"] })
+          } catch {
+            toast.error("Không thể tải ảnh")
+            return
+          }
+        }
+      } else if (imageMode === "url" && imageUrl) {
+        try {
+          await addProductImageUrl(newProduct.id, imageUrl, true)
+          queryClient.invalidateQueries({ queryKey: ["products"] })
+        } catch {
+          toast.error("Không thể thêm ảnh từ URL")
+          return
+        }
+      }
       toast.success("Đã thêm sản phẩm")
       onClose()
     },
@@ -298,11 +354,25 @@ function ProductForm({ product, onClose }: { product: Product | null; onClose: (
 
   const isEditing = !!product
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (isEditing && imageMode === "none" && product.images?.length) {
+      setClearingImages(true)
+      try {
+        await Promise.all(product.images.map((img) => removeImage(product.id, img.id)))
+        queryClient.invalidateQueries({ queryKey: ["products"] })
+      } catch {
+        toast.error("Không thể xoá ảnh cũ")
+        setClearingImages(false)
+        return
+      } finally {
+        setClearingImages(false)
+      }
+    }
     const form = e.currentTarget
     const formData = new FormData(form)
     if (isEditing) {
+      formData.set("is_visible", String(product.is_visible ?? true))
       updateMutation.mutate({ id: product.id, data: formData })
     } else {
       createMutation.mutate(formData)
@@ -311,10 +381,12 @@ function ProductForm({ product, onClose }: { product: Product | null; onClose: (
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (!file || !product) return
+    if (!file) return
+    setFileName(file.name)
     const reader = new FileReader()
     reader.onload = (ev) => setPreviewUrl(ev.target?.result as string)
     reader.readAsDataURL(file)
+    if (!product) return
     setUploading(true)
     try {
       await uploadImage(product.id, file, true)
@@ -327,6 +399,26 @@ function ProductForm({ product, onClose }: { product: Product | null; onClose: (
       setUploading(false)
     }
   }
+
+  const handleAddImageUrl = async () => {
+    if (!imageUrl) return
+    if (!product) {
+      setPreviewUrl(imageUrl)
+      return
+    }
+    setUploading(true)
+    try {
+      await addProductImageUrl(product.id, imageUrl, true)
+      queryClient.invalidateQueries({ queryKey: ["products"] })
+      toast.success("Đã thêm ảnh từ URL")
+    } catch {
+      toast.error("Không thể thêm ảnh")
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const primaryImageUrl = product?.images?.[0]?.image_url || null
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -382,26 +474,153 @@ function ProductForm({ product, onClose }: { product: Product | null; onClose: (
         <textarea name="description" defaultValue={product?.description || ""} rows={3}
           className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" />
       </div>
-      {isEditing && (
-        <div className="space-y-1.5">
-          <label className="text-sm font-medium text-slate-700">Tải ảnh lên</label>
-          <input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading}
-            className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
-          {previewUrl && <img src={previewUrl} alt="" className="w-24 h-24 object-cover rounded-xl border mt-2" />}
-          {uploading && <p className="text-xs text-slate-500">Đang tải...</p>}
-          {product?.images?.length > 0 && (
-            <div className="flex gap-2 mt-2">
-              {product.images.map((img: { id: string; image_url: string }) => (
-                <img key={img.id} src={img.image_url} alt="" className="w-14 h-14 object-cover rounded-lg border" />
-              ))}
-            </div>
-          )}
+      <div className="space-y-3">
+        <label className="text-sm font-medium text-slate-700">Ảnh sản phẩm</label>
+        <div className="flex gap-2">
+          {[
+            { key: "upload", label: "Tải ảnh lên" },
+            { key: "url", label: "Dùng URL" },
+            { key: "none", label: "Không có ảnh" },
+          ].map((opt) => (
+            <button
+              key={opt.key}
+              type="button"
+              onClick={() => setImageMode(opt.key as typeof imageMode)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                imageMode === opt.key
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
-      )}
+
+        {imageMode === "upload" && (
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-3 flex-wrap">
+              <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-50">
+                <span className="material-symbols-outlined text-lg">upload</span>
+                {uploading ? "Đang tải..." : "Chọn file"}
+              </button>
+              <span className="text-slate-400 text-xs">{fileName || "Chưa chọn file"}</span>
+              <input ref={fileInputRef} type="file" hidden accept="image/*" onChange={handleImageUpload} disabled={uploading} />
+            </div>
+          </div>
+        )}
+
+        {imageMode === "url" && (
+          <div className="flex items-center gap-2">
+            <input
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+              className="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
+              placeholder="https://..." />
+            {isEditing && (
+              <button type="button" onClick={handleAddImageUrl} disabled={uploading || !imageUrl}
+                className="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50">
+                {uploading ? "Đang..." : "Thêm"}
+              </button>
+            )}
+          </div>
+        )}
+
+        {imageMode === "none" && (
+          <p className="text-xs text-slate-400">Sản phẩm sẽ không có ảnh hiển thị.</p>
+        )}
+
+        {product?.images && product.images.length > 0 && (
+          <div className="flex gap-2 flex-wrap">
+            {product.images.map((img: { id: string; image_url: string; is_primary?: boolean }) => (
+              <div key={img.id} className="relative group">
+                <div className={`relative ${img.is_primary ? "ring-2 ring-blue-500 rounded-lg" : ""}`}>
+                  <img src={img.image_url} alt="" className="w-14 h-14 object-cover rounded-lg border" />
+                  {img.is_primary && (
+                    <span className="absolute -top-1.5 -left-1.5 w-4 h-4 bg-blue-500 text-white rounded-full text-[10px] flex items-center justify-center">
+                      ★
+                    </span>
+                  )}
+                </div>
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 rounded-lg transition-colors flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100">
+                  {!img.is_primary && (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          await setPrimaryImage(product.id, img.id)
+                          queryClient.invalidateQueries({ queryKey: ["products"] })
+                          toast.success("Đã đặt làm ảnh chính")
+                        } catch {
+                          toast.error("Không thể đặt ảnh chính")
+                        }
+                      }}
+                      className="w-6 h-6 bg-white/90 rounded-full text-[11px] flex items-center justify-center hover:bg-white transition-colors"
+                      title="Đặt làm ảnh chính"
+                    >
+                      ★
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setReplacingId(img.id)
+                      replaceFileInputRef.current?.click()
+                    }}
+                    className="w-6 h-6 bg-white/90 rounded-full text-[11px] flex items-center justify-center hover:bg-white transition-colors"
+                    title="Thay thế ảnh"
+                  >
+                    ↻
+                  </button>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        await removeImage(product.id, img.id)
+                        queryClient.invalidateQueries({ queryKey: ["products"] })
+                        toast.success("Đã xoá ảnh")
+                      } catch {
+                        toast.error("Không thể xoá ảnh")
+                      }
+                    }}
+                    className="w-6 h-6 bg-red-500/90 text-white rounded-full text-[11px] flex items-center justify-center hover:bg-red-600 transition-colors"
+                    title="Xoá ảnh"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        <input
+          ref={replaceFileInputRef}
+          type="file"
+          hidden
+          accept="image/*"
+          onChange={async (e) => {
+            const file = e.target.files?.[0]
+            if (!file || !replacingId || !product) return
+            try {
+              await replaceImage(product.id, replacingId, file)
+              queryClient.invalidateQueries({ queryKey: ["products"] })
+              toast.success("Đã thay thế ảnh")
+            } catch {
+              toast.error("Không thể thay thế ảnh")
+            } finally {
+              setReplacingId(null)
+              if (replaceFileInputRef.current) replaceFileInputRef.current.value = ""
+            }
+          }}
+        />
+
+        {previewUrl && <img src={previewUrl} alt="" className="w-24 h-24 object-cover rounded-xl border" />}
+      </div>
       <div className="flex gap-3 pt-2">
-        <button type="submit" disabled={createMutation.isPending || updateMutation.isPending}
+        <button type="submit" disabled={createMutation.isPending || updateMutation.isPending || clearingImages}
           className="flex-1 px-4 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50">
-          {createMutation.isPending || updateMutation.isPending ? "Đang xử lý..." : isEditing ? "Cập nhật" : "Thêm mới"}
+          {clearingImages ? "Đang xoá ảnh..." : createMutation.isPending || updateMutation.isPending ? "Đang xử lý..." : isEditing ? "Cập nhật" : "Thêm mới"}
         </button>
         <button type="button" onClick={onClose}
           className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
