@@ -14,11 +14,14 @@ jobs:
           sudo dpkg -i /tmp/cloudflared.deb
 
       - name: Deploy via Cloudflare Tunnel SSH
+        env:
+          CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/ssh_key
           chmod 600 /tmp/ssh_key
           ssh -o StrictHostKeyChecking=no \
-            -o ProxyCommand="cloudflared access ssh --hostname ${{ secrets.SERVER_HOST }} --id ${{ secrets.CF_ACCESS_CLIENT_ID }} --secret ${{ secrets.CF_ACCESS_CLIENT_SECRET }} -- %h %p" \
+            -o ProxyCommand="cloudflared access ssh --hostname ${{ secrets.SERVER_HOST }} -- %h %p" \
             -i /tmp/ssh_key \
             ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
             "cd /opt/vietshop && git pull origin v2 && docker compose up -d --build && docker system prune -f"
