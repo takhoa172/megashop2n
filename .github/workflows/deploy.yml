@@ -2,21 +2,23 @@ name: Deploy to Production
 
 on:
   push:
-    branches: [main]
+    branches: [v2]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /opt/vietshop
-            git pull origin main
-            docker compose down
-            docker compose up -d --build
-            docker system prune -f
+      - name: Install cloudflared
+        run: |
+          curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb -o /tmp/cloudflared.deb
+          sudo dpkg -i /tmp/cloudflared.deb
+
+      - name: Deploy via Cloudflare Tunnel SSH
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/ssh_key
+          chmod 600 /tmp/ssh_key
+          ssh -o StrictHostKeyChecking=no \
+            -o ProxyCommand="cloudflared access ssh --hostname ${{ secrets.SERVER_HOST }} --id ${{ secrets.CF_ACCESS_CLIENT_ID }} --secret ${{ secrets.CF_ACCESS_CLIENT_SECRET }} -- %h %p" \
+            -i /tmp/ssh_key \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
+            "cd /opt/vietshop && git pull origin v2 && docker compose up -d --build && docker system prune -f"
