@@ -25,10 +25,9 @@ jobs:
           Host megashop
             HostName ${{ secrets.SERVER_HOST }}
             User ${{ secrets.SERVER_USER }}
+            ProxyCommand cloudflared access ssh --hostname ${{ secrets.SERVER_HOST }}
             IdentityFile /tmp/ssh_key
             StrictHostKeyChecking no
           EOF
-          cloudflared access ssh \
-            --hostname ${{ secrets.SERVER_HOST }} \
-            -- megashop \
+          ssh megashop \
             "cd /opt/vietshop && git pull origin v2 && docker compose up -d --build && docker system prune -f"
