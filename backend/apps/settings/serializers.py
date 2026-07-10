@@ -18,6 +18,7 @@ class FooterSettingsSerializer(serializers.ModelSerializer):
         fields = [
             "id", "company_name", "address", "phone", "email",
             "facebook", "youtube", "twitter", "instagram",
+            "zalo", "telegram",
             "copyright_text", "description",
         ]
         read_only_fields = ["id"]

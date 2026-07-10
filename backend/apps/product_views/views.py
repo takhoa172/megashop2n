@@ -12,6 +12,8 @@ from .models import ProductView
 def most_viewed(request):
     top_products = (
         Product.objects
+        .select_related("category", "created_by")
+        .prefetch_related("images")
         .annotate(view_count=Count("views"))
         .filter(view_count__gt=0, is_visible=True)
         .order_by("-view_count")[:10]
@@ -23,7 +25,12 @@ def most_viewed(request):
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def suggested(request):
-    products = Product.objects.filter(is_suggested=True, is_visible=True)
+    products = (
+        Product.objects
+        .select_related("category", "created_by")
+        .prefetch_related("images")
+        .filter(is_suggested=True, is_visible=True)
+    )
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
 
@@ -31,6 +38,11 @@ def suggested(request):
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def price_zero(request):
-    products = Product.objects.filter(sale_price=0, is_visible=True)
+    products = (
+        Product.objects
+        .select_related("category", "created_by")
+        .prefetch_related("images")
+        .filter(sale_price=0, is_visible=True)
+    )
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)

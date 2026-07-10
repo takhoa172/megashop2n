@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useAuth } from "@/contexts/AuthContext"
+import { ImageWithFallback as Image } from "@/components/shared/ImageWithFallback"
 
 export default function LoginPage() {
   const { login, register } = useAuth()
@@ -112,7 +113,7 @@ export default function LoginPage() {
             </div>
             <div className="grid grid-cols-2 gap-md mb-xl">
               <button className="flex items-center justify-center gap-sm border border-outline-variant py-sm rounded-lg hover:bg-surface-container-low transition-colors font-label-md text-label-md" type="button">
-                <img alt="Google" className="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDq-hjLQrZ8GPWwpTs95h9mipWjPqah2EsftWh0xc7WfDTluVZJBThWlwAuB2mTHlkvGwh6x2254TgrJYfkpaZMqzgovc8cJSo5hqTw3oA16neUAiTrR6yUWkXiwLoln6wU5bZT8utjlAcl0nZdM2gbmyHlzHHo-QePYhw7jBp1SrQQez6mPrb24LjZe-elmKKTHyIIxaBJ51WXFOi6NagkVsp0OI8-HOC1JjIa9gAcwvG_rftyH_d8zxbihxR2NQe7Xh34Idbxne1T" />
+                <Image alt="Google" width={20} height={20} className="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDq-hjLQrZ8GPWwpTs95h9mipWjPqah2EsftWh0xc7WfDTluVZJBThWlwAuB2mTHlkvGwh6x2254TgrJYfkpaZMqzgovc8cJSo5hqTw3oA16neUAiTrR6yUWkXiwLoln6wU5bZT8utjlAcl0nZdM2gbmyHlzHHo-QePYhw7jBp1SrQQez6mPrb24LjZe-elmKKTHyIIxaBJ51WXFOi6NagkVsp0OI8-HOC1JjIa9gAcwvG_rftyH_d8zxbihxR2NQe7Xh34Idbxne1T" />
                 Google
               </button>
               <button className="flex items-center justify-center gap-sm border border-outline-variant py-sm rounded-lg hover:bg-surface-container-low transition-colors font-label-md text-label-md" type="button">

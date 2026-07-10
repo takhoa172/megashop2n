@@ -7,7 +7,7 @@ export async function getProducts(params?: Record<string, string>) {
 }
 
 export async function getProduct(id: string): Promise<Product> {
-  const { data } = await api.get(`/products/${id}`)
+  const { data } = await api.get(`/products/${id}/`)
   return data
 }
 

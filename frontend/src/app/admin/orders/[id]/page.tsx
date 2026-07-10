@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { getOrder, updateOrderStatus, Order } from "@/services/orders"
 import { formatCurrency } from "@/lib/utils"
@@ -15,7 +15,7 @@ const statusLabels: Record<string, string> = {
 
 const statusFlow = ["pending", "confirmed", "shipped", "delivered"]
 
-export default function AdminOrderDetailPage() {
+function AdminOrderDetailContent() {
   const { id } = useParams()
   const router = useRouter()
   const [order, setOrder] = useState<Order | null>(null)
@@ -180,5 +180,13 @@ export default function AdminOrderDetailPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function AdminOrderDetailPage() {
+  return (
+    <Suspense fallback={<p className="text-on-surface-variant">Đang tải...</p>}>
+      <AdminOrderDetailContent />
+    </Suspense>
   )
 }

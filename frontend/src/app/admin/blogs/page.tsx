@@ -11,11 +11,24 @@ import { Badge } from "@/components/ui/badge"
 import { BlogPost } from "@/types"
 import { formatDate } from "@/lib/utils"
 import { ColumnDef } from "@tanstack/react-table"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Plus, Pencil, Trash2, FileText, CheckCircle, Clock } from "lucide-react"
+import { useAuth } from "@/contexts/AuthContext"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 export default function BlogsPage() {
+  const { user } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (user && user.role !== "MANAGER") {
+      router.push("/admin/dashboard")
+    }
+  }, [user, router])
+
+  if (user && user.role !== "MANAGER") return null
+
   const [showForm, setShowForm] = useState(false)
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)

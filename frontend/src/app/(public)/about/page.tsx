@@ -4,8 +4,11 @@ import { useQuery } from "@tanstack/react-query"
 import { getPublicFooter } from "@/services/public"
 import { useState, type FormEvent } from "react"
 import api from "@/services/api"
+import { ImageWithFallback as Image } from "@/components/shared/ImageWithFallback"
+import { usePageMeta } from "@/hooks/usePageMeta"
 
 export default function AboutPage() {
+  usePageMeta("Giới thiệu | VIETSHOP", "Tìm hiểu về VIETSHOP - Chợ đồ cũ online uy tín tại Việt Nam")
   const { data } = useQuery({
     queryKey: ["public-footer"],
     queryFn: getPublicFooter,
@@ -150,10 +153,12 @@ export default function AboutPage() {
 
         <div className="mt-3xl">
           <div className="bg-white border border-outline-variant/30 rounded-2xl overflow-hidden shadow-sm h-[250px] md:h-[450px] relative group">
-            <img
+            <Image
+              fill
               alt="Bản đồ vị trí cửa hàng"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
               src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1400"
+              sizes="(max-width: 768px) 100vw, 1200px"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-on-background/40 to-transparent flex items-end p-md md:p-xl">
               <div className="bg-white p-lg rounded-xl shadow-lg border border-outline-variant/20 max-w-none md:max-w-[24rem]">

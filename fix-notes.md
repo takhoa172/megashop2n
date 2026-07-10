@@ -23,30 +23,36 @@
 | B4 | AuditLog không ghi user | `backend/apps/audit_logs/signals.py` + middleware | ✅ | Tạo AuditMiddleware thread-local + views/serializers/urls API |
 | B5 | Blog category thiếu endpoints | `backend/apps/blogs/urls.py` | ✅ | Thêm cat_detail với get/put/patch/delete |
 | B6 | Product view đếm admin/staff | `backend/apps/products/views.py` | ✅ | Filter: chỉ count nếu user không phải staff |
-| B7 | IsManager permission dead code | `backend/apps/core/permissions.py` | ⏸️ | Code tồn tại không gây hại, giữ lại |
-| F9 | Cart badge trên navbar | `frontend/src/components/public/PublicNavbar.tsx` | ✅ | Thêm badge đỏ "3" trên icon cart |
-| F10 | "Danh mục" nav link | `frontend/src/components/public/PublicNavbar.tsx` | ✅ | Thêm nav link "Danh mục" → `/products` |
+| B7 | IsManager permission dead code | `backend/apps/core/permissions.py` | ✅ | Đã xoá khỏi code (commit 580950b) |
+| F9 | Cart badge trên navbar | `frontend/src/components/public/PublicNavbar.tsx` | ✅ | Thêm badge đỏ động từ CartContext |
+| F10 | "Danh mục" nav link | `frontend/src/components/public/PublicNavbar.tsx` | ❌ | **Chưa thêm** vào `defaultNavLinks` — cần sửa |
 | F14 | About page alert() | `frontend/src/app/(public)/about/page.tsx` | ✅ | Gọi API `/api/contact` thay vì alert(), thêm backend ContactView |
 
-## Phase 3 — P2 + Template ⏳ Còn lại
+## Phase 3 — P2 + Template ✅ Đã hoàn thành
 
 | # | Issue | File | Status | Ghi chú |
 |---|-------|------|--------|---------|
-| F4 | Admin products thiếu edit mode | `frontend/src/app/admin/products/page.tsx` | ⏳ | Cần thêm edit UI |
-| F5 | Admin blogs thiếu edit mode | `frontend/src/app/admin/blogs/page.tsx` | ⏳ | Cần thêm edit UI |
-| F6 | Image upload chưa có UI | `frontend/src/app/admin/products/page.tsx` | ⏳ | Gọi uploadImage service |
-| F7 | Purchases/sales hardcode dates | `frontend/src/app/admin/purchases/page.tsx`, `sales/page.tsx` | ⏳ | Thêm date picker |
-| B8 | sale_price=0 validation | `backend/apps/products/models.py` | ✅ | Thêm help_text: "null = chưa set, 0 = thanh lý, >0 = giá bán" |
-| B9 | Blog URLs conflict | `backend/apps/blogs/urls.py` | ✅ | Đưa UUID path lên trước slug path |
-| B10 | Unit test | — | ⏸️ | Ngoài phạm vi |
-| B11 | Caching | — | ⏸️ | Ngoài phạm vi |
 | F4 | Admin products edit mode | `frontend/src/app/admin/products/page.tsx` | ✅ | Thêm edit button + update mutation + form populate |
 | F5 | Admin blogs edit mode | `frontend/src/app/admin/blogs/page.tsx` | ✅ | Thêm edit button + update mutation + form populate |
-| F6 | Image upload UI | `frontend/src/app/admin/products/page.tsx` | ✅ | Thêm file input + uploadImage call khi edit |
+| F6 | Image upload UI | `frontend/src/app/admin/products/page.tsx` | ✅ | Thêm file input + uploadImage + replace/set-primary |
 | F7 | Date picker purchases/sales | `admin/purchases/page.tsx`, `admin/sales/page.tsx` | ✅ | Thay hardcode date = datetime-local input |
+| B8 | sale_price=0 validation | `backend/apps/products/models.py` | ⚠️ | Chỉ thêm help_text, chưa có validation logic |
+| B9 | Blog URLs conflict | `backend/apps/blogs/urls.py` | ✅ | Consolidate slug + UUID lookup trong 1 pattern |
+| B10 | Unit test | — | ⏸️ | Ngoài phạm vi |
+| B11 | Caching | — | ⏸️ | Ngoài phạm vi |
 | F11 | Public service trùng lặp | `frontend/src/services/public.ts` | ✅ | Refactor: re-export từ canonical services |
-| F12 | Dead components | `frontend/src/components/public/` | ✅ | NotificationBanner → import trong layout |
-| F13 | Rating hardcode | `frontend/src/app/(public)/page.tsx` | ✅ | Thay "4.8 (120)" = 5 sao động |
+| F12 | Dead components | `frontend/src/components/public/` | ✅ | Cả NotificationBanner + SliderHero đều được import |
+| F13 | Rating hardcode | `frontend/src/app/(public)/page.tsx` | ⚠️ | Sao đã động (5 filled) nhưng text "4.8 (120)" vẫn hardcode |
+
+## 📋 Tồn đọng (chưa xử lý)
+
+| # | Issue | File | Priority | Ghi chú |
+|---|-------|------|----------|---------|
+| — | **F10: "Danh mục" nav link** | `PublicNavbar.tsx` | P1 | Chưa có trong `defaultNavLinks` |
+| — | **API naming mismatch** | `services/public.ts` | P1 | Frontend gọi `most-viewed`/`price-zero` nhưng backend là `most_viewed`/`price_zero` |
+| — | **`/account/orders` dead link** | `account/page.tsx` | P1 | Link đến 404, chưa có route |
+| — | **Hero slider mobile** | — | P2 | Text wrap trên mobile <360px |
+| — | **Responsive** | — | P2 | Kiểm tra tablet + mobile tổng thể |
 
 ---
 
@@ -64,7 +70,7 @@
 | 2026-06-02 | Fix P1-B4: AuditLog user tracking + API (middleware + views + urls) |
 | 2026-06-02 | Fix P1-B5: Blog category detail endpoints |
 | 2026-06-02 | Fix P1-B6: Product view filter admin/staff |
-| 2026-06-02 | Fix P1-F9: Cart badge + F10: Danh mục nav link |
+| 2026-06-02 | Fix P1-F9: Cart badge (dynamic count). F10 bỏ sót — chưa thêm Danh mục nav link |
 | 2026-06-02 | Fix P1-F14: Contact form API + backend ContactView |
 | 2026-06-02 | Fix P2-B8: sale_price help_text clarify |
 | 2026-06-02 | Fix P2-B9: Blog URLs reorder (UUID before slug) |
@@ -73,12 +79,8 @@
 | 2026-06-02 | Fix P2-F7: Date picker purchases + sales |
 | 2026-06-02 | Fix P2-F11: Public service refactor (re-export) |
 | 2026-06-02 | Fix P2-F12: NotificationBanner → used in layout |
-| 2026-06-02 | Fix P2-F13: Rating hardcode → 5 stars dynamic |
+| 2026-06-02 | Fix P2-F13: Rating hardcode → 5 stars dynamic (còn text "4.8 (120)" hardcode) |
 | 2026-06-02 | Fix pre-existing TS errors (null checks, queryFn types) |
-| 2026-06-02 | Fix P1-B6: Product view filter admin/staff |
-| 2026-06-02 | Fix P1-F9: Cart badge trên navbar |
-| 2026-06-02 | Fix P1-F10: Thêm "Danh mục" nav link |
-| 2026-06-02 | Fix P1-F14: Contact form API + backend ContactView |
 | 2026-06-09 | Fix Phase A — VNPay: views.py (PaymentReturnView, init_payment), signals.py, urls.py |
 | 2026-06-09 | Fix Phase B — VNPay frontend redirect, guest cart, sale_price=None, admin alert, cancel order button |
 | 2026-06-09 | Fix error messages → tiếng Việt, order separation admin/customer (get_queryset + ?all=1) |
@@ -89,3 +91,4 @@
 | 2026-06-09 | Xoá dead code location /admin/ → Django trong nginx/default.conf
 | 2026-06-09 | Bỏ max-w-xl khỏi Settings Site form (root cause: @theme --spacing-xl:32px làm max-w-xl=32px). Đồng thời thay max-w-3xl → max-w-[48rem] ở product detail 3 chỗ. Thêm comment cảnh báo trong globals.css.
 | 2026-06-10 | Thêm VNPay config vars (.env), search filter cho OrderViewSet (backend), search input cho Admin Orders page (frontend). Rebuild Docker + verify HTTP 200. |
+| 2026-07-06 | Chuyển đổi "Thêm vào giỏ" → "Liên hệ": thêm zalo/telegram vào FooterSettings, tạo ContactButton dropdown, xoá CartContext, redirect cart/checkout/success → / |

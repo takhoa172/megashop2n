@@ -10,7 +10,7 @@ class Sale(models.Model):
         Product, on_delete=models.CASCADE, related_name="sales"
     )
     sale_price = models.DecimalField(max_digits=15, decimal_places=2)
-    sold_at = models.DateTimeField()
+    sold_at = models.DateTimeField(db_index=True)
     sold_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name="sales_made"
     )

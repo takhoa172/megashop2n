@@ -9,7 +9,7 @@ class Slider(models.Model):
     image_url = models.URLField(max_length=500, blank=True)
     image_public_id = models.CharField(max_length=255, blank=True, null=True)
     link_url = models.URLField(max_length=500, blank=True, null=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, db_index=True)
     sort_order = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

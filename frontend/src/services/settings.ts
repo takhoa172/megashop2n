@@ -7,6 +7,8 @@ export interface FooterSettings {
   phone: string | null
   email: string | null
   facebook: string | null
+  zalo: string | null
+  telegram: string | null
   youtube: string | null
   twitter: string | null
   instagram: string | null

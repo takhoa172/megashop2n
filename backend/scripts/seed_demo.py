@@ -18,6 +18,7 @@ from apps.sliders.models import Slider
 from apps.settings.models import FooterSettings, SiteSettings
 from apps.notifications.models import Notification
 from django.utils.text import slugify
+from apps.products.cloudinary_utils import upload_to_cloudinary
 
 def seed_demo():
     admin = User.objects.filter(email="admin@example.com").first()
@@ -26,7 +27,7 @@ def seed_demo():
     categories_data = {
         "Thời trang": "https://images.unsplash.com/photo-1445205170230-053b83016050?w=800",
         "Điện tử": "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=800",
-        "Đồ gia dụng": "https://images.unsplash.com/photo-1556228453-efd6c44ff7f1?w=800",
+        "Đồ gia dụng": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800",
         "Phụ kiện": "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=800",
         "Giày dép": "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800",
     }
@@ -40,7 +41,7 @@ def seed_demo():
         {"name": "Máy ảnh Fujifilm X", "category": "Điện tử", "purchase_price": 4000000, "sale_price": 8900000, "status": "in_stock", "is_suggested": False, "image": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800", "description": "Máy ảnh Fujifilm X-series với cảm biến APS-C, chất lượng ảnh xuất sắc. Phù hợp cho nhiếp ảnh gia chuyên nghiệp và người yêu thích nhiếp ảnh."},
         {"name": "Nồi chiên không dầu", "category": "Đồ gia dụng", "purchase_price": 600000, "sale_price": 1350000, "status": "in_stock", "is_suggested": True, "image": "https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=800", "description": "Nồi chiên không dầu dung tích lớn, giúp bạn chế biến món ăn ngon mà không cần dầu mỡ. Tiết kiệm thời gian, an toàn cho sức khỏe."},
         {"name": "Máy xay sinh tố", "category": "Đồ gia dụng", "purchase_price": 350000, "sale_price": 750000, "status": "in_stock", "is_suggested": False, "image": "https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=800", "description": "Máy xay sinh tố đa năng với 2 cối xay, lưỡi dao bằng thép không gỉ. Xay nhuyễn trái cây, rau củ, đá viên dễ dàng."},
-        {"name": "Bàn phím cơ RGB", "category": "Phụ kiện", "purchase_price": 400000, "sale_price": 950000, "status": "in_stock", "is_suggested": True, "image": "https://images.unsplash.com/photo-1541140532154-b024d3b0b30e?w=800", "description": "Bàn phím cơ RGB với switch chất lượng cao, đèn nền tùy chỉnh, độ bền lên đến 50 triệu lần nhấn. Phù hợp cho game thủ và dân văn phòng."},
+        {"name": "Bàn phím cơ RGB", "category": "Phụ kiện", "purchase_price": 400000, "sale_price": 950000, "status": "in_stock", "is_suggested": True, "image": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800", "description": "Bàn phím cơ RGB với switch chất lượng cao, đèn nền tùy chỉnh, độ bền lên đến 50 triệu lần nhấn. Phù hợp cho game thủ và dân văn phòng."},
         {"name": "Chuột không dây", "category": "Phụ kiện", "purchase_price": 150000, "sale_price": 390000, "status": "in_stock", "is_suggested": False, "image": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800", "description": "Chuột không dây siêu nhẹ, thiết kế ergonomic, cảm biến quang học chính xác. Pin kéo dài đến 6 tháng."},
         {"name": "Balo laptop cao cấp", "category": "Phụ kiện", "purchase_price": 300000, "sale_price": 690000, "status": "in_stock", "is_suggested": True, "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800", "description": "Balo laptop cao cấp chống sốc, nhiều ngăn tiện lợi, chất liệu chống thấm nước. Phù hợp cho dân văn phòng và sinh viên."},
         {"name": "Kính râm nam", "category": "Phụ kiện", "purchase_price": 100000, "sale_price": 250000, "status": "in_stock", "is_suggested": False, "image": "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=800", "description": "Kính râm nam thiết kế thời trang, chống tia UV 100%, gọng nhẹ bền đẹp. Phụ kiện không thể thiếu cho ngày hè."},
@@ -59,6 +60,13 @@ def seed_demo():
         {"name": "Móc khóa handmade", "category": "Phụ kiện", "purchase_price": 0, "sale_price": 0, "status": "in_stock", "is_suggested": False, "image": "https://images.unsplash.com/photo-1578269174936-2709b6aeb913?w=800", "description": "Móc khóa thủ công độc đáo, thiết kế riêng biệt. Quà tặng tri ân khách hàng thân thiết."},
         {"name": "Sổ tay mini", "category": "Phụ kiện", "purchase_price": 0, "sale_price": 0, "status": "in_stock", "is_suggested": False, "image": "https://images.unsplash.com/photo-1544717305-2782549b5136?w=800", "description": "Sổ tay mini bỏ túi với bìa da cao cấp và 80 trang giấy trắng. Miễn phí tặng kèm khi đến shop."},
     ]
+
+    def _upload_seed_image(url, folder="demo"):
+        try:
+            result = upload_to_cloudinary(url, folder=folder)
+            return result["url"], result["public_id"]
+        except Exception:
+            return url, ""
 
     for cat_name in categories_data:
         Category.objects.get_or_create(name=cat_name)
@@ -81,17 +89,20 @@ def seed_demo():
             },
         )
         if created:
+            img_url, public_id = _upload_seed_image(p["image"], "demo/products")
             ProductImage.objects.create(
                 product=product,
-                image_url=p["image"],
-                public_id=f"demo/{product.id}",
+                image_url=img_url,
+                public_id=public_id,
                 is_primary=True,
             )
             print(f"  Created product: {product.name}")
         else:
             first_img = product.images.first()
             if first_img and p.get("image"):
-                first_img.image_url = p["image"]
+                img_url, public_id = _upload_seed_image(p["image"], "demo/products")
+                first_img.image_url = img_url
+                first_img.public_id = public_id
                 first_img.save()
             print(f"  Updated product: {product.name}")
 
@@ -103,6 +114,8 @@ def seed_demo():
     ]
     for s in slider_data:
         if not Slider.objects.filter(title=s["title"]).exists():
+            img_url, _ = _upload_seed_image(s["image_url"], "demo/sliders")
+            s["image_url"] = img_url
             Slider.objects.create(**s, is_active=True)
             print(f"  Created slider: {s['title']}")
 
@@ -130,6 +143,8 @@ def seed_demo():
             facebook="https://facebook.com/vietshop",
             youtube="https://youtube.com/@vietshop",
             instagram="https://instagram.com/vietshop",
+            zalo="#",
+            telegram="#",
             copyright_text="© 2024 VIETSHOP. Bảo lưu mọi quyền.",
             description="Nâng tầm trải nghiệm mua sắm trực tuyến của bạn với những sản phẩm chất lượng và dịch vụ tận tâm nhất.",
         )

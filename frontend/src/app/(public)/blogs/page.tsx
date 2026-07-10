@@ -6,8 +6,11 @@ import { useState } from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { getPublicBlogs } from "@/services/public"
+import { ImageWithFallback as Image } from "@/components/shared/ImageWithFallback"
+import { usePageMeta } from "@/hooks/usePageMeta"
 
 function stripHtml(html: string) {
+  if (!html) return ""
   return html.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#\d+;/g, "")
 }
 
@@ -33,6 +36,7 @@ function formatDate(dateStr: string) {
 }
 
 function BlogListContent() {
+  usePageMeta("Blog | VIETSHOP", "Tin tức, mẹo hay và xu hướng mới nhất từ VIETSHOP")
   const searchParams = useSearchParams()
   const pageParam = searchParams.get("page")
   const currentPage = Math.max(1, parseInt(pageParam || "1", 10) || 1)
@@ -61,7 +65,24 @@ function BlogListContent() {
 
   if (isLoading) {
     return (
-      <div className="pt-24 text-center text-on-surface-variant">Đang tải...</div>
+      <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-2xl animate-pulse">
+        <div className="h-10 bg-surface-container-highest rounded w-64 mb-2" />
+        <div className="h-5 bg-surface-container-highest rounded w-96 mb-2xl" />
+        <div className="aspect-video bg-surface-container-highest rounded-xl mb-3xl" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden">
+              <div className="h-56 bg-surface-container-highest" />
+              <div className="p-lg space-y-3">
+                <div className="h-4 bg-surface-container-highest rounded w-1/4" />
+                <div className="h-5 bg-surface-container-highest rounded w-3/4" />
+                <div className="h-4 bg-surface-container-highest rounded" />
+                <div className="h-4 bg-surface-container-highest rounded w-2/3" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     )
   }
 
@@ -76,11 +97,13 @@ function BlogListContent() {
         <section className="mb-3xl">
           <div className="group relative bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300">
             <div className="grid grid-cols-1 md:grid-cols-12">
-              <div className="md:col-span-7 h-[300px] md:h-[500px] overflow-hidden">
-                <img
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              <div className="md:col-span-7 h-[300px] md:h-[500px] relative overflow-hidden">
+                <Image
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
                   src={featured.featured_image || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800"}
                   alt={featured.title}
+                  sizes="(max-width: 768px) 100vw, 60vw"
                 />
               </div>
               <div className="md:col-span-5 p-lg md:p-2xl flex flex-col justify-center">
@@ -138,10 +161,12 @@ function BlogListContent() {
         {paginatedBlogs.map((post: any) => (
           <Link key={post.id} href={`/blogs/${post.slug}`} className="flex flex-col bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 group">
             <div className="relative h-56 overflow-hidden">
-              <img
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              <Image
+                fill
+                className="object-cover group-hover:scale-110 transition-transform duration-500"
                 src={post.featured_image || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800"}
                 alt={post.title}
+                sizes="(max-width: 768px) 100vw, 33vw"
               />
               <div className="absolute top-md left-md">
                 <span className="px-md py-1 bg-surface-bright/90 backdrop-blur-md text-primary font-label-sm text-label-sm rounded-lg border border-primary/20 shadow-sm">

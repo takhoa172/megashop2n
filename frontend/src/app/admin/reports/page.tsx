@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { getSummary, getRevenue, getProfit } from "@/services/dashboard"
 import { PageHeader } from "@/components/ui/page-header"
@@ -8,9 +8,21 @@ import { RevenueChart } from "@/components/charts/RevenueChart"
 import { ProfitChart } from "@/components/charts/ProfitChart"
 import { formatCurrency } from "@/lib/utils"
 import { DollarSign, TrendingUp, TrendingDown, Percent, Download } from "lucide-react"
+import { useAuth } from "@/contexts/AuthContext"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 export default function ReportsPage() {
+  const { user } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (user && user.role !== "MANAGER") {
+      router.push("/admin/dashboard")
+    }
+  }, [user, router])
+
+  if (user && user.role !== "MANAGER") return null
   const now = new Date()
   const [selectedYear, setSelectedYear] = useState(String(now.getFullYear()))
 

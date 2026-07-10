@@ -7,11 +7,14 @@ import { useState } from "react"
 import Link from "next/link"
 import { getPublicProducts, getPublicCategories } from "@/services/public"
 import { formatCurrency } from "@/lib/utils"
-import { useCart } from "@/contexts/CartContext"
+import { ContactButton } from "@/components/public/ContactButton"
+import { ImageWithFallback as Image } from "@/components/shared/ImageWithFallback"
+import { usePageMeta } from "@/hooks/usePageMeta"
 
 const PAGE_SIZE = 12
 
 function ProductListContent() {
+  usePageMeta("Sản phẩm | VIETSHOP", "Danh sách sản phẩm đồ cũ chất lượng tại VIETSHOP")
   const searchParams = useSearchParams()
   const keyword = searchParams.get("keyword") || ""
   const [selectedCats, setSelectedCats] = useState<string[]>([])
@@ -23,21 +26,6 @@ function ProductListContent() {
   const [appliedPriceTo, setAppliedPriceTo] = useState("")
   const [selectedBrand, setSelectedBrand] = useState("")
   const [selectedRating, setSelectedRating] = useState(0)
-  const [addedId, setAddedId] = useState<string | null>(null)
-  const { addItem } = useCart()
-
-  const handleAddToCart = (e: React.MouseEvent, product: any) => {
-    e.preventDefault()
-    e.stopPropagation()
-    addItem({
-      id: product.id,
-      name: product.name,
-      image: product.images?.[0]?.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400",
-      price: product.sale_price ?? product.purchase_price,
-    })
-    setAddedId(product.id)
-    setTimeout(() => setAddedId(null), 2000)
-  }
 
   const params: Record<string, string> = { page_size: String(PAGE_SIZE), page: String(page) }
   if (keyword) params.keyword = keyword
@@ -256,10 +244,12 @@ function ProductListContent() {
                     className="bg-white rounded-xl overflow-hidden hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 flex flex-col group p-4 border border-outline-variant/30"
                   >
                     <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-surface-container-low mb-4">
-                      <img
+                      <Image
+                        fill
                         alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
                         src={product.images?.[0]?.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600"}
+                        sizes="(max-width: 768px) 50vw, 25vw"
                       />
                       {getBadge(product)}
                     </div>
@@ -279,13 +269,9 @@ function ProductListContent() {
                             </span>
                           )}
                         </div>
-                        <button
-                          onClick={(e) => handleAddToCart(e, product)}
-                          className="w-full bg-primary text-on-primary font-label-lg py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-secondary hover:opacity-90 transition-all"
-                        >
-                          <span className="material-symbols-outlined text-[20px]">shopping_cart</span>
-                          {addedId === product.id ? "Đã thêm ✓" : "Thêm vào giỏ"}
-                        </button>
+                        <div onClick={(e) => { e.preventDefault(); e.stopPropagation() }}>
+                          <ContactButton variant="primary" size="sm" />
+                        </div>
                       </div>
                     </div>
                   </Link>
@@ -352,7 +338,32 @@ function ProductListContent() {
 
 export default function ProductListPage() {
   return (
-    <Suspense fallback={<div className="pt-24 text-center text-on-surface-variant">Đang tải...</div>}>
+    <Suspense fallback={
+      <div className="pt-12 pb-3xl max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop animate-pulse">
+        <div className="h-4 bg-surface-container-highest rounded w-48 mb-lg" />
+        <div className="flex flex-col md:flex-row gap-gutter">
+          <aside className="w-full md:w-1/4">
+            <div className="bg-surface-container-low p-lg rounded-xl space-y-4">
+              <div className="h-6 bg-surface-container-highest rounded w-1/2" />
+              {[1, 2, 3, 4].map((i) => <div key={i} className="h-4 bg-surface-container-highest rounded" />)}
+            </div>
+          </aside>
+          <section className="w-full md:w-3/4">
+            <div className="h-8 bg-surface-container-highest rounded w-48 mb-4" />
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-gutter">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="bg-white rounded-xl overflow-hidden p-4 border border-outline-variant/30">
+                  <div className="aspect-[3/4] bg-surface-container-highest rounded-xl mb-4" />
+                  <div className="h-3 bg-surface-container-highest rounded w-1/3 mb-2" />
+                  <div className="h-5 bg-surface-container-highest rounded w-3/4 mb-2" />
+                  <div className="h-4 bg-surface-container-highest rounded w-1/4" />
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+      </div>
+    }>
       <ProductListContent />
     </Suspense>
   )

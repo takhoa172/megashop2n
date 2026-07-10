@@ -85,8 +85,9 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "static"
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+# All images served via Cloudinary CDN, not local filesystem
+# MEDIA_URL = "/media/"
+# MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -135,9 +136,6 @@ SIMPLE_JWT = {
 
 VNPAY_TMN_CODE = os.environ.get("VNPAY_TMN_CODE", "")
 VNPAY_HASH_SECRET = os.environ.get("VNPAY_HASH_SECRET", "")
-VNPAY_RETURN_URL = os.environ.get(
-    "VNPAY_RETURN_URL",
-    "https://megashop2n.io.vn/api/orders/payment-return/",
-)
+VNPAY_RETURN_URL = os.environ.get("VNPAY_RETURN_URL", "")
 
 

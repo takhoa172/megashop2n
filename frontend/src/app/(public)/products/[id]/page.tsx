@@ -2,19 +2,20 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect, Suspense } from "react"
 import Link from "next/link"
 import { getPublicProduct, getSuggested } from "@/services/public"
 import { formatCurrency } from "@/lib/utils"
-import { useCart } from "@/contexts/CartContext"
+import { ContactButton } from "@/components/public/ContactButton"
+import { ImageWithFallback as Image } from "@/components/shared/ImageWithFallback"
+import { usePageMeta } from "@/hooks/usePageMeta"
+import { injectJsonLd } from "@/lib/jsonld"
+import { ShareButton } from "@/components/shared/ShareButton"
 
-export default function ProductDetailPage() {
+function ProductDetailContent() {
   const { id } = useParams<{ id: string }>()
-  const [quantity, setQuantity] = useState(1)
   const [selectedImage, setSelectedImage] = useState(0)
   const [activeTab, setActiveTab] = useState("description")
-  const [added, setAdded] = useState(false)
-  const { addItem } = useCart()
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", id],
@@ -26,22 +27,72 @@ export default function ProductDetailPage() {
     queryFn: () => getSuggested(),
   })
 
-  const handleAddToCart = () => {
+  const images: any[] = product?.images?.length ? product.images : [{ image_url: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800" }]
+  const relatedList = (related || []).filter((p: any) => p.id !== product?.id).slice(0, 4)
+  const productImage = images[0]?.image_url
+
+  usePageMeta(
+    product ? `${product.name} | VIETSHOP` : "VIETSHOP",
+    product?.description?.slice(0, 160) || undefined,
+    product ? productImage : undefined,
+  )
+
+  useEffect(() => {
     if (!product) return
-    addItem({
-      id: product.id,
+    const cleanups: (() => void)[] = []
+
+    cleanups.push(injectJsonLd({
+      "@context": "https://schema.org",
+      "@type": "Product",
       name: product.name,
-      image: product.images?.[0]?.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400",
-      price: product.sale_price ?? product.purchase_price,
-    })
-    setAdded(true)
-    setTimeout(() => setAdded(false), 2000)
-  }
+      image: images.map((i: any) => i.image_url),
+      description: product.description || "",
+      sku: product.sku,
+      offers: {
+        "@type": "Offer",
+        price: product.sale_price ?? 0,
+        priceCurrency: "VND",
+        availability: product.status === "in_stock"
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+      },
+    }))
+
+    cleanups.push(injectJsonLd({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: "/" },
+        { "@type": "ListItem", position: 2, name: "Sản phẩm", item: "/products" },
+        { "@type": "ListItem", position: 3, name: product.name },
+      ],
+    }))
+
+    return () => cleanups.forEach((fn) => fn())
+  }, [product])
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <p className="text-on-surface-variant">Đang tải...</p>
+      <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-lg animate-pulse">
+        <div className="h-4 bg-surface-container-highest rounded w-48 mb-lg" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+          <div className="lg:col-span-7">
+            <div className="aspect-square bg-surface-container-highest rounded-xl" />
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-sm mt-md">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="aspect-square bg-surface-container-highest rounded-xl" />
+              ))}
+            </div>
+          </div>
+          <div className="lg:col-span-5 space-y-4">
+            <div className="h-5 bg-surface-container-highest rounded w-1/4" />
+            <div className="h-8 bg-surface-container-highest rounded w-3/4" />
+            <div className="h-5 bg-surface-container-highest rounded w-1/3" />
+            <div className="h-6 bg-surface-container-highest rounded w-1/2" />
+            <div className="h-20 bg-surface-container-highest rounded" />
+            <div className="h-14 bg-surface-container-highest rounded-xl" />
+          </div>
+        </div>
       </div>
     )
   }
@@ -54,9 +105,6 @@ export default function ProductDetailPage() {
       </div>
     )
   }
-
-  const images = product.images?.length > 0 ? product.images : [{ image_url: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800" }]
-  const relatedList = (related || []).filter((p: any) => p.id !== product.id).slice(0, 4)
 
   return (
     <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-lg">
@@ -72,11 +120,13 @@ export default function ProductDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
         {/* Gallery */}
         <div className="lg:col-span-7 flex flex-col gap-md">
-          <div className="bg-white rounded-xl border border-outline-variant overflow-hidden aspect-square flex items-center justify-center p-md group transition-all duration-300 hover:shadow-lg">
-            <img
-              alt={product.name}
-              className="w-full h-full object-cover"
+          <div className="bg-white rounded-xl border border-outline-variant overflow-hidden aspect-square relative flex items-center justify-center p-md group transition-all duration-300 hover:shadow-lg">
+            <Image
+              fill
+              className="object-cover"
               src={images[selectedImage]?.image_url || images[0]?.image_url}
+              alt={product.name}
+              sizes="(max-width: 1024px) 100vw, 60vw"
             />
           </div>
           {images.length > 1 && (
@@ -85,11 +135,11 @@ export default function ProductDetailPage() {
                 <button
                   key={i}
                   onClick={() => setSelectedImage(i)}
-                  className={`aspect-square bg-white border-2 rounded-xl p-xs cursor-pointer overflow-hidden ${
+                  className={`aspect-square bg-white border-2 rounded-xl p-xs cursor-pointer overflow-hidden relative ${
                     i === selectedImage ? "border-primary" : "border-outline-variant hover:border-primary"
                   } transition-colors`}
                 >
-                  <img className="w-full h-full object-cover" src={img.image_url} alt="" />
+                  <Image fill className="object-cover" src={img.image_url} alt="" sizes="(max-width: 768px) 33vw, 15vw" />
                 </button>
               ))}
             </div>
@@ -143,34 +193,13 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          {/* Quantity */}
-          <div className="mb-2xl">
-            <h3 className="font-label-md text-label-md text-on-surface mb-sm uppercase tracking-wider">Số lượng</h3>
-            <div className="flex items-center w-fit border border-outline-variant rounded-lg">
-              <button
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="p-md hover:bg-surface-container-low transition-colors"
-              >
-                <span className="material-symbols-outlined text-[20px]">remove</span>
-              </button>
-              <span className="px-lg font-title-lg text-title-lg min-w-[60px] text-center">{quantity}</span>
-              <button
-                onClick={() => setQuantity(quantity + 1)}
-                className="p-md hover:bg-surface-container-low transition-colors"
-              >
-                <span className="material-symbols-outlined text-[20px]">add</span>
-              </button>
-            </div>
-          </div>
-
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-gutter">
-            <button onClick={handleAddToCart} className="flex-1 bg-primary text-on-primary py-lg rounded-xl font-title-lg text-title-lg shadow-sm hover:bg-primary/90 transition-all active:scale-[0.98]">
-              {added ? "Đã thêm ✓" : "Thêm vào giỏ"}
-            </button>
-            <button className="flex-1 border border-primary text-primary py-lg rounded-xl font-title-lg text-title-lg hover:bg-primary/5 transition-all active:scale-[0.98]">
-              Mua ngay
-            </button>
+          {/* Contact & Share */}
+          <div className="mb-2xl space-y-3">
+            <ContactButton />
+            <ShareButton
+              title={`${product.name} - VIETSHOP`}
+              text={product.description || `Giá: ${formatCurrency(product.sale_price || 0)}`}
+            />
           </div>
         </div>
       </div>
@@ -313,10 +342,12 @@ export default function ProductDetailPage() {
                 className="bg-white rounded-xl border border-outline-variant p-md flex flex-col hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 group cursor-pointer"
               >
                 <div className="aspect-square bg-surface-container rounded-xl mb-md overflow-hidden relative">
-                  <img
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  <Image
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
                     src={product.images?.[0]?.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400"}
                     alt={product.name}
+                    sizes="(max-width: 768px) 100vw, 25vw"
                   />
                   <button className="absolute top-sm right-sm p-sm bg-white/80 backdrop-blur rounded-full shadow-sm text-on-surface-variant hover:text-error transition-colors">
                     <span className="material-symbols-outlined">favorite</span>
@@ -330,15 +361,46 @@ export default function ProductDetailPage() {
                   <span className="font-body-lg text-body-lg font-bold text-primary">
               {product.sale_price != null ? (product.sale_price > 0 ? formatCurrency(product.sale_price) : "Miễn phí") : "Liên hệ"}
                   </span>
-                  <span className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
-                    <span className="material-symbols-outlined text-[20px]">add_shopping_cart</span>
-                  </span>
+                    <span className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+                      <span className="material-symbols-outlined text-[20px]">contact_support</span>
+                    </span>
                 </div>
               </Link>
             ))}
+
           </div>
         </section>
       )}
     </div>
+  )
+}
+
+export default function ProductDetailPage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-lg animate-pulse">
+        <div className="h-4 bg-surface-container-highest rounded w-48 mb-lg" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+          <div className="lg:col-span-7">
+            <div className="aspect-square bg-surface-container-highest rounded-xl" />
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-sm mt-md">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="aspect-square bg-surface-container-highest rounded-xl" />
+              ))}
+            </div>
+          </div>
+          <div className="lg:col-span-5 space-y-4">
+            <div className="h-5 bg-surface-container-highest rounded w-1/4" />
+            <div className="h-8 bg-surface-container-highest rounded w-3/4" />
+            <div className="h-5 bg-surface-container-highest rounded w-1/3" />
+            <div className="h-6 bg-surface-container-highest rounded w-1/2" />
+            <div className="h-20 bg-surface-container-highest rounded" />
+            <div className="h-14 bg-surface-container-highest rounded-xl" />
+          </div>
+        </div>
+      </div>
+    }>
+      <ProductDetailContent />
+    </Suspense>
   )
 }

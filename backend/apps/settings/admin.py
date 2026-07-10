@@ -5,7 +5,7 @@ from apps.common.admin_mixins import cloudinary_image_admin
 
 
 @admin.register(SiteSettings)
-class SiteSettingsAdmin(cloudinary_image_admin(url_field="site_logo_url", public_id_field=None, folder="logos")):
+class SiteSettingsAdmin(cloudinary_image_admin(url_field="site_logo_url", public_id_field="site_logo_public_id", folder="logos")):
     list_display = ["site_name", "logo_preview", "updated_at"]
     readonly_fields = ["site_logo_url"]
     fieldsets = [

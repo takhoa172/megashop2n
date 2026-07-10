@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { useAuth } from "@/contexts/AuthContext"
@@ -17,7 +17,7 @@ const statusLabels: Record<string, string> = {
 
 const statusTimeline = ["pending", "confirmed", "shipped", "delivered"]
 
-export default function OrderDetailPage() {
+function OrderDetailContent() {
   const { id } = useParams()
   const { user } = useAuth()
   const [order, setOrder] = useState<Order | null>(null)
@@ -187,5 +187,13 @@ export default function OrderDetailPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function OrderDetailPage() {
+  return (
+    <Suspense fallback={<p className="text-on-surface-variant">Đang tải...</p>}>
+      <OrderDetailContent />
+    </Suspense>
   )
 }

@@ -6,8 +6,8 @@ import { SliderHero } from "@/components/public/SliderHero"
 import { getSuggested, getMostViewed, getPriceZero, getPublicProducts, getPublicBlogs } from "@/services/public"
 import { getProducts } from "@/services/products"
 import { formatCurrency } from "@/lib/utils"
-import { useState } from "react"
-import { useCart } from "@/contexts/CartContext"
+import { ContactButton } from "@/components/public/ContactButton"
+import { ImageWithFallback as Image } from "@/components/shared/ImageWithFallback"
 
 function stripHtml(html: string) {
   return html.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#\d+;/g, "")
@@ -20,27 +20,15 @@ function truncateText(text: string, maxWords: number) {
 }
 
 function ProductCard({ product }: { product: any }) {
-  const [added, setAdded] = useState(false)
-  const { addItem } = useCart()
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    addItem({
-      id: product.id,
-      name: product.name,
-      image: product.images?.[0]?.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400",
-      price: product.sale_price ?? product.purchase_price,
-    })
-    setAdded(true)
-    setTimeout(() => setAdded(false), 2000)
-  }
   return (
     <Link href={`/products/${product.id}`} className="group border border-outline-variant rounded-xl shadow-[0_4px_12px_rgba(0,0,0,.08)] hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 p-4 bg-white overflow-hidden">
       <div className="relative overflow-hidden mb-4 aspect-[3/4] rounded-xl">
-        <img
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        <Image
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
           src={product.images?.[0]?.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400"}
           alt={product.name}
+          sizes="(max-width: 768px) 50vw, 20vw"
         />
         <div className="absolute top-2 left-2 bg-accent text-on-accent px-2 py-1 text-label-sm font-bold">Hot</div>
       </div>
@@ -53,7 +41,9 @@ function ProductCard({ product }: { product: any }) {
         <span className="font-label-sm text-label-sm text-on-surface-variant ml-1 hidden md:inline">4.8 (120)</span>
       </div>
       <p className="font-bold text-primary mb-4">{product.sale_price != null ? (product.sale_price > 0 ? formatCurrency(product.sale_price) : "Miễn phí") : "Liên hệ"}</p>
-      <button onClick={handleAddToCart} className="w-full bg-primary text-on-primary py-3 font-label-lg hover:bg-secondary hover:opacity-90 transition-all active:scale-95">{added ? "Đã thêm ✓" : "Thêm vào giỏ"}</button>
+      <div onClick={(e) => { e.preventDefault(); e.stopPropagation() }}>
+        <ContactButton variant="primary" size="sm" />
+      </div>
     </Link>
   )
 }
@@ -116,10 +106,12 @@ export default function HomePage() {
               if (i === 0) {
                 return (
                   <div key={product.id} className="md:col-span-2 md:row-span-2 relative overflow-hidden group rounded-2xl h-[300px] md:h-auto">
-                    <img
-                      className="w-full h-full object-cover absolute inset-0 group-hover:scale-105 transition-transform duration-500"
+                    <Image
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
                       src={product.images?.[0]?.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800"}
                       alt={product.name}
+                      sizes="(max-width: 768px) 100vw, 50vw"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-[1]" />
                     <div className="relative z-10 p-8 flex flex-col justify-between h-full">
@@ -147,11 +139,13 @@ export default function HomePage() {
               }
               return (
                 <Link key={product.id} href={`/products/${product.id}`} className="group relative overflow-hidden bg-white border border-outline-variant p-6 flex items-center gap-4 rounded-xl">
-                  <div className="w-24 h-24 flex-shrink-0 overflow-hidden rounded-xl">
-                    <img
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                  <div className="w-24 h-24 flex-shrink-0 relative overflow-hidden rounded-xl">
+                    <Image
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform"
                       src={product.images?.[0]?.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400"}
                       alt={product.name}
+                      sizes="96px"
                     />
                   </div>
                   <div className="min-w-0">
@@ -179,11 +173,13 @@ export default function HomePage() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-gutter text-on-background">
               {(priceZeroList.length > 0 ? priceZeroList.slice(0, 4) : placeholderProducts.slice(0, 4)).map((product: any) => (
                 <Link key={product.id} href={`/products/${product.id}`} className="bg-white p-4 rounded-xl shadow-sm group">
-                  <div className="relative mb-4">
-                    <img
-                      className="w-full aspect-square object-cover rounded-xl"
+                  <div className="relative mb-4 aspect-[3/4]">
+                    <Image
+                      fill
+                      className="object-cover rounded-xl"
                       src={product.images?.[0]?.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400"}
                       alt={product.name}
+                      sizes="(max-width: 768px) 50vw, 25vw"
                     />
                     <div className="absolute top-0 right-0 bg-accent text-on-accent px-3 py-1 font-bold">{product.purchase_price > 0 ? `-${Math.round((1 - product.sale_price / product.purchase_price) * 100)}%` : "-50%"}</div>
                   </div>
@@ -211,11 +207,13 @@ export default function HomePage() {
           <div className="flex gap-gutter px-margin-mobile md:px-0 min-w-max md:min-w-0">
             {(budgetList.length > 0 ? budgetList : placeholderProducts).map((product: any) => (
               <Link key={product.id} href={`/products/${product.id}`} className="bg-white p-3 rounded-xl shadow-sm group min-w-[160px] sm:min-w-[280px]">
-                <div className="aspect-[3/4] overflow-hidden rounded-xl bg-surface-container mb-2">
-                  <img
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                <div className="aspect-[3/4] relative overflow-hidden rounded-xl bg-surface-container mb-2">
+                  <Image
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform"
                     src={product.images?.[0]?.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400"}
                     alt={product.name}
+                    sizes="(max-width: 768px) 50vw, 25vw"
                   />
                 </div>
                 <h4 className="font-label-lg text-secondary mb-1">{product.name}</h4>
@@ -236,11 +234,13 @@ export default function HomePage() {
           {(blogList.length > 0 ? blogList : placeholderBlogs).map((post: any) => (
             <Link key={post.id} href={`/blogs/${post.slug}`} className="group block bg-white border border-outline-variant rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
               <article>
-                <div className="overflow-hidden mb-4 h-48 rounded-xl">
-                  <img
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                <div className="relative overflow-hidden mb-4 h-48 rounded-xl">
+                  <Image
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                     src={post.featured_image || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800"}
                     alt={post.title}
+                    sizes="(max-width: 768px) 100vw, 33vw"
                   />
                 </div>
                 <span className="text-primary font-label-sm uppercase font-bold">{post.category_name || "Tin tức"}</span>

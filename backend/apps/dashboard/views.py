@@ -2,7 +2,7 @@ from django.db.models import Sum, Count
 from django.db.models.functions import TruncMonth
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from core.permissions import IsStaffOrHigher
 from django.utils import timezone
 from apps.products.models import Product
 from apps.sales.models import Sale
@@ -10,7 +10,7 @@ from apps.purchases.models import Purchase
 
 
 class DashboardSummaryView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStaffOrHigher]
 
     def get(self, request):
         today = timezone.now().date()
@@ -127,7 +127,7 @@ class DashboardSummaryView(APIView):
 
 
 class RevenueChartView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStaffOrHigher]
 
     def get(self, request):
         year_param = request.query_params.get("year")
@@ -157,7 +157,7 @@ class RevenueChartView(APIView):
 
 
 class ProfitChartView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStaffOrHigher]
 
     def get(self, request):
         year_param = request.query_params.get("year")
@@ -202,7 +202,7 @@ class ProfitChartView(APIView):
 
 
 class InventoryChartView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStaffOrHigher]
 
     def get(self, request):
         in_stock = Product.objects.filter(status="in_stock").count()
@@ -218,7 +218,7 @@ class InventoryChartView(APIView):
 
 
 class TopCategoriesView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStaffOrHigher]
 
     def get(self, request):
         from apps.products.models import Product

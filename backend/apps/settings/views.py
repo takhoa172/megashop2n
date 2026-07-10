@@ -5,7 +5,7 @@ from rest_framework import status
 from .models import SiteSettings, FooterSettings
 from .serializers import SiteSettingsSerializer, FooterSettingsSerializer
 from core.permissions import IsSuperAdmin
-from apps.products.cloudinary_utils import upload_to_cloudinary
+from apps.products.cloudinary_utils import upload_to_cloudinary, delete_from_cloudinary
 
 
 class SiteSettingsView(APIView):
@@ -55,11 +55,22 @@ class UploadLogoView(APIView):
             return Response(
                 {"message": "No file provided"}, status=status.HTTP_400_BAD_REQUEST
             )
+        if not file.content_type.startswith("image/"):
+            return Response(
+                {"message": "Only image files are allowed"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         try:
-            result = upload_to_cloudinary(file)
+            result = upload_to_cloudinary(file, folder="logos")
             instance = SiteSettings.get_instance()
+            if instance.site_logo_public_id:
+                try:
+                    delete_from_cloudinary(instance.site_logo_public_id)
+                except Exception:
+                    pass
             instance.site_logo_url = result["url"]
-            instance.save(update_fields=["site_logo_url"])
+            instance.site_logo_public_id = result["public_id"]
+            instance.save(update_fields=["site_logo_url", "site_logo_public_id"])
             return Response({"url": result["url"]}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response(

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { getPublicSliders } from "@/services/public"
 import Link from "next/link"
+import { ImageWithFallback as Image } from "@/components/shared/ImageWithFallback"
 
 const defaultSlides = [
   { id: 1, image_url: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1920", title: "Khuyến mãi đặc biệt", subtitle: "Khám phá bộ sưu tập mới nhất với ưu đãi lên đến 50%", link_url: "/products" },
@@ -34,11 +35,12 @@ export function SliderHero() {
         const imgSrc = slide.image_url || slide.image || fallbackImg
         const inner = (
           <>
-            <img
+            <Image
               src={imgSrc}
               alt={slide.title || ""}
-              className="absolute inset-0 w-full h-full object-cover"
-              onError={(e) => { (e.target as HTMLImageElement).src = fallbackImg }}
+              fill
+              className="object-cover"
+              sizes="100vw"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-secondary/80 to-transparent flex items-center px-margin-mobile md:px-margin-desktop">
               <div className="max-w-[36rem] text-on-primary">

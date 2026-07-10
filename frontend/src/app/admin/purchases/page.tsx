@@ -10,11 +10,24 @@ import { Modal } from "@/components/ui/modal"
 import { Purchase, User } from "@/types"
 import { formatCurrency, formatDate } from "@/lib/utils"
 import { ColumnDef } from "@tanstack/react-table"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Plus, Pencil, DollarSign, Package, Receipt } from "lucide-react"
+import { useAuth } from "@/contexts/AuthContext"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 export default function PurchasesPage() {
+  const { user } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (user && user.role !== "MANAGER") {
+      router.push("/admin/dashboard")
+    }
+  }, [user, router])
+
+  if (user && user.role !== "MANAGER") return null
+
   const [showForm, setShowForm] = useState(false)
   const [editingPurchase, setEditingPurchase] = useState<Purchase | null>(null)
   const queryClient = useQueryClient()

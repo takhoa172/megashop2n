@@ -12,11 +12,13 @@ import {
 } from "@/services/dashboard"
 import { getAllOrders } from "@/services/orders"
 import { getProducts } from "@/services/products"
-import { RevenueChart } from "@/components/charts/RevenueChart"
-import { ProfitChart } from "@/components/charts/ProfitChart"
-import { InventoryPieChart } from "@/components/charts/InventoryPieChart"
-import { TopCategoriesChart } from "@/components/charts/TopCategoriesChart"
+import dynamic from "next/dynamic"
 import { PageHeader } from "@/components/ui/page-header"
+
+const RevenueChart = dynamic(() => import("@/components/charts/RevenueChart").then((m) => m.RevenueChart), { ssr: false })
+const ProfitChart = dynamic(() => import("@/components/charts/ProfitChart").then((m) => m.ProfitChart), { ssr: false })
+const InventoryPieChart = dynamic(() => import("@/components/charts/InventoryPieChart").then((m) => m.InventoryPieChart), { ssr: false })
+const TopCategoriesChart = dynamic(() => import("@/components/charts/TopCategoriesChart").then((m) => m.TopCategoriesChart), { ssr: false })
 import { formatCurrency, formatDate } from "@/lib/utils"
 import {
   DollarSign, TrendingUp, TrendingDown, ShoppingBag,

@@ -6,7 +6,7 @@ import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { getSiteSettings } from "@/services/public"
 import { useAuth } from "@/contexts/AuthContext"
-import { useCart } from "@/contexts/CartContext"
+import { ImageWithFallback as Image } from "@/components/shared/ImageWithFallback"
 
 const defaultNavLinks = [
   { href: "/", label: "Trang chủ" },
@@ -19,7 +19,6 @@ export function PublicNavbar() {
   const pathname = usePathname()
   const router = useRouter()
   const { user } = useAuth()
-  const { itemCount } = useCart()
   const [searchQuery, setSearchQuery] = useState("")
   const [mobileMenu, setMobileMenu] = useState(false)
 
@@ -51,7 +50,7 @@ export function PublicNavbar() {
       <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-base flex justify-between items-center">
         <Link href="/" className="flex items-center gap-2">
           {siteLogo ? (
-            <img src={siteLogo} alt={siteName} className="h-8 w-auto" />
+            <Image src={siteLogo} alt={siteName} width={32} height={32} className="h-8 w-auto" />
           ) : (
             <span className="text-2xl font-black text-on-secondary tracking-tight">{siteName}</span>
           )}
@@ -86,14 +85,9 @@ export function PublicNavbar() {
             </form>
           )}
           {!isLoginPage && (
-            <Link href="/cart" className="text-on-secondary/80 hover:text-primary transition-colors relative">
-              <span className="material-symbols-outlined">shopping_cart</span>
-              {itemCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-error text-on-primary text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center rounded-full">
-                  {itemCount > 99 ? "99+" : itemCount}
-                </span>
-              )}
-            </Link>
+            <a href="tel:190012345678" className="text-on-secondary/80 hover:text-primary transition-colors flex items-center gap-1">
+              <span className="material-symbols-outlined">phone_in_talk</span>
+            </a>
           )}
           {user ? (
             <Link href="/account" className="text-on-secondary/80 hover:text-primary transition-colors">

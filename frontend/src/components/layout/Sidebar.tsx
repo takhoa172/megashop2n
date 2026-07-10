@@ -9,7 +9,6 @@ import {
   ShoppingCart,
   DollarSign,
   BarChart3,
-  Settings,
   FileText,
   ClipboardList,
   X,
@@ -31,7 +30,6 @@ const navItems: NavItem[] = [
   { href: "/admin/orders", label: "Đơn hàng", icon: ClipboardList, roles: ["MANAGER", "STAFF"] },
   { href: "/admin/blogs", label: "Bài viết", icon: FileText, roles: ["MANAGER"] },
   { href: "/admin/reports", label: "Báo cáo", icon: BarChart3, roles: ["MANAGER"] },
-  { href: "/admin/settings", label: "Cài đặt", icon: Settings, roles: ["SUPER_ADMIN"] },
 ]
 
 interface SidebarProps {

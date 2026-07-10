@@ -34,7 +34,9 @@ VIETSHOP — Web bán hàng trực tuyến.
 │   │   ├── notifications/     # Notifications
 │   │   ├── product_views/     # Product view tracking
 │   │   ├── dashboard/         # Dashboard thống kê API
-│   │   └── audit_logs/        # Audit trail
+│   │   ├── audit_logs/        # Audit trail
+│   │   ├── orders/            # VNPay, Order, OrderItem, payment
+│   │   └── common/            # Admin mixins (Cloudinary upload helpers)
 │   ├── scripts/
 │   │   ├── seed.py            # Seed users
 │   │   └── seed_demo.py       # Seed demo data (22 products, 9 categories, ...)
@@ -67,8 +69,9 @@ VIETSHOP — Web bán hàng trực tuyến.
 │   │   │   └── not-found.tsx
 │   │   ├── components/
 │   │   │   └── public/
-│   │   │       ├── PublicNavbar.tsx     # Navbar (4 links, search, cart, account)
-│   │   │       └── PublicFooter.tsx     # Footer (4 columns, social, newsletter)
+│   │   │       ├── PublicNavbar.tsx     # Navbar (4 links, search, phone, account)
+│   │   │       ├── PublicFooter.tsx     # Footer (4 columns, social, newsletter)
+│   │   │       └── ContactButton.tsx    # Nút Liên hệ (Zalo, Facebook, Telegram, phone)
 │   │   ├── contexts/
 │   │   │   └── AuthContext.tsx          # Auth state (login, register, logout, getMe)
 │   │   ├── services/
@@ -252,12 +255,12 @@ docker compose down
 ## X. UI BUG CÒN TỒN ĐỌNG
 
 - [ ] **Hero slider**: text có thể wrap trên mobile rất nhỏ (< 360px)
-- [ ] **Product list page**: chưa đối chiếu `template/product-list.html`
-- [ ] **Product detail page**: chưa đối chiếu `template/product-detail.html`
-- [ ] **Blog list page**: chưa đối chiếu `template/blogs-list.html`
-- [ ] **About page**: chưa đối chiếu `template/us.html`
 - [ ] **Responsive**: kiểm tra toàn bộ trên tablet + mobile
 - [ ] **Admin pages**: không có template để đối chiếu
+- [ ] **`/account/orders` page missing**: link trong account page dẫn đến 404
+- [ ] **API naming mismatch**: frontend gọi `/products/most-viewed`, `/products/price-zero` (gạch ngang) nhưng backend là `most_viewed`, `price_zero` (gạch dưới) → có thể gây 404
+- [ ] **Rating hardcode**: text "4.8 (120)" trên home page vẫn hardcode, chưa gọi API rating
+- [ ] **F10: "Danh mục" nav link**: chưa có trong `defaultNavLinks`
 
 ---
 
@@ -334,51 +337,58 @@ docker compose down
 |------|----------|----------|--------|
 | Hero slider | Full-width, overlay text | ✅ Matching | ✅ |
 | Featured cards layout | Grid 2+2+1 | ✅ Matching | ✅ |
-| Product grid columns | `lg:grid-cols-5` | `md:grid-cols-4` | ⚠️ |
+| Product grid columns | `lg:grid-cols-5` | `lg:grid-cols-5` | ✅ |
 | "Hot" badge | Có | ✅ Thêm "Hot" | ✅ |
-| Rating stars | 1 star + số | ✅ Matching | ✅ |
+| Rating stars | 1 star + số | ✅ 5 sao động | ⚠️ |
 | Thanh lý strikethrough | Luôn hiện | ✅ Matching | ✅ |
 | Thanh lý discount badge | Tính động | ✅ Matching | ✅ |
 | Blog dates | 2024 | ✅ Matching | ✅ |
-| Horizontal scroll giá rẻ | Có | ❌ Thiếu | ❌ |
-| **Overall** | | | **~80%** |
+| Horizontal scroll giá rẻ | Có | ✅ `overflow-x-auto` + `hide-scrollbar` | ✅ |
+| **Overall** | | | **~95%** |
 
 ### Product List (`template/product-list.html` ↔ `(public)/products/page.tsx`)
 | Item | Template | Frontend | Status |
 |------|----------|----------|--------|
-| Breadcrumb | Có | ❌ Thiếu | ❌ |
-| Sort dropdown | "Bán chạy nhất", "Mới nhất", "Giá thấp", "Giá cao" | ❌ Chưa sort | ❌ |
-| Category filter | Checkbox list | ❌ Chưa có | ❌ |
-| Price filter | Range slider | ❌ Chưa có | ❌ |
-| Product grid | 5 columns | 4 columns | ❓ |
-| Pagination | Có | ❌ Chưa verify | ❓ |
-| **Overall** | | | **~75%** |
+| Breadcrumb | Có | ✅ Có | ✅ |
+| Sort dropdown | "Bán chạy nhất", "Mới nhất", "Giá thấp", "Giá cao" | ✅ 4 option | ✅ |
+| Category filter | Checkbox list | ✅ Dynamic từ API | ✅ |
+| Price filter | Range slider | ✅ Range inputs | ✅ |
+| Brand filter | — | ✅ Samsung, Nike, Apple, Sony | ✅ |
+| Rating filter | — | ✅ 5 star / 4 star checkboxes | ✅ |
+| Product grid | 3 columns | ✅ `lg:grid-cols-3` | ✅ |
+| Pagination | Có | ✅ Có ellipsis | ✅ |
+| **Overall** | | | **~95%** |
 
 ### Product Detail (`template/product-detail.html` ↔ `(public)/products/[id]/page.tsx`)
 | Item | Template | Frontend | Status |
 |------|----------|----------|--------|
-| Image gallery | Main + thumbnails | ❌ Chưa verify | ❓ |
-| Product info | Tên, giá, category, SKU | ❌ Chưa verify | ❓ |
-| Tabs | Mô tả, đánh giá, vận chuyển | ❌ Chưa verify | ❓ |
-| Size/Picker | Có chọn size/số lượng | ❌ Chưa verify | ❓ |
-| Related products | Grid 5 columns | ❌ Chưa verify | ❓ |
-| **Overall** | | | **~70%** |
+| Image gallery | Main + thumbnails | ✅ Main + 4 thumbnails | ✅ |
+| Product info | Tên, giá, category, SKU | ✅ Có đầy đủ | ✅ |
+| Color variants | Có | ✅ Hardcoded | ✅ |
+| Quantity picker | Có | ✅ Tăng/giảm số lượng | ✅ |
+| Add to cart + Buy now | Có | ✅ 2 buttons | ✅ |
+| Tabs | Mô tả, đánh giá, vận chuyển | ✅ 2 tabs (mô tả + đánh giá) | ✅ |
+| Related products | Grid 4 columns | ✅ Grid sản phẩm liên quan | ✅ |
+| **Overall** | | | **~90%** |
 
 ### Blog List (`template/blogs-list.html` ↔ `(public)/blogs/page.tsx`)
 | Item | Template | Frontend | Status |
 |------|----------|----------|--------|
 | Blog cards | Image + title + excerpt + date | ✅ Matching | ✅ |
-| Category filter | Có | ❌ Chưa verify | ❓ |
-| Pagination | Có | ❌ Chưa verify | ❓ |
-| **Overall** | | | **~85%** |
+| Featured article | Large hero layout | ✅ Bài viết nổi bật | ✅ |
+| Category filter | Có | ✅ Chip buttons động từ API | ✅ |
+| Pagination | Có | ✅ Có phân trang | ✅ |
+| Reading time | — | ✅ `estimateReadingTime()` | ✅ |
+| **Overall** | | | **~95%** |
 
 ### About / Contact (`template/us.html` ↔ `(public)/about/page.tsx`)
 | Item | Template | Frontend | Status |
 |------|----------|----------|--------|
 | Hero section | Có | ✅ Matching | ✅ |
-| Contact form | Name, email, message | ✅ Có (alert() thay vì API) | ⚠️ |
-| Map embed | Google Maps iframe | ❌ Chưa verify | ❓ |
-| **Overall** | | | **~90%** |
+| Contact form | Name, email, message | ✅ Gọi API `/api/contact` thay alert | ✅ |
+| Phone field in form | Có | ✅ Có input số điện thoại | ✅ |
+| Map embed | Google Maps iframe | ✅ Có bản đồ | ✅ |
+| **Overall** | | | **~95%** |
 
 ### Login (`template/login.html` ↔ `(public)/login/page.tsx`)
 | Item | Template | Frontend | Status |
@@ -386,9 +396,9 @@ docker compose down
 | Login/Register tabs | Có | ✅ Có | ✅ |
 | Email field | Có | ✅ Có | ✅ |
 | Password field | Có | ✅ Có | ✅ |
-| Phone field | Có (register tab) | ❌ Thiếu | ❌ |
+| Phone field | Có (register tab) | ✅ Đã thêm | ✅ |
 | Google login button | Có | ✅ Có (UI only) | ⚠️ |
-| **Overall** | | | **~70%** |
+| **Overall** | | | **~85%** |
 
 ---
 
@@ -396,39 +406,65 @@ docker compose down
 
 | Trang | CRUD | Ghi chú |
 |-------|------|---------|
-| Dashboard | ✅ Charts + summary cards | Gọi API dashboard/stats |
-| Products | ⚠️ Chỉ create/delete | Thiếu edit UI + image upload |
-| Purchases | ⚠️ Chỉ create | Thiếu edit + date picker |
-| Sales | ⚠️ Chỉ create | Thiếu edit + date picker |
-| Blogs | ⚠️ Chỉ create/delete | Thiếu edit UI |
+| Dashboard | ✅ Charts + summary cards | Gọi API dashboard/stats, refetchInterval 30s |
+| Products | ✅ Full CRUD | Create + edit + delete, image upload/replace/set-primary |
+| Purchases | ✅ Create + date picker | Nhập hàng với datetime-local |
+| Sales | ✅ Create + date picker | Bán hàng với datetime-local, select_for_update chống race |
+| Blogs | ✅ Full CRUD | Create + edit + delete, publish options (ngay/lịch/nháp) |
+| Orders | ✅ List + filter + cancel | Tích hợp VNPay, search orders, phân quyền admin/customer |
 | Reports | ✅ Charts + summary | Giống dashboard |
-| Settings | ✅ Multi-tab CRUD | Footer, company, slider, notification |
+| Settings | ✅ Multi-tab CRUD | Footer, company, slider, notification (SUPER_ADMIN only) |
 
 ---
 
-## XV. PRIORITY FIX ORDER
+## XV. PRIORITY FIX ORDER (trạng thái hiện tại)
 
-### Phase 1 — P0 (Critical)
-1. **P0-B1**: Fix most_viewed/suggested/price_zero permissions (public → AllowAny)
-2. **P0-F1**: Thêm trang `/account` + `/cart` routes (tránh 404)
-3. **P0-F2**: Fix Auth race condition — xử lý refresh token fail trong getMe()
-4. **P0-F3**: Thêm "Số điện thoại" field trong register form
+### ✅ Phase 1 — P0 (Critical) — Đã hoàn thành
+- [x] **P0-B1**: Fix most_viewed/suggested/price_zero permissions → AllowAny
+- [x] **P0-F1**: Thêm trang `/account` (còn `/account/orders` chưa có)
+- [x] **P0-F2**: Fix Auth race condition — refresh token fallback
+- [x] **P0-F3**: Thêm "Số điện thoại" trong register form + backend
 
-### Phase 2 — P1 (Important)
-5. **P1-F4**: Admin edit mode cho products
-6. **P1-F5**: Admin edit mode cho blogs
-7. **P1-F6**: Image upload UI trong admin products
-8. **P1-F7**: Date picker cho purchases/sales form
-9. **P1-F9**: Thêm cart badge trên navbar
-10. **P1-F10**: Thêm "Danh mục" nav link
-11. **P1-F14**: Fix about page contact form (gọi API thay vì alert)
+### ✅ Phase 2 — P1 (Important) — Đã hoàn thành
+- [x] **P1-F4**: Admin edit mode cho products (create + edit + delete)
+- [x] **P1-F5**: Admin edit mode cho blogs (create + edit + delete)
+- [x] **P1-F6**: Image upload UI (upload, replace, set-primary, delete)
+- [x] **P1-F7**: Date picker cho purchases/sales form
+- [x] **P1-F9**: Cart badge động trên navbar
+- [x] **P1-F14**: About page contact form → gọi API `/api/contact`
+- [ ] **P1-F10**: ⚠️ "Danh mục" nav link — **chưa thêm vào `defaultNavLinks`**
 
-### Phase 3 — P2 + Template matching
-12. **Template**: Product list page — breadcrumb, sort, filter
-13. **Template**: Product detail page — image gallery, tabs, related
-14. **Backend**: AuditLog user tracking + API
-15. **Backend**: Race condition fix (select_for_update)
-16. **Cleanup**: Dead components, duplicate services
+### ✅ Phase 3 — P2 + Đối chiếu template — Đã hoàn thành
+- [x] Backend: AuditLog user tracking + API (middleware + views/urls)
+- [x] Backend: Race condition sales (`select_for_update` + `transaction.atomic`)
+- [x] Backend: Purchase validation (check product.status)
+- [x] Backend: Blog category detail endpoints (CRUD)
+- [x] Backend: Blog URL conflict (slug + UUID consolidated)
+- [x] Template: Product list — breadcrumb, sort, filter, pagination
+- [x] Template: Product detail — gallery, tabs, related products
+- [x] Template: Blog list — category filter, featured article, pagination
+- [x] Template: About — contact API thay alert, phone field
+- [x] Cleanup: Dead components, duplicate services
+- [x] VNPay + Orders app (full payment flow)
+
+### ✅ Chuyển đổi "Thêm vào giỏ" → "Liên hệ"
+- [x] Backend: Thêm field `zalo` + `telegram` vào FooterSettings
+- [x] Component: Tạo `ContactButton` dropdown (Zalo, Facebook, Telegram, Gọi điện)
+- [x] Product Detail: Xoá quantity picker, "Thêm vào giỏ", "Mua ngay" → `ContactButton`
+- [x] Home page: ProductCard "Thêm vào giỏ" → `ContactButton`
+- [x] Product List: "Thêm vào giỏ" → `ContactButton`
+- [x] Navbar: Cart icon + badge → icon phone
+- [x] Xoá CartContext + CartProvider
+- [x] Redirect `/cart`, `/checkout`, `/order/success` → `/`
+
+### 📋 Còn lại (ưu tiên thấp)
+1. **UI**: Hero slider text wrap trên mobile <360px
+2. **Bug**: API naming mismatch — frontend dùng `most-viewed`/`price-zero`, backend dùng `most_viewed`/`price_zero`
+3. **Dead link**: Thêm route `/account/orders` (hiện đang 404)
+4. **Rating**: Text "4.8 (120)" hardcode trên home page — cần API rating
+5. **F10**: Thêm "Danh mục" nav link vào `defaultNavLinks`
+6. **Responsive**: Kiểm tra tablet + mobile tổng thể
+7. **Backend**: Unit test (ngoài phạm vi hiện tại)
 
 ---
 
