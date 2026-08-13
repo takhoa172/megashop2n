@@ -2,7 +2,7 @@ name: Deploy to Production
 
 on:
   push:
-    branches: [v2]
+    branches: [main]
 
 jobs:
   test:
@@ -44,4 +44,4 @@ jobs:
           chmod 600 /tmp/ssh_key
           ssh -o StrictHostKeyChecking=no -p 2222 -i /tmp/ssh_key \
             ${{ secrets.SERVER_USER }}@127.0.0.1 \
-            "cd /opt/vietshop && git pull origin v2 && docker compose up -d --build && docker image prune -f"
+            "cd /opt/vietshop && git pull origin main && docker compose up -d --build && docker image prune -f"
