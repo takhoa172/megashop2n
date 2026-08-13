@@ -38,9 +38,10 @@ export default function LoginPage() {
     }
     try {
       await register(regName, regEmail, regPhone, regPassword, regConfirm)
-    } catch (err: any) {
-      const msg = err?.response?.data?.message
-        || err?.response?.data?.email?.[0]
+    } catch (err) {
+      const error = err as { response?: { data?: { message?: string; email?: string[] } } }
+      const msg = error?.response?.data?.message
+        || error?.response?.data?.email?.[0]
         || "Đăng ký thất bại"
       setError(msg)
     }

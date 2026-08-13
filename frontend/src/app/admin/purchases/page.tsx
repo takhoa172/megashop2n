@@ -7,7 +7,7 @@ import { getUsers } from "@/services/auth"
 import { DataTable } from "@/components/tables/DataTable"
 import { PageHeader } from "@/components/ui/page-header"
 import { Modal } from "@/components/ui/modal"
-import { Purchase, User } from "@/types"
+import { Purchase, User, Product } from "@/types"
 import { formatCurrency, formatDate } from "@/lib/utils"
 import { ColumnDef } from "@tanstack/react-table"
 import { useState, useEffect } from "react"
@@ -26,11 +26,8 @@ export default function PurchasesPage() {
     }
   }, [user, router])
 
-  if (user && user.role !== "MANAGER") return null
-
   const [showForm, setShowForm] = useState(false)
   const [editingPurchase, setEditingPurchase] = useState<Purchase | null>(null)
-  const queryClient = useQueryClient()
 
   const { data: purchasesData, isLoading } = useQuery({
     queryKey: ["purchases"],
@@ -99,6 +96,8 @@ export default function PurchasesPage() {
       ),
     },
   ]
+
+  if (user && user.role !== "MANAGER") return null
 
   return (
     <div className="space-y-6">
@@ -218,7 +217,7 @@ function PurchaseForm({ purchase, onClose }: { purchase: Purchase | null; onClos
         <select name="product" required defaultValue={purchase?.product || ""}
           className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 bg-white">
           <option value="">Chọn sản phẩm</option>
-          {productList.map((p: any) => (
+          {productList.map((p: Product) => (
             <option key={p.id} value={p.id}>{p.name} ({p.sku})</option>
           ))}
         </select>

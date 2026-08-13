@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, Suspense } from "react"
-import { useParams, useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
 import Link from "next/link"
 import { useAuth } from "@/contexts/AuthContext"
 import { getOrder, cancelOrder, Order } from "@/services/orders"
@@ -24,7 +24,6 @@ function OrderDetailContent() {
   const [loading, setLoading] = useState(true)
   const [cancelling, setCancelling] = useState(false)
   const [cancelError, setCancelError] = useState("")
-  const router = useRouter()
 
   useEffect(() => {
     if (!user || !id) return
@@ -41,8 +40,9 @@ function OrderDetailContent() {
     try {
       const updated = await cancelOrder(order.id)
       setOrder(updated)
-    } catch (err: any) {
-      setCancelError(err?.response?.data?.detail || "Hủy đơn hàng thất bại")
+    } catch (err) {
+      const error = err as { response?: { data?: { detail?: string } } }
+      setCancelError(error?.response?.data?.detail || "Hủy đơn hàng thất bại")
     } finally {
       setCancelling(false)
     }

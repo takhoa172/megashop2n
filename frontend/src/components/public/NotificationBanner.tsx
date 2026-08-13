@@ -22,6 +22,7 @@ export function NotificationBanner() {
         const timestamp = parseInt(stored, 10)
         const now = Date.now()
         if (now - timestamp < 24 * 60 * 60 * 1000) {
+          // eslint-disable-next-line react-hooks/set-state-in-effect -- trạng thái tuỳ thuộc localStorage
           setDismissed(true)
         } else {
           localStorage.removeItem(key)

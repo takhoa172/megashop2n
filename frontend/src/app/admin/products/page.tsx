@@ -418,7 +418,6 @@ function ProductForm({ product, onClose }: { product: Product | null; onClose: (
     }
   }
 
-  const primaryImageUrl = product?.images?.[0]?.image_url || null
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">

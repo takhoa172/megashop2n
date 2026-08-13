@@ -1,7 +1,7 @@
 "use client"
 
 import {
-  PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend,
+  PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
 } from "recharts"
 import { InventoryChartItem } from "@/types"
 
@@ -9,7 +9,12 @@ interface Props {
   data: InventoryChartItem[]
 }
 
-function CustomTooltip({ active, payload }: any) {
+interface TooltipProps {
+  active?: boolean
+  payload?: { payload: InventoryChartItem }[]
+}
+
+function CustomTooltip({ active, payload }: TooltipProps) {
   if (!active || !payload?.length) return null
   const item = payload[0].payload
   return (

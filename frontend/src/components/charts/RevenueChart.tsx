@@ -11,14 +11,26 @@ interface Props {
   isLoading?: boolean
 }
 
-function CustomTooltip({ active, payload, label }: any) {
+interface TooltipEntry {
+  name?: string | number
+  value?: number | string
+  color?: string
+}
+
+interface TooltipProps {
+  active?: boolean
+  payload?: TooltipEntry[]
+  label?: string | number
+}
+
+function CustomTooltip({ active, payload, label }: TooltipProps) {
   if (!active || !payload?.length) return null
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-3 shadow-lg">
       <p className="text-sm font-medium text-slate-600 mb-1">{label}</p>
-      {payload.map((entry: any, idx: number) => (
+      {payload.map((entry, idx: number) => (
         <p key={idx} className="text-sm font-bold" style={{ color: entry.color }}>
-          {entry.name}: {new Intl.NumberFormat("vi-VN").format(entry.value)}đ
+          {entry.name}: {new Intl.NumberFormat("vi-VN").format(Number(entry.value))}đ
         </p>
       ))}
     </div>

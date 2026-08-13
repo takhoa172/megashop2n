@@ -3,11 +3,12 @@
 import { useQuery } from "@tanstack/react-query"
 import Link from "next/link"
 import { SliderHero } from "@/components/public/SliderHero"
-import { getSuggested, getMostViewed, getPriceZero, getPublicProducts, getPublicBlogs } from "@/services/public"
+import { getSuggested, getMostViewed, getPriceZero, getPublicBlogs } from "@/services/public"
 import { getProducts } from "@/services/products"
 import { formatCurrency } from "@/lib/utils"
 import { ContactButton } from "@/components/public/ContactButton"
 import { ImageWithFallback as Image } from "@/components/shared/ImageWithFallback"
+import { Product, BlogPost } from "@/types"
 
 function stripHtml(html: string) {
   return html.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#\d+;/g, "")
@@ -19,7 +20,7 @@ function truncateText(text: string, maxWords: number) {
   return words.slice(0, maxWords).join(" ") + "..."
 }
 
-function ProductCard({ product }: { product: any }) {
+function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/products/${product.id}`} className="group border border-outline-variant rounded-xl shadow-[0_4px_12px_rgba(0,0,0,.08)] hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 p-4 bg-white overflow-hidden">
       <div className="relative overflow-hidden mb-4 aspect-[3/4] rounded-xl">
@@ -58,7 +59,7 @@ export default function HomePage() {
   const suggestedList = suggested || []
   const mostViewedList = mostViewed || []
   const priceZeroList = priceZero || []
-  const budgetList = (budgetData?.results || budgetData || []).filter((p: any) => p.sale_price && p.sale_price < 500000)
+  const budgetList = (budgetData?.results || budgetData || []).filter((p: Product) => p.sale_price && p.sale_price < 500000)
   const blogList = blogs || []
 
   const placeholderProducts = [
@@ -88,7 +89,7 @@ export default function HomePage() {
           <Link href="/products" className="text-primary font-label-lg border-b border-primary hover:text-primary/70 hover:border-primary/70 transition-colors">Xem tất cả</Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-gutter">
-          {(suggestedList.length > 0 ? suggestedList.slice(0, 5) : placeholderProducts.slice(0, 5)).map((product: any) => (
+          {(suggestedList.length > 0 ? suggestedList.slice(0, 5) : placeholderProducts.slice(0, 5)).map((product: Product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
@@ -102,7 +103,7 @@ export default function HomePage() {
             <p className="text-on-surface-variant mt-4">Những sản phẩm được quan tâm nhất trong 24h qua</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-gutter h-auto md:h-[600px]">
-            {(mostViewedList.length > 0 ? mostViewedList.slice(0, 4) : placeholderProducts.slice(0, 4)).map((product: any, i: number) => {
+            {(mostViewedList.length > 0 ? mostViewedList.slice(0, 4) : placeholderProducts.slice(0, 4)).map((product: Product, i: number) => {
               if (i === 0) {
                 return (
                   <div key={product.id} className="md:col-span-2 md:row-span-2 relative overflow-hidden group rounded-2xl h-[300px] md:h-auto">
@@ -171,7 +172,7 @@ export default function HomePage() {
               Cơ hội cuối cùng để sở hữu những sản phẩm yêu thích với mức giá không tưởng. Số lượng có hạn!
             </p>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-gutter text-on-background">
-              {(priceZeroList.length > 0 ? priceZeroList.slice(0, 4) : placeholderProducts.slice(0, 4)).map((product: any) => (
+              {(priceZeroList.length > 0 ? priceZeroList.slice(0, 4) : placeholderProducts.slice(0, 4)).map((product: Product) => (
                 <Link key={product.id} href={`/products/${product.id}`} className="bg-white p-4 rounded-xl shadow-sm group">
                   <div className="relative mb-4 aspect-[3/4]">
                     <Image
@@ -181,7 +182,7 @@ export default function HomePage() {
                       alt={product.name}
                       sizes="(max-width: 768px) 50vw, 25vw"
                     />
-                    <div className="absolute top-0 right-0 bg-accent text-on-accent px-3 py-1 font-bold">{product.purchase_price > 0 ? `-${Math.round((1 - product.sale_price / product.purchase_price) * 100)}%` : "-50%"}</div>
+                    <div className="absolute top-0 right-0 bg-accent text-on-accent px-3 py-1 font-bold">{product.purchase_price > 0 && product.sale_price ? `-${Math.round((1 - product.sale_price / product.purchase_price) * 100)}%` : "-50%"}</div>
                   </div>
                   <h4 className="font-label-lg text-secondary mb-1">{product.name}</h4>
                   <div className="flex items-baseline gap-2">
@@ -205,7 +206,7 @@ export default function HomePage() {
         </div>
         <div className="overflow-x-auto hide-scrollbar -mx-margin-mobile md:-mx-0">
           <div className="flex gap-gutter px-margin-mobile md:px-0 min-w-max md:min-w-0">
-            {(budgetList.length > 0 ? budgetList : placeholderProducts).map((product: any) => (
+            {(budgetList.length > 0 ? budgetList : placeholderProducts).map((product: Product) => (
               <Link key={product.id} href={`/products/${product.id}`} className="bg-white p-3 rounded-xl shadow-sm group min-w-[160px] sm:min-w-[280px]">
                 <div className="aspect-[3/4] relative overflow-hidden rounded-xl bg-surface-container mb-2">
                   <Image
@@ -231,7 +232,7 @@ export default function HomePage() {
           <p className="text-on-surface-variant mt-2">Cập nhật xu hướng và mẹo vặt hữu ích</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-          {(blogList.length > 0 ? blogList : placeholderBlogs).map((post: any) => (
+          {(blogList.length > 0 ? blogList : placeholderBlogs).map((post: BlogPost) => (
             <Link key={post.id} href={`/blogs/${post.slug}`} className="group block bg-white border border-outline-variant rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
               <article>
                 <div className="relative overflow-hidden mb-4 h-48 rounded-xl">

@@ -11,6 +11,7 @@ import { ImageWithFallback as Image } from "@/components/shared/ImageWithFallbac
 import { usePageMeta } from "@/hooks/usePageMeta"
 import { injectJsonLd } from "@/lib/jsonld"
 import { ShareButton } from "@/components/shared/ShareButton"
+import { Product, ProductImage } from "@/types"
 
 function ProductDetailContent() {
   const { id } = useParams<{ id: string }>()
@@ -27,8 +28,8 @@ function ProductDetailContent() {
     queryFn: () => getSuggested(),
   })
 
-  const images: any[] = product?.images?.length ? product.images : [{ image_url: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800" }]
-  const relatedList = (related || []).filter((p: any) => p.id !== product?.id).slice(0, 4)
+  const images: ProductImage[] = product?.images?.length ? product.images : [{ id: "", image_url: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800", public_id: "", is_primary: false, created_at: "" }]
+  const relatedList = (related || []).filter((p: Product) => p.id !== product?.id).slice(0, 4)
   const productImage = images[0]?.image_url
 
   usePageMeta(
@@ -45,7 +46,7 @@ function ProductDetailContent() {
       "@context": "https://schema.org",
       "@type": "Product",
       name: product.name,
-      image: images.map((i: any) => i.image_url),
+      image: images.map((i) => i.image_url),
       description: product.description || "",
       sku: product.sku,
       offers: {
@@ -131,7 +132,7 @@ function ProductDetailContent() {
           </div>
           {images.length > 1 && (
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-sm">
-              {images.map((img: any, i: number) => (
+              {images.map((img, i: number) => (
                 <button
                   key={i}
                   onClick={() => setSelectedImage(i)}
@@ -155,7 +156,7 @@ function ProductDetailContent() {
           <div className="flex items-center gap-sm mb-lg">
             <div className="flex text-accent">
               {[1, 2, 3, 4, 5].map((star) => (
-                <span key={star} className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" as any }}>star</span>
+                <span key={star} className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" as const }}>star</span>
               ))}
             </div>
             <span className="font-body-sm text-body-sm text-on-surface-variant">(124 reviews)</span>
@@ -291,7 +292,7 @@ function ProductDetailContent() {
                 <div className="flex-1">
                   <div className="flex items-center gap-md mb-sm">
                     <div className="flex text-accent">
-                      {[1, 2, 3, 4, 5].map((s) => <span key={s} className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" as any }}>star</span>)}
+                      {[1, 2, 3, 4, 5].map((s) => <span key={s} className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" as const }}>star</span>)}
                     </div>
                     <span className="font-label-sm text-label-sm text-on-surface-variant">124 đánh giá</span>
                   </div>
@@ -308,7 +309,7 @@ function ProductDetailContent() {
                       <div>
                         <p className="font-title-md text-title-md">Nguyễn Văn A</p>
                         <div className="flex text-accent">
-                          {[1, 2, 3, 4, 5].map((s) => <span key={s} className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: s <= 4 ? "'FILL' 1" as any : undefined }}>{s <= 4 ? "star" : "star"}</span>)}
+                          {[1, 2, 3, 4, 5].map((s) => <span key={s} className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: s <= 4 ? ("'FILL' 1" as const) : undefined }}>{s <= 4 ? "star" : "star"}</span>)}
                         </div>
                       </div>
                       <span className="ml-auto font-label-sm text-label-sm text-on-surface-variant">2 ngày trước</span>
@@ -335,7 +336,7 @@ function ProductDetailContent() {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
-            {relatedList.map((product: any) => (
+            {relatedList.map((product: Product) => (
               <Link
                 key={product.id}
                 href={`/products/${product.id}`}

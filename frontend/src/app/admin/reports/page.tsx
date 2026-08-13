@@ -22,7 +22,6 @@ export default function ReportsPage() {
     }
   }, [user, router])
 
-  if (user && user.role !== "MANAGER") return null
   const now = new Date()
   const [selectedYear, setSelectedYear] = useState(String(now.getFullYear()))
 
@@ -52,11 +51,11 @@ export default function ReportsPage() {
       toast.error("Không có dữ liệu để xuất")
       return
     }
-    const rows = [["Tháng", "Doanh thu", "Chi phí", "Lợi nhuận"]]
-    const profitMap = new Map(profit.map((p: any) => [p.month, p]))
+    const rows: (string | number)[][] = [["Tháng", "Doanh thu", "Chi phí", "Lợi nhuận"]]
+    const profitMap = new Map(profit.map((p) => [p.month, p]))
     for (const r of revenue) {
       const p = profitMap.get(r.month)
-      rows.push([r.month, r.revenue, p?.cost ?? 0, p?.profit ?? 0])
+      rows.push([r.month, r.revenue ?? 0, p?.cost ?? 0, p?.profit ?? 0])
     }
     const csv = rows.map((r) => r.join(",")).join("\n")
     const blob = new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8;" })
@@ -68,6 +67,8 @@ export default function ReportsPage() {
     URL.revokeObjectURL(url)
     toast.success("Đã tải file báo cáo")
   }
+
+  if (user && user.role !== "MANAGER") return null
 
   return (
     <div className="space-y-6">

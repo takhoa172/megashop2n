@@ -6,7 +6,7 @@ import { getProducts } from "@/services/products"
 import { DataTable } from "@/components/tables/DataTable"
 import { PageHeader } from "@/components/ui/page-header"
 import { Modal } from "@/components/ui/modal"
-import { Sale } from "@/types"
+import { Sale, Product } from "@/types"
 import { formatCurrency, formatDate } from "@/lib/utils"
 import { ColumnDef } from "@tanstack/react-table"
 import { useState } from "react"
@@ -16,7 +16,6 @@ import { toast } from "sonner"
 export default function SalesPage() {
   const [showForm, setShowForm] = useState(false)
   const [editingSale, setEditingSale] = useState<Sale | null>(null)
-  const queryClient = useQueryClient()
 
   const { data: salesData, isLoading } = useQuery({
     queryKey: ["sales"],
@@ -211,7 +210,7 @@ function SaleForm({ sale, onClose }: { sale: Sale | null; onClose: () => void })
         <select name="product" required defaultValue={sale?.product || ""}
           className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 bg-white">
           <option value="">Chọn sản phẩm</option>
-          {productList.map((p: any) => (
+          {productList.map((p: Product) => (
             <option key={p.id} value={p.id}>{p.name} ({p.sku})</option>
           ))}
         </select>

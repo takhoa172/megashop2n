@@ -1,5 +1,5 @@
 import api from "./api"
-import { BlogPost } from "@/types"
+import { BlogCategory } from "@/types"
 
 export async function getBlogPosts(params?: Record<string, string>) {
   const { data } = await api.get("/blogs/", { params })
@@ -34,7 +34,7 @@ export async function deleteBlogPost(id: string) {
   await api.delete(`/blogs/${id}`)
 }
 
-export async function getBlogCategories() {
+export async function getBlogCategories(): Promise<BlogCategory[]> {
   const { data } = await api.get("/blogs/categories")
   return data.results || data
 }

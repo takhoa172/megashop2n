@@ -2,7 +2,7 @@
 
 import { Suspense } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { useSearchParams, useRouter } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { useState } from "react"
 import Link from "next/link"
 import { getPublicProducts, getPublicCategories } from "@/services/public"
@@ -10,6 +10,7 @@ import { formatCurrency } from "@/lib/utils"
 import { ContactButton } from "@/components/public/ContactButton"
 import { ImageWithFallback as Image } from "@/components/shared/ImageWithFallback"
 import { usePageMeta } from "@/hooks/usePageMeta"
+import { Product, Category } from "@/types"
 
 const PAGE_SIZE = 12
 
@@ -73,7 +74,7 @@ function ProductListContent() {
     setPage(1)
   }
 
-  const getBadge = (product: any) => {
+  const getBadge = (product: Product) => {
     if (product.is_suggested) {
       return <span className="absolute top-2 left-2 bg-error text-on-primary font-label-sm text-[10px] px-2 py-1 rounded uppercase tracking-wider">Hot</span>
     }
@@ -111,7 +112,7 @@ function ProductListContent() {
                   />
                   <span className="font-body-sm text-body-sm group-hover:text-primary transition-colors">Tất cả</span>
                 </label>
-                {categories.map((cat: any) => (
+                {categories.map((cat: Category) => (
                   <label key={cat.id} className="flex items-center gap-sm cursor-pointer group">
                     <input
                       type="checkbox"
@@ -237,7 +238,7 @@ function ProductListContent() {
           {products.length > 0 ? (
             <>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-gutter">
-                {products.map((product: any) => (
+                {products.map((product: Product) => (
                   <Link
                     key={product.id}
                     href={`/products/${product.id}`}

@@ -41,7 +41,7 @@ function AdminOrderDetailContent() {
     try {
       const updated = await updateOrderStatus(order.id, selectedStatus)
       setOrder(updated)
-    } catch (err) {
+    } catch {
       setError("Cập nhật trạng thái thất bại")
     } finally {
       setUpdating(false)

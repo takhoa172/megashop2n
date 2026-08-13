@@ -38,6 +38,7 @@ export interface Product {
   sale_price: number | null
   status: "pending_price" | "in_stock" | "sold" | "cancelled"
   quantity: number
+  is_suggested?: boolean
   is_visible?: boolean
   notes: string | null
   created_by: string | null

@@ -3,13 +3,14 @@
 import { useState, useEffect, useCallback } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { getPublicSliders } from "@/services/public"
+import type { Slider } from "@/services/sliders"
 import Link from "next/link"
 import { ImageWithFallback as Image } from "@/components/shared/ImageWithFallback"
 
-const defaultSlides = [
-  { id: 1, image_url: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1920", title: "Khuyến mãi đặc biệt", subtitle: "Khám phá bộ sưu tập mới nhất với ưu đãi lên đến 50%", link_url: "/products" },
-  { id: 2, image_url: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920", title: "Bộ sưu tập Thu Đông", subtitle: "Những thiết kế mới nhất dành cho bạn", link_url: "/products" },
-  { id: 3, image_url: "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=1920", title: "Công nghệ mới nhất", subtitle: "Ưu đãi đặc biệt cho các thiết bị điện tử", link_url: "/products" },
+const defaultSlides: Slider[] = [
+  { id: "1", image_url: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1920", title: "Khuyến mãi đặc biệt", subtitle: "Khám phá bộ sưu tập mới nhất với ưu đãi lên đến 50%", link_url: "/products", image_public_id: null, is_active: true, sort_order: 1, created_at: "" },
+  { id: "2", image_url: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920", title: "Bộ sưu tập Thu Đông", subtitle: "Những thiết kế mới nhất dành cho bạn", link_url: "/products", image_public_id: null, is_active: true, sort_order: 2, created_at: "" },
+  { id: "3", image_url: "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=1920", title: "Công nghệ mới nhất", subtitle: "Ưu đãi đặc biệt cho các thiết bị điện tử", link_url: "/products", image_public_id: null, is_active: true, sort_order: 3, created_at: "" },
 ]
 
 const fallbackImg = "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920"
@@ -31,8 +32,8 @@ export function SliderHero() {
 
   return (
     <section className="relative w-full h-[300px] md:h-[600px] overflow-hidden">
-      {slides.map((slide: any, i: number) => {
-        const imgSrc = slide.image_url || slide.image || fallbackImg
+      {slides.map((slide: Slider, i: number) => {
+        const imgSrc = slide.image_url || fallbackImg
         const inner = (
           <>
             <Image
@@ -74,7 +75,7 @@ export function SliderHero() {
       })}
       {slides.length > 1 && (
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-          {slides.map((_: any, i: number) => (
+          {slides.map((_: Slider, i: number) => (
             <button key={i} onClick={() => setCurrent(i)} className={`w-3 h-3 rounded-full transition-colors ${i === current ? "bg-primary" : "bg-white/50"}`} />
           ))}
         </div>

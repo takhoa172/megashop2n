@@ -27,8 +27,6 @@ export default function BlogsPage() {
     }
   }, [user, router])
 
-  if (user && user.role !== "MANAGER") return null
-
   const [showForm, setShowForm] = useState(false)
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
@@ -148,6 +146,8 @@ export default function BlogsPage() {
       enableSorting: false,
     },
   ]
+
+  if (user && user.role !== "MANAGER") return null
 
   return (
     <div className="space-y-6">
@@ -327,7 +327,7 @@ function BlogForm({ post, onClose }: { post: BlogPost | null; onClose: () => voi
             <select name="category" defaultValue={post?.category || ""}
               className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 bg-white">
               <option value="">Chọn danh mục</option>
-              {(categories || []).map((cat: any) => (
+              {(categories || []).map((cat) => (
                 <option key={cat.id} value={cat.id}>{cat.name}</option>
               ))}
             </select>

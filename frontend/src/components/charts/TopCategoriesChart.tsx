@@ -11,7 +11,13 @@ interface Props {
   isLoading?: boolean
 }
 
-function CustomTooltip({ active, payload, label }: any) {
+interface TooltipProps {
+  active?: boolean
+  payload?: { value?: number | string }[]
+  label?: string | number
+}
+
+function CustomTooltip({ active, payload, label }: TooltipProps) {
   if (!active || !payload?.length) return null
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-3 shadow-lg">

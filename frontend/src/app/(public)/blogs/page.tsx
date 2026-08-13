@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation"
 import { getPublicBlogs } from "@/services/public"
 import { ImageWithFallback as Image } from "@/components/shared/ImageWithFallback"
 import { usePageMeta } from "@/hooks/usePageMeta"
+import { BlogPost } from "@/types"
 
 function stripHtml(html: string) {
   if (!html) return ""
@@ -50,10 +51,10 @@ function BlogListContent() {
 
   const blogList = blogs || []
 
-  const categories = [...new Set(blogList.map((b: any) => b.category_name).filter(Boolean))] as string[]
+  const categories = [...new Set(blogList.map((b: BlogPost) => b.category_name).filter(Boolean))] as string[]
 
   const filtered = activeCategory
-    ? blogList.filter((b: any) => b.category_name === activeCategory)
+    ? blogList.filter((b: BlogPost) => b.category_name === activeCategory)
     : blogList
 
   const featured = filtered.length === 1 ? filtered[0] : filtered[0] || null
@@ -158,7 +159,7 @@ function BlogListContent() {
       </div>
 
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
-        {paginatedBlogs.map((post: any) => (
+        {paginatedBlogs.map((post: BlogPost) => (
           <Link key={post.id} href={`/blogs/${post.slug}`} className="flex flex-col bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 group">
             <div className="relative h-56 overflow-hidden">
               <Image

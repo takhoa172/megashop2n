@@ -57,6 +57,7 @@ export default function AdminOrdersPage() {
   }, [])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- nạp dữ liệu ban đầu
     fetchOrders()
   }, [fetchOrders])
 
