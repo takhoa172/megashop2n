@@ -29,7 +29,7 @@ services:
       retries: 3
       start_period: 120s
     environment:
-      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,django
+      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,django,megashop2n.io.vn
     env_file:
       - .env
     volumes:
