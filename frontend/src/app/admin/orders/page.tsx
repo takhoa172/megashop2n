@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react"
 import Link from "next/link"
-import { getAllOrders, updateOrderPayment, Order } from "@/services/orders"
+import { getAllOrders, Order } from "@/services/orders"
 import { DataTable } from "@/components/tables/DataTable"
 import { PageHeader } from "@/components/ui/page-header"
 import { TableSkeleton } from "@/components/ui/skeleton"
@@ -119,16 +119,6 @@ export default function AdminOrdersPage() {
     setSelectedIds(next)
   }
 
-  const handleTogglePayment = (order: Order) => {
-    const nextStatus = order.payment_status === "paid" ? "unpaid" : "paid"
-    updateOrderPayment(order.id, nextStatus)
-      .then(() => {
-        toast.success(nextStatus === "paid" ? "Đã đánh dấu thanh toán" : "Đã đánh dấu chưa thanh toán")
-        setOrders((prev) => prev.map((o) => (o.id === order.id ? { ...o, payment_status: nextStatus } : o)))
-      })
-      .catch(() => toast.error("Cập nhật thanh toán thất bại"))
-  }
-
   const columns: ColumnDef<Order>[] = [
     {
       id: "select",
@@ -191,20 +181,16 @@ export default function AdminOrdersPage() {
       accessorKey: "payment_status",
       header: "Thanh toán",
       cell: ({ row }) => (
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            handleTogglePayment(row.original)
-          }}
-          className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${
-            row.original.payment_status === "paid"
-              ? "bg-green-100 text-green-700 hover:bg-green-200"
-              : "bg-amber-100 text-amber-700 hover:bg-amber-200"
-          }`}
-          title="Bấm để đổi trạng thái thanh toán"
-        >
-          {row.original.payment_status === "paid" ? "Đã TT" : "Chưa TT"}
-        </button>
+        <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium ${
+          row.original.payment_status === "paid"
+            ? "bg-green-100 text-green-700"
+            : row.original.payment_status === "refunded"
+            ? "bg-red-100 text-red-700"
+            : "bg-amber-100 text-amber-700"
+        }`}>
+          {row.original.payment_status === "paid" ? "Đã TT" :
+           row.original.payment_status === "refunded" ? "Đã hoàn" : "COD"}
+        </span>
       ),
     },
     {

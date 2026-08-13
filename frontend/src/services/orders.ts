@@ -11,7 +11,7 @@ export interface CreateOrderInput {
   shipping_phone: string
   shipping_address: string
   note?: string
-  payment_method: "cod" | "bank_transfer"
+  payment_method: "cod" | "vnpay"
   guest_email?: string | null
 }
 
@@ -29,8 +29,10 @@ export interface Order {
   shipping_phone: string
   shipping_address: string
   note: string
-  payment_method: "cod" | "bank_transfer"
-  payment_status: "unpaid" | "paid"
+  payment_method: "cod" | "vnpay"
+  payment_status: "unpaid" | "paid" | "refunded"
+  vnpay_txn_ref: string | null
+  vnpay_paid_at: string | null
   items: OrderItem[]
   created_at: string
   updated_at: string
@@ -80,13 +82,5 @@ export async function updateOrderStatus(
 
 export async function cancelOrder(id: string): Promise<Order> {
   const res = await api.post(`/orders/${id}/cancel/`)
-  return res.data
-}
-
-export async function updateOrderPayment(
-  id: string,
-  paymentStatus: string
-): Promise<Order> {
-  const res = await api.patch(`/orders/${id}/payment/`, { payment_status: paymentStatus })
   return res.data
 }

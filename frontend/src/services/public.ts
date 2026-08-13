@@ -40,18 +40,3 @@ export async function getSiteSettings() {
   const { data } = await api.get("/settings/site")
   return data
 }
-
-export async function getRelatedProducts(productId: string) {
-  const { data } = await api.get(`/products/related/${productId}`)
-  return data
-}
-
-export async function getForYou() {
-  const { data } = await api.get("/products/for-you")
-  return data
-}
-
-export async function searchSuggest(q: string) {
-  const { data } = await api.get("/products/suggest", { params: { q } })
-  return data
-}

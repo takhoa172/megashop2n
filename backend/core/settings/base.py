@@ -154,20 +154,11 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
-# Email (SMTP) — thông báo đơn hàng
-EMAIL_BACKEND = os.environ.get(
-    "EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend"
+VNPAY_TMN_CODE = os.environ.get("VNPAY_TMN_CODE", "")
+VNPAY_HASH_SECRET = os.environ.get("VNPAY_HASH_SECRET", "")
+VNPAY_RETURN_URL = os.environ.get("VNPAY_RETURN_URL", "")
+VNPAY_PAYMENT_URL = os.environ.get(
+    "VNPAY_PAYMENT_URL", "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
 )
-EMAIL_HOST = os.environ.get("EMAIL_HOST", "")
-EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
-EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True") == "True"
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "VIETSHOP <no-reply@vietshop.io.vn>")
-
-# SMS — thông báo đơn hàng (để trống nếu chưa có nhà cung cấp)
-SMS_API_URL = os.environ.get("SMS_API_URL", "")
-SMS_API_KEY = os.environ.get("SMS_API_KEY", "")
-SMS_SENDER = os.environ.get("SMS_SENDER", "")
 
 

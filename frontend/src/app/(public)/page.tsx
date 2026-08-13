@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query"
 import Link from "next/link"
 import { SliderHero } from "@/components/public/SliderHero"
-import { getSuggested, getMostViewed, getPriceZero, getPublicBlogs, getForYou } from "@/services/public"
+import { getSuggested, getMostViewed, getPriceZero, getPublicBlogs } from "@/services/public"
 import { getProducts } from "@/services/products"
 import { formatCurrency } from "@/lib/utils"
 import { ContactButton } from "@/components/public/ContactButton"
@@ -51,12 +51,12 @@ function ProductCard({ product }: { product: Product }) {
 
 export default function HomePage() {
   const { data: suggested } = useQuery({ queryKey: ["suggested"], queryFn: () => getSuggested() })
-  const { data: forYou } = useQuery({ queryKey: ["for-you"], queryFn: () => getForYou() })
   const { data: mostViewed } = useQuery({ queryKey: ["most-viewed"], queryFn: () => getMostViewed() })
   const { data: priceZero } = useQuery({ queryKey: ["price-zero"], queryFn: () => getPriceZero() })
   const { data: budgetData } = useQuery({ queryKey: ["public-products-budget"], queryFn: () => getProducts({ sale_price__lte: "500000" }) })
   const { data: blogs } = useQuery({ queryKey: ["public-blogs"], queryFn: () => getPublicBlogs() })
 
+  const suggestedList = suggested || []
   const mostViewedList = mostViewed || []
   const priceZeroList = priceZero || []
   const budgetList = (budgetData?.results || budgetData || []).filter((p: Product) => p.sale_price && p.sale_price < 500000)
@@ -83,13 +83,13 @@ export default function HomePage() {
       <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-2xl md:py-section-gap">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 md:mb-12 gap-2">
           <div>
-          <span className="text-primary font-label-lg uppercase tracking-widest">Dành riêng cho bạn</span>
-          <h2 className="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg mt-2">Sản phẩm gợi ý</h2>
+            <span className="text-primary font-label-lg uppercase tracking-widest">Dành riêng cho bạn</span>
+            <h2 className="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg mt-2">Sản phẩm gợi ý</h2>
           </div>
           <Link href="/products" className="text-primary font-label-lg border-b border-primary hover:text-primary/70 hover:border-primary/70 transition-colors">Xem tất cả</Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-gutter">
-          {((forYou || suggested || []).length > 0 ? (forYou || suggested || []).slice(0, 5) : placeholderProducts.slice(0, 5)).map((product: Product) => (
+          {(suggestedList.length > 0 ? suggestedList.slice(0, 5) : placeholderProducts.slice(0, 5)).map((product: Product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>

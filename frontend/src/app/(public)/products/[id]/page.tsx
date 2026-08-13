@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useParams } from "next/navigation"
 import { useState, useEffect, Suspense } from "react"
 import Link from "next/link"
-import { getPublicProduct, getRelatedProducts } from "@/services/public"
+import { getPublicProduct, getSuggested } from "@/services/public"
 import { formatCurrency } from "@/lib/utils"
 import { ContactButton } from "@/components/public/ContactButton"
 import { ImageWithFallback as Image } from "@/components/shared/ImageWithFallback"
@@ -24,9 +24,8 @@ function ProductDetailContent() {
   })
 
   const { data: related } = useQuery({
-    queryKey: ["related-products", id],
-    queryFn: () => getRelatedProducts(id),
-    enabled: !!id,
+    queryKey: ["suggested"],
+    queryFn: () => getSuggested(),
   })
 
   const images: ProductImage[] = product?.images?.length ? product.images : [{ id: "", image_url: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800", public_id: "", is_primary: false, created_at: "" }]
