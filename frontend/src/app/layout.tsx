@@ -1,9 +1,6 @@
 import type { Metadata, Viewport } from "next"
-import { Inter } from "next/font/google"
 import "./globals.css"
 import { Providers } from "./providers"
-
-const inter = Inter({ subsets: ["latin"], display: "swap" })
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vietshop.com"
 const siteName = "VIETSHOP"
@@ -75,7 +72,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
       </head>
-      <body className={inter.className}>
+      <body>
         <Providers>{children}</Providers>
       </body>
     </html>
