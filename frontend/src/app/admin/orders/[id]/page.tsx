@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { getOrder, updateOrderStatus, Order } from "@/services/orders"
+import { getOrder, updateOrderStatus, updateOrderPayment, Order } from "@/services/orders"
 import { formatCurrency } from "@/lib/utils"
 
 const statusLabels: Record<string, string> = {
@@ -43,6 +43,20 @@ function AdminOrderDetailContent() {
       setOrder(updated)
     } catch {
       setError("Cập nhật trạng thái thất bại")
+    } finally {
+      setUpdating(false)
+    }
+  }
+
+  const handleTogglePayment = async () => {
+    if (!order) return
+    const next = order.payment_status === "paid" ? "unpaid" : "paid"
+    setUpdating(true)
+    try {
+      const updated = await updateOrderPayment(order.id, next)
+      setOrder(updated)
+    } catch {
+      setError("Cập nhật thanh toán thất bại")
     } finally {
       setUpdating(false)
     }
@@ -176,6 +190,27 @@ function AdminOrderDetailContent() {
             <p className="font-label-md">{order.shipping_name}</p>
             <p className="text-body-sm text-on-surface-variant">{order.shipping_phone}</p>
             <p className="text-body-sm text-on-surface-variant">{order.user_email || order.guest_email}</p>
+          </div>
+
+          <div className="bg-white rounded-xl border border-outline-variant p-lg md:p-xl space-y-md">
+            <h2 className="font-title-lg text-title-lg">Thanh toán</h2>
+            <div className="flex justify-between text-body-sm">
+              <span className="text-on-surface-variant">Phương thức</span>
+              <span>{order.payment_method === "cod" ? "COD" : "Chuyển khoản"}</span>
+            </div>
+            <div className="flex justify-between text-body-sm">
+              <span className="text-on-surface-variant">Trạng thái</span>
+              <span className={`font-semibold ${order.payment_status === "paid" ? "text-green-600" : "text-amber-600"}`}>
+                {order.payment_status === "paid" ? "Đã thanh toán" : "Chưa thanh toán"}
+              </span>
+            </div>
+            <button
+              onClick={handleTogglePayment}
+              disabled={updating}
+              className="w-full border border-primary text-primary px-md py-sm rounded-lg font-label-md hover:bg-primary hover:text-on-primary transition-all disabled:opacity-50"
+            >
+              {updating ? "Đang cập nhật..." : order.payment_status === "paid" ? "Đánh dấu chưa thanh toán" : "Đánh dấu đã thanh toán"}
+            </button>
           </div>
         </div>
       </div>

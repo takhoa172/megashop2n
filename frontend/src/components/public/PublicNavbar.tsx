@@ -2,11 +2,19 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { getSiteSettings } from "@/services/public"
+import { getSiteSettings, searchSuggest } from "@/services/public"
 import { useAuth } from "@/contexts/AuthContext"
 import { ImageWithFallback as Image } from "@/components/shared/ImageWithFallback"
+import { formatCurrency } from "@/lib/utils"
+
+interface SuggestItem {
+  id: string
+  name: string
+  sale_price: string
+  image: string
+}
 
 const defaultNavLinks = [
   { href: "/", label: "Trang chủ" },
@@ -21,6 +29,10 @@ export function PublicNavbar() {
   const { user } = useAuth()
   const [searchQuery, setSearchQuery] = useState("")
   const [mobileMenu, setMobileMenu] = useState(false)
+  const [suggestions, setSuggestions] = useState<SuggestItem[]>([])
+  const [showSuggest, setShowSuggest] = useState(false)
+  const [suggestQuery, setSuggestQuery] = useState("")
+  const searchRef = useRef<HTMLDivElement>(null)
 
   const { data: siteSettings } = useQuery({
     queryKey: ["site-settings"],
@@ -33,11 +45,46 @@ export function PublicNavbar() {
 
   const isLoginPage = pathname === "/login"
 
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowSuggest(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
+  useEffect(() => {
+    const q = searchQuery.trim()
+    if (!q) return
+    const timer = setTimeout(async () => {
+      try {
+        const data = await searchSuggest(q)
+        setSuggestQuery(q)
+        setSuggestions(data || [])
+        setShowSuggest(true)
+      } catch {
+        setSuggestions([])
+      }
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [searchQuery])
+
+  const visibleSuggestions = showSuggest && suggestQuery === searchQuery.trim() ? suggestions : []
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     if (searchQuery.trim()) {
       router.push(`/products?keyword=${encodeURIComponent(searchQuery.trim())}`)
+      setShowSuggest(false)
     }
+  }
+
+  const goToProduct = (id: string) => {
+    router.push(`/products/${id}`)
+    setShowSuggest(false)
+    setSearchQuery("")
   }
 
   const isActive = (href: string) => {
@@ -74,15 +121,39 @@ export function PublicNavbar() {
         )}
         <div className="flex items-center gap-4">
           {!isLoginPage && (
-            <form onSubmit={handleSearch} className="hidden lg:flex items-center bg-white/10 rounded-full border border-white/20 px-4 py-2">
-              <span className="material-symbols-outlined text-on-secondary/60">search</span>
-              <input
-                className="bg-transparent border-none focus:ring-0 outline-none text-on-secondary/80 placeholder-on-secondary/40 ml-2 w-48"
-                placeholder="Tìm kiếm sản phẩm..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </form>
+            <div ref={searchRef} className="hidden lg:block relative">
+              <form onSubmit={handleSearch} className="flex items-center bg-white/10 rounded-full border border-white/20 px-4 py-2">
+                <span className="material-symbols-outlined text-on-secondary/60">search</span>
+                <input
+                  className="bg-transparent border-none focus:ring-0 outline-none text-on-secondary/80 placeholder-on-secondary/40 ml-2 w-48"
+                  placeholder="Tìm kiếm sản phẩm..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => visibleSuggestions.length > 0 && setShowSuggest(true)}
+                />
+              </form>
+              {visibleSuggestions.length > 0 && (
+                <div className="absolute top-full mt-2 w-80 bg-surface rounded-xl shadow-lg border border-outline-variant overflow-hidden z-50">
+                  {visibleSuggestions.map((s) => (
+                    <button
+                      key={s.id}
+                      onClick={() => goToProduct(s.id)}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-surface-container-highest transition-colors text-left"
+                    >
+                      {s.image ? (
+                        <Image src={s.image} alt={s.name} width={36} height={36} className="w-9 h-9 rounded object-cover" />
+                      ) : (
+                        <span className="w-9 h-9 rounded bg-surface-container-highest" />
+                      )}
+                      <span className="flex-1 min-w-0">
+                        <span className="block text-body-sm text-on-surface truncate">{s.name}</span>
+                        <span className="block text-label-sm text-primary">{formatCurrency(Number(s.sale_price))}</span>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           )}
           {!isLoginPage && (
             <a href="tel:190012345678" className="text-on-secondary/80 hover:text-primary transition-colors flex items-center gap-1">
