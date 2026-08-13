@@ -38,7 +38,7 @@ def create_payment_url(order, request):
     ).hexdigest()
     params["vnp_SecureHash"] = secure_hash
 
-    payment_url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
+    payment_url = getattr(settings, "VNPAY_PAYMENT_URL", "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html")
     query = urllib.parse.urlencode(params)
     return f"{payment_url}?{query}"
 
@@ -60,7 +60,7 @@ def verify_return(params):
         hashlib.sha512,
     ).hexdigest()
 
-    if secure_hash != expected_hash:
+    if not hmac.compare_digest(secure_hash, expected_hash):
         return False
 
     return params.get("vnp_TransactionStatus") == "00"

@@ -5,7 +5,10 @@ from rest_framework.response import Response
 from .models import Product, ProductImage
 from .serializers import ProductSerializer, ProductCreateSerializer, ProductImageSerializer
 from .filters import ProductFilter
-from .cloudinary_utils import upload_to_cloudinary, delete_from_cloudinary
+from .cloudinary_utils import upload_to_cloudinary, delete_from_cloudinary, validate_image_file
+import logging
+
+logger = logging.getLogger(__name__)
 from core.permissions import IsStaffOrHigher
 from django_filters.rest_framework import DjangoFilterBackend
 from apps.product_views.models import ProductView
@@ -34,7 +37,19 @@ class ProductViewSet(viewsets.ModelViewSet):
         if not request.user.is_authenticated or request.user.role not in ["SUPER_ADMIN", "MANAGER", "STAFF"]:
             product = response.data
             ip = request.META.get("REMOTE_ADDR", "")
-            ProductView.objects.create(product_id=product["id"], ip_address=ip)
+            if ip:
+                from django.utils import timezone
+                today_start = timezone.now().replace(
+                    hour=0, minute=0, second=0, microsecond=0
+                )
+                try:
+                    ProductView.objects.get_or_create(
+                        product_id=product["id"],
+                        ip_address=ip,
+                        viewed_at__gte=today_start,
+                    )
+                except ProductView.MultipleObjectsReturned:
+                    pass
         return response
 
     def get_queryset(self):
@@ -66,6 +81,9 @@ class ProductViewSet(viewsets.ModelViewSet):
             return Response(
                 {"message": "No file provided"}, status=status.HTTP_400_BAD_REQUEST
             )
+        error = validate_image_file(file)
+        if error:
+            return error
         try:
             result = upload_to_cloudinary(file)
             is_primary = request.data.get("is_primary", "false").lower() == "true"
@@ -83,8 +101,9 @@ class ProductViewSet(viewsets.ModelViewSet):
                 ProductImageSerializer(image).data, status=status.HTTP_201_CREATED
             )
         except Exception as e:
+            logger.exception("Upload product image failed")
             return Response(
-                {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"message": "Upload failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
     @action(detail=True, methods=["post"])
@@ -112,8 +131,9 @@ class ProductViewSet(viewsets.ModelViewSet):
                 ProductImageSerializer(image).data, status=status.HTTP_201_CREATED
             )
         except Exception as e:
+            logger.exception("Add product image url failed")
             return Response(
-                {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"message": "Add image failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
     @action(detail=True, methods=["post"])
@@ -143,6 +163,9 @@ class ProductViewSet(viewsets.ModelViewSet):
             return Response(
                 {"message": "image_id and file are required"}, status=status.HTTP_400_BAD_REQUEST
             )
+        error = validate_image_file(file)
+        if error:
+            return error
         try:
             image = ProductImage.objects.get(id=image_id, product=product)
             if image.public_id:
@@ -162,8 +185,9 @@ class ProductViewSet(viewsets.ModelViewSet):
                 {"message": "Image not found"}, status=status.HTTP_404_NOT_FOUND
             )
         except Exception as e:
+            logger.exception("Replace product image failed")
             return Response(
-                {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"message": "Replace failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
     @action(detail=True, methods=["post"])

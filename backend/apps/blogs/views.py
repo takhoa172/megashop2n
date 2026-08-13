@@ -12,7 +12,10 @@ from .serializers import (
     BlogCategorySerializer,
 )
 from core.permissions import IsAdminOrReadOnly
-from apps.products.cloudinary_utils import upload_to_cloudinary
+from apps.products.cloudinary_utils import upload_to_cloudinary, validate_image_file
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class BlogCategoryViewSet(viewsets.ModelViewSet):
@@ -90,6 +93,9 @@ class BlogPostViewSet(viewsets.ModelViewSet):
             return Response(
                 {"message": "No file provided"}, status=status.HTTP_400_BAD_REQUEST
             )
+        error = validate_image_file(file)
+        if error:
+            return error
         try:
             result = upload_to_cloudinary(file)
             post.featured_image = result["url"]
@@ -100,6 +106,7 @@ class BlogPostViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_200_OK,
             )
         except Exception as e:
+            logger.exception("Upload blog image failed")
             return Response(
-                {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"message": "Upload failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )

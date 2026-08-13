@@ -23,6 +23,11 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/static ./.next/static
 
+RUN addgroup -S nodejs && adduser -S nextjs -G nodejs \
+    && chown -R nextjs:nodejs /app
+
+USER nextjs
+
 EXPOSE 3000
 
 CMD ["node", "server.js"]

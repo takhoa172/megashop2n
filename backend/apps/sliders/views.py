@@ -4,7 +4,10 @@ from rest_framework.response import Response
 from .models import Slider
 from .serializers import SliderSerializer
 from core.permissions import IsAdminOrReadOnly
-from apps.products.cloudinary_utils import upload_to_cloudinary, delete_from_cloudinary
+from apps.products.cloudinary_utils import upload_to_cloudinary, delete_from_cloudinary, validate_image_file
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class SliderViewSet(viewsets.ModelViewSet):
@@ -26,11 +29,9 @@ class SliderViewSet(viewsets.ModelViewSet):
             return Response(
                 {"message": "No file provided"}, status=status.HTTP_400_BAD_REQUEST
             )
-        if not file.content_type.startswith("image/"):
-            return Response(
-                {"message": "Only image files are allowed"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        error = validate_image_file(file)
+        if error:
+            return error
         try:
             if slider.image_public_id:
                 try:
@@ -43,6 +44,7 @@ class SliderViewSet(viewsets.ModelViewSet):
             slider.save(update_fields=["image_url", "image_public_id"])
             return Response({"url": result["url"]}, status=status.HTTP_200_OK)
         except Exception as e:
+            logger.exception("Upload slider image failed")
             return Response(
-                {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"message": "Upload failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )

@@ -22,7 +22,11 @@ from apps.products.cloudinary_utils import upload_to_cloudinary
 
 def seed_demo():
     admin = User.objects.filter(email="admin@example.com").first()
+    if admin is None:
+        admin = User.objects.filter(role=User.Role.SUPER_ADMIN).first()
     staff = User.objects.filter(email="staff@example.com").first()
+    if staff is None:
+        staff = admin
 
     categories_data = {
         "Thời trang": "https://images.unsplash.com/photo-1445205170230-053b83016050?w=800",
@@ -99,7 +103,7 @@ def seed_demo():
             print(f"  Created product: {product.name}")
         else:
             first_img = product.images.first()
-            if first_img and p.get("image"):
+            if first_img and p.get("image") and not first_img.image_url:
                 img_url, public_id = _upload_seed_image(p["image"], "demo/products")
                 first_img.image_url = img_url
                 first_img.public_id = public_id

@@ -17,6 +17,7 @@ from core.permissions import IsSuperAdmin
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
+    throttle_scope = "auth"
 
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
@@ -47,6 +48,7 @@ class LoginView(APIView):
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
+    throttle_scope = "auth"
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
@@ -83,14 +85,21 @@ class CustomerRegisterView(RegisterView):
 
 class RefreshView(APIView):
     permission_classes = [AllowAny]
+    throttle_scope = "auth"
 
     def post(self, request):
         try:
             refresh = RefreshToken(request.data["refresh"])
+            refresh.check_blacklist()
+            new_access = str(refresh.access_token)
+            refresh.blacklist()
+            new_refresh = str(RefreshToken.for_user(
+                User.objects.get(pk=refresh["user_id"])
+            ))
             return Response(
                 {
-                    "access": str(refresh.access_token),
-                    "refresh": str(refresh),
+                    "access": new_access,
+                    "refresh": new_refresh,
                 }
             )
         except Exception:
