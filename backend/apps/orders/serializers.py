@@ -30,13 +30,11 @@ class OrderSerializer(serializers.ModelSerializer):
             "status", "subtotal", "shipping_fee", "total",
             "shipping_name", "shipping_phone", "shipping_address",
             "note", "payment_method", "payment_status",
-            "vnpay_txn_ref", "vnpay_paid_at",
             "items", "created_at", "updated_at",
         ]
         read_only_fields = [
             "id", "user", "status", "subtotal", "total",
-            "payment_status", "vnpay_txn_ref", "vnpay_paid_at",
-            "created_at", "updated_at",
+            "payment_status", "created_at", "updated_at",
         ]
 
 

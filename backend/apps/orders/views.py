@@ -2,17 +2,16 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.views import APIView
 from django.db import transaction, models as db_models
-from django.utils import timezone
-from django.conf import settings
 from .models import Order, OrderItem
 from .serializers import (
     OrderSerializer, OrderCreateSerializer, OrderStatusSerializer,
 )
 from core.permissions import IsStaffOrHigher
 from apps.products.models import Product
-
+from apps.notifications.services import (
+    notify_order_created, notify_order_status, notify_order_cancelled,
+)
 
 class OrderViewSet(viewsets.GenericViewSet):
     queryset = Order.objects.prefetch_related("items__product").select_related("user")
@@ -65,6 +64,9 @@ class OrderViewSet(viewsets.GenericViewSet):
         )
         serializer.is_valid(raise_exception=True)
         order = serializer.save()
+        transaction.on_commit(
+            lambda: notify_order_created(order)
+        )
         return Response(
             OrderSerializer(order).data,
             status=status.HTTP_201_CREATED,
@@ -93,7 +95,23 @@ class OrderViewSet(viewsets.GenericViewSet):
 
         order.status = new_status
         order.save()
+        transaction.on_commit(
+            lambda: notify_order_status(order, order.get_status_display())
+        )
 
+        return Response(OrderSerializer(order).data)
+
+    @action(detail=True, methods=["patch"])
+    def payment(self, request, pk=None):
+        order = self.get_object()
+        new_status = request.data.get("payment_status", "")
+        if new_status not in Order.PaymentStatus.values:
+            return Response(
+                {"detail": "payment_status không hợp lệ"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        order.payment_status = new_status
+        order.save(update_fields=["payment_status", "updated_at"])
         return Response(OrderSerializer(order).data)
 
     @action(detail=True, methods=["post"])
@@ -107,52 +125,5 @@ class OrderViewSet(viewsets.GenericViewSet):
         with transaction.atomic():
             order.status = Order.Status.CANCELLED
             order.save()
+            transaction.on_commit(lambda: notify_order_cancelled(order))
         return Response(OrderSerializer(order).data)
-
-    @action(detail=True, methods=["post"])
-    def init_payment(self, request, pk=None):
-        order = self.get_object()
-        if order.payment_method != Order.PaymentMethod.VNPAY:
-            return Response(
-                {"detail": "Phương thức thanh toán không phải VNPay"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        if order.payment_status == Order.PaymentStatus.PAID:
-            return Response(
-                {"detail": "Đơn hàng đã được thanh toán"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        from .payment import create_payment_url
-        payment_url = create_payment_url(order, request)
-        return Response({"payment_url": payment_url})
-
-
-class PaymentReturnView(APIView):
-    permission_classes = [AllowAny]
-    authentication_classes = []
-
-    def get(self, request):
-        from .payment import verify_return
-        params = request.query_params.dict()
-        is_valid = verify_return(params)
-
-        frontend_base = request.build_absolute_uri("/").replace("/api/", "")
-        frontend_url = f"{frontend_base}order/success"
-
-        if is_valid:
-            txn_ref = params.get("vnp_TxnRef", "")
-            order_id = ""
-            try:
-                order = Order.objects.get(vnpay_txn_ref=txn_ref)
-                order_id = str(order.id)
-                if params.get("vnp_TransactionStatus") == "00":
-                    order.payment_status = Order.PaymentStatus.PAID
-                    order.vnpay_paid_at = timezone.now()
-                    order.save(update_fields=["payment_status", "vnpay_paid_at"])
-            except Order.DoesNotExist:
-                pass
-            if order_id:
-                from django.shortcuts import redirect
-                return redirect(f"{frontend_url}?id={order_id}")
-            return Response({"status": "success"})
-        return Response({"status": "fail"}, status=status.HTTP_400_BAD_REQUEST)

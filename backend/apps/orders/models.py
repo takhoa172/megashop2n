@@ -14,12 +14,11 @@ class Order(models.Model):
 
     class PaymentMethod(models.TextChoices):
         COD = "cod", "COD"
-        VNPAY = "vnpay", "VNPay"
+        BANK_TRANSFER = "bank_transfer", "Chuyển khoản"
 
     class PaymentStatus(models.TextChoices):
         UNPAID = "unpaid", "Chưa thanh toán"
         PAID = "paid", "Đã thanh toán"
-        REFUNDED = "refunded", "Đã hoàn tiền"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(
@@ -42,8 +41,6 @@ class Order(models.Model):
     payment_status = models.CharField(
         max_length=20, choices=PaymentStatus.choices, default=PaymentStatus.UNPAID
     )
-    vnpay_txn_ref = models.CharField(max_length=100, unique=True, null=True, blank=True)
-    vnpay_paid_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
